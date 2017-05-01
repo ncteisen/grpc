@@ -34,22 +34,50 @@
 #include "src/core/lib/transport/bdp_estimator.h"
 
 #include <stdlib.h>
+#include <math.h>
 
 #include <grpc/support/log.h>
 #include <grpc/support/useful.h>
 
 int grpc_bdp_estimator_trace = 0;
 
+#define INITIAL_WINDOW 65535
+#define INITIAL_FRAME 16384
+
 void grpc_bdp_estimator_init(grpc_bdp_estimator *estimator, const char *name) {
-  estimator->estimate = 65536;
+  estimator->bdp_est = INITIAL_WINDOW;
   estimator->ping_state = GRPC_BDP_PING_UNSCHEDULED;
   estimator->name = name;
-  estimator->bw_est = 0;
+  estimator->bw_est = INITIAL_FRAME;
+  grpc_pid_controller_init(
+      &estimator->bdp_pid_controller,
+      (grpc_pid_controller_args){.gain_p = 4,
+                                 .gain_i = 8,
+                                 .gain_d = 0,
+                                 .initial_control_value = log2(INITIAL_WINDOW),
+                                 .min_control_value = -1,
+                                 .max_control_value = 25,
+                                 .integral_range = 10});
+  grpc_pid_controller_init(
+      &estimator->bw_pid_controller,
+      (grpc_pid_controller_args){.gain_p = 4,
+                                 .gain_i = 8,
+                                 .gain_d = 0,
+                                 .initial_control_value = log2(INITIAL_FRAME),
+                                 .min_control_value = -1,
+                                 .max_control_value = 25,
+                                 .integral_range = 10});
 }
 
-bool grpc_bdp_estimator_get_estimate(grpc_bdp_estimator *estimator,
+bool grpc_bdp_estimator_get_bdp_est(grpc_bdp_estimator *estimator,
                                      int64_t *estimate) {
-  *estimate = estimator->estimate;
+  *estimate = estimator->bdp_est;
+  return true;
+}
+
+bool grpc_bdp_estimator_get_bw_est(grpc_bdp_estimator *estimator,
+                                     double *estimate) {
+  *estimate = estimator->bw_est;
   return true;
 }
 
@@ -70,7 +98,7 @@ bool grpc_bdp_estimator_add_incoming_bytes(grpc_bdp_estimator *estimator,
 void grpc_bdp_estimator_schedule_ping(grpc_bdp_estimator *estimator) {
   if (grpc_bdp_estimator_trace) {
     gpr_log(GPR_DEBUG, "bdp[%s]:sched acc=%" PRId64 " est=%" PRId64,
-            estimator->name, estimator->accumulator, estimator->estimate);
+            estimator->name, estimator->accumulator, estimator->bdp_est);
   }
   GPR_ASSERT(estimator->ping_state == GRPC_BDP_PING_UNSCHEDULED);
   estimator->ping_state = GRPC_BDP_PING_SCHEDULED;
@@ -80,7 +108,7 @@ void grpc_bdp_estimator_schedule_ping(grpc_bdp_estimator *estimator) {
 void grpc_bdp_estimator_start_ping(grpc_bdp_estimator *estimator) {
   if (grpc_bdp_estimator_trace) {
     gpr_log(GPR_DEBUG, "bdp[%s]:start acc=%" PRId64 " est=%" PRId64,
-            estimator->name, estimator->accumulator, estimator->estimate);
+            estimator->name, estimator->accumulator, estimator->bdp_est);
   }
   GPR_ASSERT(estimator->ping_state == GRPC_BDP_PING_SCHEDULED);
   estimator->ping_state = GRPC_BDP_PING_STARTED;
@@ -96,18 +124,18 @@ void grpc_bdp_estimator_complete_ping(grpc_bdp_estimator *estimator) {
   if (grpc_bdp_estimator_trace) {
     gpr_log(GPR_DEBUG, "bdp[%s]:complete acc=%" PRId64 " est=%" PRId64
                        " dt=%lf bw=%lfMbs bw_est=%lfMbs",
-            estimator->name, estimator->accumulator, estimator->estimate, dt,
+            estimator->name, estimator->accumulator, estimator->bdp_est, dt,
             bw / 125000.0, estimator->bw_est / 125000.0);
   }
   GPR_ASSERT(estimator->ping_state == GRPC_BDP_PING_STARTED);
-  if (estimator->accumulator > 2 * estimator->estimate / 3 &&
+  if (estimator->accumulator > 2 * estimator->bdp_est / 3 &&
       bw > estimator->bw_est) {
-    estimator->estimate =
-        GPR_MAX(estimator->accumulator, estimator->estimate * 2);
+    estimator->bdp_est =
+        GPR_MAX(estimator->accumulator, estimator->bdp_est * 2);
     estimator->bw_est = bw;
     if (grpc_bdp_estimator_trace) {
-      gpr_log(GPR_DEBUG, "bdp[%s]: estimate increased to %" PRId64,
-              estimator->name, estimator->estimate);
+      gpr_log(GPR_DEBUG, "bdp[%s]: bdp_est increased to %" PRId64,
+              estimator->name, estimator->bdp_est);
     }
   }
   estimator->ping_state = GRPC_BDP_PING_UNSCHEDULED;

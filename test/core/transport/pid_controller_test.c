@@ -34,8 +34,10 @@
 #include "src/core/lib/transport/pid_controller.h"
 
 #include <float.h>
+#include <unistd.h>
 #include <math.h>
 
+#include <grpc/grpc.h>
 #include <grpc/support/alloc.h>
 #include <grpc/support/log.h>
 #include <grpc/support/string_util.h>
@@ -72,11 +74,12 @@ static void test_simple_convergence(double gain_p, double gain_i, double gain_d,
                                        .max_control_value = DBL_MAX,
                                        .integral_range = DBL_MAX});
 
-  for (int i = 0; i < 100000; i++) {
-    grpc_pid_controller_update(&pid, set_point - grpc_pid_controller_last(&pid),
-                               1);
+  for (int i = 0; i < 1000000000; i++) {
+    grpc_pid_controller_update(&pid, set_point - grpc_pid_controller_last(&pid));
   }
 
+  double got = grpc_pid_controller_last(&pid);
+  gpr_log(GPR_ERROR, "set: %f, got: %f", set_point, got);
   GPR_ASSERT(fabs(set_point - grpc_pid_controller_last(&pid)) < 0.1);
   if (gain_i > 0) {
     GPR_ASSERT(fabs(pid.error_integral) < 0.1);
@@ -85,9 +88,11 @@ static void test_simple_convergence(double gain_p, double gain_i, double gain_d,
 
 int main(int argc, char **argv) {
   grpc_test_init(argc, argv);
+  grpc_init();
   test_noop();
   test_simple_convergence(0.2, 0, 0, 1, 100, 0);
   test_simple_convergence(0.2, 0.1, 0, 1, 100, 0);
   test_simple_convergence(0.2, 0.1, 0.1, 1, 100, 0);
+  grpc_shutdown();
   return 0;
 }

@@ -34,7 +34,6 @@
 #include "src/core/ext/transport/chttp2/transport/chttp2_transport.h"
 
 #include <limits.h>
-#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -313,16 +312,6 @@ static void init_transport(grpc_exec_ctx *exec_ctx, grpc_chttp2_transport *t,
                     grpc_combiner_scheduler(t->combiner, false));
 
   grpc_bdp_estimator_init(&t->bdp_estimator, t->peer_string);
-  t->last_pid_update = gpr_now(GPR_CLOCK_MONOTONIC);
-  grpc_pid_controller_init(
-      &t->pid_controller,
-      (grpc_pid_controller_args){.gain_p = 4,
-                                 .gain_i = 8,
-                                 .gain_d = 0,
-                                 .initial_control_value = log2(DEFAULT_WINDOW),
-                                 .min_control_value = -1,
-                                 .max_control_value = 25,
-                                 .integral_range = 10});
 
   grpc_chttp2_goaway_parser_init(&t->goaway_parser);
   grpc_chttp2_hpack_parser_init(exec_ctx, &t->hpack_parser);
@@ -2137,32 +2126,58 @@ static void end_all_the_calls(grpc_exec_ctx *exec_ctx, grpc_chttp2_transport *t,
  * INPUT PROCESSING - PARSING
  */
 
-static void update_bdp(grpc_exec_ctx *exec_ctx, grpc_chttp2_transport *t,
-                       double bdp_dbl) {
-  int32_t bdp;
-  const int32_t kMinBDP = 128;
-  if (bdp_dbl <= kMinBDP) {
-    bdp = kMinBDP;
-  } else if (bdp_dbl > INT32_MAX) {
-    bdp = INT32_MAX;
-  } else {
-    bdp = (int32_t)(bdp_dbl);
-  }
-  int64_t delta =
-      (int64_t)bdp -
-      (int64_t)t->settings[GRPC_LOCAL_SETTINGS]
-                          [GRPC_CHTTP2_SETTINGS_INITIAL_WINDOW_SIZE];
-  if (delta == 0 || (delta > -bdp / 10 && delta < bdp / 10)) {
-    return;
-  }
-  if (grpc_bdp_estimator_trace) {
-    gpr_log(GPR_DEBUG, "%s: update initial window size to %d", t->peer_string,
-            (int)bdp);
-  }
-  push_setting(exec_ctx, t, GRPC_CHTTP2_SETTINGS_INITIAL_WINDOW_SIZE,
-               (uint32_t)bdp);
-  push_setting(exec_ctx, t, GRPC_CHTTP2_SETTINGS_MAX_FRAME_SIZE, (uint32_t)bdp);
-}
+
+// static void update_bw(grpc_exec_ctx *exec_ctx, grpc_chttp2_transport *t,
+//                        double bw_dlb) {
+//   int32_t max_frame;
+//   const int32_t kMinFrame = 16384;
+//   if (bw_dlb <= kMinFrame) {
+//     max_frame = kMinFrame;
+//   } else if (bw_dlb > INT32_MAX) {
+//     max_frame = INT32_MAX;
+//   } else {
+//     max_frame = (int32_t)(bw_dlb);
+//   }
+//   int64_t delta =
+//       (int64_t)max_frame -
+//       (int64_t)t->settings[GRPC_LOCAL_SETTINGS]
+//                           [GRPC_CHTTP2_SETTINGS_MAX_FRAME_SIZE];
+//   if (delta == 0 || (delta > -max_frame / 10 && delta < max_frame / 10)) {
+//     return;
+//   }
+//   if (grpc_bdp_estimator_trace) {
+//     gpr_log(GPR_DEBUG, "%s: update max frame size to %d", t->peer_string,
+//             (int)max_frame);
+//   }
+//   push_setting(exec_ctx, t, GRPC_CHTTP2_SETTINGS_MAX_FRAME_SIZE, (uint32_t)max_frame);
+// }
+
+// static void update_bdp(grpc_exec_ctx *exec_ctx, grpc_chttp2_transport *t,
+//                        double bdp_dbl) {
+//   int32_t bdp;
+//   const int32_t kMinBDP = 128;
+//   if (bdp_dbl <= kMinBDP) {
+//     bdp = kMinBDP;
+//   } else if (bdp_dbl > INT32_MAX) {
+//     bdp = INT32_MAX;
+//   } else {
+//     bdp = (int32_t)(bdp_dbl);
+//   }
+//   int64_t delta =
+//       (int64_t)bdp -
+//       (int64_t)t->settings[GRPC_LOCAL_SETTINGS]
+//                           [GRPC_CHTTP2_SETTINGS_INITIAL_WINDOW_SIZE];
+//   if (delta == 0 || (delta > -bdp / 10 && delta < bdp / 10)) {
+//     return;
+//   }
+//   if (grpc_bdp_estimator_trace) {
+//     gpr_log(GPR_DEBUG, "%s: update initial window size to %d", t->peer_string,
+//             (int)bdp);
+//   }
+//   push_setting(exec_ctx, t, GRPC_CHTTP2_SETTINGS_INITIAL_WINDOW_SIZE,
+//                (uint32_t)bdp);
+//   push_setting(exec_ctx, t, GRPC_CHTTP2_SETTINGS_MAX_FRAME_SIZE, (uint32_t)bdp);
+// }
 
 static grpc_error *try_http_parsing(grpc_exec_ctx *exec_ctx,
                                     grpc_chttp2_transport *t) {
@@ -2278,28 +2293,7 @@ static void read_action_locked(grpc_exec_ctx *exec_ctx, void *tp,
                          GRPC_CHTTP2_PING_BEFORE_TRANSPORT_WINDOW_UPDATE,
                          &t->start_bdp_ping_locked, &t->finish_bdp_ping_locked);
       }
-
-      int64_t estimate = -1;
-      if (grpc_bdp_estimator_get_estimate(&t->bdp_estimator, &estimate)) {
-        double target = 1 + log2((double)estimate);
-        double memory_pressure = grpc_resource_quota_get_memory_pressure(
-            grpc_resource_user_quota(grpc_endpoint_get_resource_user(t->ep)));
-        if (memory_pressure > 0.8) {
-          target *= 1 - GPR_MIN(1, (memory_pressure - 0.8) / 0.1);
-        }
-        double bdp_error =
-            target - grpc_pid_controller_last(&t->pid_controller);
-        gpr_timespec now = gpr_now(GPR_CLOCK_MONOTONIC);
-        gpr_timespec dt_timespec = gpr_time_sub(now, t->last_pid_update);
-        double dt = (double)dt_timespec.tv_sec + dt_timespec.tv_nsec * 1e-9;
-        if (dt > 0.1) {
-          dt = 0.1;
-        }
-        double log2_bdp_guess =
-            grpc_pid_controller_update(&t->pid_controller, bdp_error, dt);
-        update_bdp(exec_ctx, t, pow(2, log2_bdp_guess));
-        t->last_pid_update = now;
-      }
+      // somthing here to get the estimate
     }
     GRPC_CHTTP2_UNREF_TRANSPORT(exec_ctx, t, "keep_reading");
   } else {
@@ -2316,7 +2310,7 @@ static void read_action_locked(grpc_exec_ctx *exec_ctx, void *tp,
 static void start_bdp_ping_locked(grpc_exec_ctx *exec_ctx, void *tp,
                                   grpc_error *error) {
   grpc_chttp2_transport *t = tp;
-  if (grpc_http_trace) {
+  if (grpc_http_trace || grpc_bdp_estimator_trace) {
     gpr_log(GPR_DEBUG, "%s: Start BDP ping", t->peer_string);
   }
   /* Reset the keepalive ping timer */
@@ -2329,7 +2323,7 @@ static void start_bdp_ping_locked(grpc_exec_ctx *exec_ctx, void *tp,
 static void finish_bdp_ping_locked(grpc_exec_ctx *exec_ctx, void *tp,
                                    grpc_error *error) {
   grpc_chttp2_transport *t = tp;
-  if (grpc_http_trace) {
+  if (grpc_http_trace || grpc_bdp_estimator_trace) {
     gpr_log(GPR_DEBUG, "%s: Complete BDP ping", t->peer_string);
   }
   grpc_bdp_estimator_complete_ping(&t->bdp_estimator);

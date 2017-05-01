@@ -38,6 +38,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "src/core/lib/transport/pid_controller.h"
+
 #define GRPC_BDP_SAMPLES 16
 #define GRPC_BDP_MIN_SAMPLES_FOR_ESTIMATE 3
 
@@ -52,17 +54,23 @@ typedef enum {
 typedef struct grpc_bdp_estimator {
   grpc_bdp_estimator_ping_state ping_state;
   int64_t accumulator;
-  int64_t estimate;
+  int64_t bdp_est;
+  grpc_pid_controller bdp_pid_controller;
   gpr_timespec ping_start_time;
   double bw_est;
+  grpc_pid_controller bw_pid_controller;
   const char *name;
+
 } grpc_bdp_estimator;
 
 void grpc_bdp_estimator_init(grpc_bdp_estimator *estimator, const char *name);
 
 // Returns true if a reasonable estimate could be obtained
-bool grpc_bdp_estimator_get_estimate(grpc_bdp_estimator *estimator,
+bool grpc_bdp_estimator_get_bdp_est(grpc_bdp_estimator *estimator,
                                      int64_t *estimate);
+// Returns true if a reasonable estimate could be obtained
+bool grpc_bdp_estimator_get_bw_est(grpc_bdp_estimator *estimator,
+                                     double *estimate);
 // Returns true if the user should schedule a ping
 bool grpc_bdp_estimator_add_incoming_bytes(grpc_bdp_estimator *estimator,
                                            int64_t num_bytes);

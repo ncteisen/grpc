@@ -33,6 +33,7 @@
 
 #include "src/core/lib/transport/pid_controller.h"
 #include <grpc/support/useful.h>
+#include <grpc/support/log.h>
 
 void grpc_pid_controller_init(grpc_pid_controller *pid_controller,
                               grpc_pid_controller_args args) {
@@ -45,10 +46,16 @@ void grpc_pid_controller_reset(grpc_pid_controller *pid_controller) {
   pid_controller->last_error = 0.0;
   pid_controller->last_dc_dt = 0.0;
   pid_controller->error_integral = 0.0;
+  pid_controller->last_update = gpr_now(GPR_CLOCK_MONOTONIC);
 }
 
 double grpc_pid_controller_update(grpc_pid_controller *pid_controller,
-                                  double error, double dt) {
+                                  double error) {
+  gpr_timespec now = gpr_now(GPR_CLOCK_MONOTONIC);
+  gpr_timespec dt_timespec = gpr_time_sub(now, pid_controller->last_update);
+  double dt = (double)dt_timespec.tv_sec + dt_timespec.tv_nsec * 1e-9; 
+  if (dt > 0.1) dt = 0.1;
+  pid_controller->last_update = now;
   if (dt == 0) return pid_controller->last_control_value;
   /* integrate error using the trapezoid rule */
   pid_controller->error_integral +=

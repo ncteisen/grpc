@@ -34,6 +34,8 @@
 #ifndef GRPC_CORE_LIB_TRANSPORT_PID_CONTROLLER_H
 #define GRPC_CORE_LIB_TRANSPORT_PID_CONTROLLER_H
 
+#include <grpc/support/time.h>
+
 /* \file Simple PID controller.
    Implements a proportional-integral-derivative controller.
    Used when we want to iteratively control a variable to converge some other
@@ -56,6 +58,7 @@ typedef struct {
   double error_integral;
   double last_control_value;
   double last_dc_dt;
+  gpr_timespec last_update;
   grpc_pid_controller_args args;
 } grpc_pid_controller;
 
@@ -69,7 +72,7 @@ void grpc_pid_controller_reset(grpc_pid_controller *pid_controller);
 /** Update the controller: given a current error estimate, and the time since
     the last update, returns a new control value */
 double grpc_pid_controller_update(grpc_pid_controller *pid_controller,
-                                  double error, double dt);
+                                  double error);
 
 /** Returns the last control value calculated */
 double grpc_pid_controller_last(grpc_pid_controller *pid_controller);
