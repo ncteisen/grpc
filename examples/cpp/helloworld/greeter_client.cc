@@ -34,6 +34,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <unistd.h>
 
 #include <grpc++/grpc++.h>
 
@@ -57,7 +58,7 @@ class GreeterClient {
 
   // Assembles the client's payload, sends it and presents the response back
   // from the server.
-  std::string SayHello(const std::string& user) {
+  void SayHello(const std::string& user) {
     // Data we are sending to the server.
     HelloRequest request;
     request.set_name(user);
@@ -74,11 +75,11 @@ class GreeterClient {
 
     // Act upon its status.
     if (status.ok()) {
-      return reply.message();
+      std::cout << reply.message() << "\n";
     } else {
       std::cout << status.error_code() << ": " << status.error_message()
                 << std::endl;
-      return "RPC failed";
+      std::cout << "RPC failed\n";
     }
   }
 
@@ -93,9 +94,10 @@ int main(int argc, char** argv) {
   // (use of InsecureChannelCredentials()).
   GreeterClient greeter(grpc::CreateChannel(
       "localhost:50051", grpc::InsecureChannelCredentials()));
-  std::string user("world");
-  std::string reply = greeter.SayHello(user);
-  std::cout << "Greeter received: " << reply << std::endl;
+  greeter.SayHello("attempt 1");
+  sleep(5);
+  greeter.SayHello("attempt 2");
+  greeter.SayHello("attempt 3");
 
   return 0;
 }
