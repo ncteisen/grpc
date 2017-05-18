@@ -984,6 +984,7 @@ static void push_setting(grpc_exec_ctx *exec_ctx, grpc_chttp2_transport *t,
   if (use_value != t->settings[GRPC_LOCAL_SETTINGS][id]) {
     t->settings[GRPC_LOCAL_SETTINGS][id] = use_value;
     t->dirtied_local_settings = 1;
+    t->sent_local_settings = 0;
     grpc_chttp2_initiate_write(exec_ctx, t, false, "push_setting");
   }
 }
