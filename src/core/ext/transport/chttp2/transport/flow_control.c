@@ -403,7 +403,7 @@ static double get_target_under_memory_pressure(grpc_chttp2_transport_flowctl* tf
 
 grpc_chttp2_flowctl_action grpc_chttp2_flowctl_get_action(
     grpc_chttp2_transport_flowctl* tfc,
-    grpc_chttp2_stream_flowctl* sfc) {
+    grpc_chttp2_stream_flowctl* sfc, bool read_path) {
   grpc_chttp2_flowctl_action action;
   memset(&action, 0, sizeof(action));
   uint32_t target_announced_window = grpc_chttp2_target_announced_window(tfc);
@@ -428,47 +428,50 @@ grpc_chttp2_flowctl_action grpc_chttp2_flowctl_get_action(
   if (tfc->enable_bdp_probe) {
     action.need_ping = grpc_bdp_estimator_need_ping(&tfc->bdp_estimator);
 
-    // get bdp estimate and update initial_window accordingly.
-    int64_t estimate = -1;
-    int32_t bdp = -1;
-    if (grpc_bdp_estimator_get_estimate(&tfc->bdp_estimator, &estimate)) {
-      double target = 1 + log2((double)estimate);
+    if (read_path) {
 
-      // target might change based on how much memory pressure we are under
-      // TODO(ncteisen): experiment with setting target to be huge under low
-      // memory pressure.
-      target = get_target_under_memory_pressure(tfc, target);
+      // get bdp estimate and update initial_window accordingly.
+      int64_t estimate = -1;
+      int32_t bdp = -1;
+      if (grpc_bdp_estimator_get_estimate(&tfc->bdp_estimator, &estimate)) {
+        double target = 1 + log2((double)estimate);
 
-      // run our target through the pid controller to stabilize change.
-      // TODO(ncteisen): experiment with other controllers here.
-      // TODO(ncteisen): this could be a pluggable feature if different
-      // made sense for different situations.
-      double bdp_guess = get_pid_controller_guess(tfc, target);
+        // target might change based on how much memory pressure we are under
+        // TODO(ncteisen): experiment with setting target to be huge under low
+        // memory pressure.
+        target = get_target_under_memory_pressure(tfc, target);
 
-      // Though initial window 'could' drop to 0, we keep the floor at 128
-      bdp = GPR_MAX((int32_t)bdp_guess, 128);
+        // run our target through the pid controller to stabilize change.
+        // TODO(ncteisen): experiment with other controllers here.
+        // TODO(ncteisen): this could be a pluggable feature if different
+        // made sense for different situations.
+        double bdp_guess = get_pid_controller_guess(tfc, target);
 
-      // TODO(ncteisen): Idea -- if the delta is REALLY significant, send the
-      // update immediately. Otherwise, just queue it
-      if (delta_is_significant(tfc, bdp,
-                               GRPC_CHTTP2_SETTINGS_INITIAL_WINDOW_SIZE)) {
-        action.send_setting_update =
-            GRPC_CHTTP2_FLOWCTL_QUEUE_UPDATE;
-        action.initial_window_size = (uint32_t)bdp;
+        // Though initial window 'could' drop to 0, we keep the floor at 128
+        bdp = GPR_MAX((int32_t)bdp_guess, 128);
+
+        // TODO(ncteisen): Idea -- if the delta is REALLY significant, send the
+        // update immediately. Otherwise, just queue it
+        if (delta_is_significant(tfc, bdp,
+                                 GRPC_CHTTP2_SETTINGS_INITIAL_WINDOW_SIZE)) {
+          action.send_setting_update =
+              GRPC_CHTTP2_FLOWCTL_QUEUE_UPDATE;
+          action.initial_window_size = (uint32_t)bdp;
+        }
       }
-    }
 
-    // get bandwidth estimate and update max_frame accordingly.
-    double bw_dbl = -1;
-    if (grpc_bdp_estimator_get_bw(&tfc->bdp_estimator, &bw_dbl)) {
-      // we target the max of BDP or bandwidth in microseconds.
-      int32_t frame_size = GPR_MAX((int32_t)bw_dbl / 1000, bdp);
+      // get bandwidth estimate and update max_frame accordingly.
+      double bw_dbl = -1;
+      if (grpc_bdp_estimator_get_bw(&tfc->bdp_estimator, &bw_dbl)) {
+        // we target the max of BDP or bandwidth in microseconds.
+        int32_t frame_size = GPR_MAX((int32_t)bw_dbl / 1000, bdp);
 
-      if (delta_is_significant(tfc, frame_size,
-                               GRPC_CHTTP2_SETTINGS_MAX_FRAME_SIZE)) {
-        action.send_setting_update =
-            GRPC_CHTTP2_FLOWCTL_QUEUE_UPDATE;
-        action.max_frame_size = (uint32_t)frame_size;
+        if (delta_is_significant(tfc, frame_size,
+                                 GRPC_CHTTP2_SETTINGS_MAX_FRAME_SIZE)) {
+          action.send_setting_update =
+              GRPC_CHTTP2_FLOWCTL_QUEUE_UPDATE;
+          action.max_frame_size = (uint32_t)frame_size;
+        }
       }
     }
   }

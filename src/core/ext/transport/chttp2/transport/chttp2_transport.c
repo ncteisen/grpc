@@ -1455,7 +1455,7 @@ static void perform_stream_op_locked(grpc_exec_ctx *exec_ctx, void *stream_op,
             &t->flow_control, &s->flow_control, 5, already_received);
         grpc_chttp2_act_on_flowctl_action(
             exec_ctx,
-            grpc_chttp2_flowctl_get_action(&t->flow_control, &s->flow_control),
+            grpc_chttp2_flowctl_get_action(&t->flow_control, &s->flow_control, false),
             t, s);
       }
     }
@@ -2525,7 +2525,7 @@ static void incoming_byte_stream_next_locked(grpc_exec_ctx *exec_ctx,
                                            cur_length);
     grpc_chttp2_act_on_flowctl_action(
         exec_ctx,
-        grpc_chttp2_flowctl_get_action(&t->flow_control, &s->flow_control), t,
+        grpc_chttp2_flowctl_get_action(&t->flow_control, &s->flow_control, false), t,
         s);
   }
   GPR_ASSERT(s->unprocessed_incoming_frames_buffer.length == 0);

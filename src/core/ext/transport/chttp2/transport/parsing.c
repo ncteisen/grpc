@@ -359,7 +359,7 @@ static grpc_error *init_data_frame_parser(grpc_exec_ctx *exec_ctx,
                                       t->incoming_frame_size);
   grpc_chttp2_act_on_flowctl_action(
       exec_ctx, grpc_chttp2_flowctl_get_action(
-                    &t->flow_control, s == NULL ? NULL : &s->flow_control),
+                    &t->flow_control, s == NULL ? NULL : &s->flow_control, true),
       t, s);
   if (err != GRPC_ERROR_NONE) {
     goto error_handler;
