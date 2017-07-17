@@ -399,7 +399,7 @@ static void init_transport(grpc_exec_ctx *exec_ctx, grpc_chttp2_transport *t,
   }
   t->keepalive_permit_without_calls = g_default_keepalive_permit_without_calls;
 
-  t->opt_target = GRPC_CHTTP2_OPTIMIZE_FOR_LATENCY;
+  t->opt_target = GRPC_CHTTP2_OPTIMIZE_FOR_THROUGHPUT;
 
   if (channel_args) {
     for (i = 0; i < channel_args->num_args; i++) {
@@ -495,9 +495,9 @@ static void init_transport(grpc_exec_ctx *exec_ctx, grpc_chttp2_transport *t,
           gpr_log(GPR_ERROR, "%s should be a string",
                   GRPC_ARG_OPTIMIZATION_TARGET);
         } else if (0 == strcmp(channel_args->args[i].value.string, "blend")) {
-          t->opt_target = GRPC_CHTTP2_OPTIMIZE_FOR_LATENCY;
+          t->opt_target = GRPC_CHTTP2_OPTIMIZE_FOR_THROUGHPUT;
         } else if (0 == strcmp(channel_args->args[i].value.string, "latency")) {
-          t->opt_target = GRPC_CHTTP2_OPTIMIZE_FOR_LATENCY;
+          t->opt_target = GRPC_CHTTP2_OPTIMIZE_FOR_THROUGHPUT;
         } else if (0 ==
                    strcmp(channel_args->args[i].value.string, "throughput")) {
           t->opt_target = GRPC_CHTTP2_OPTIMIZE_FOR_THROUGHPUT;
