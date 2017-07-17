@@ -355,6 +355,8 @@ static void init_transport(grpc_exec_ctx *exec_ctx, grpc_chttp2_transport *t,
   }
   queue_setting_update(exec_ctx, t, GRPC_CHTTP2_SETTINGS_INITIAL_WINDOW_SIZE,
                        (uint32_t)((1u << 31) - 1));
+  queue_setting_update(exec_ctx, t, GRPC_CHTTP2_SETTINGS_MAX_FRAME_SIZE,
+                       (uint32_t)((1u << 24) - 1));
   queue_setting_update(exec_ctx, t, GRPC_CHTTP2_SETTINGS_MAX_HEADER_LIST_SIZE,
                        DEFAULT_MAX_HEADER_LIST_SIZE);
   queue_setting_update(exec_ctx, t,
