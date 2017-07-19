@@ -2379,7 +2379,9 @@ static void read_action_locked(grpc_exec_ctx *exec_ctx, void *tp,
   if (keep_reading) {
     grpc_endpoint_read(exec_ctx, t->ep, &t->read_buffer,
                        &t->read_action_locked);
-    // TODO(ncteisen): add extra check here??
+    grpc_chttp2_act_on_flowctl_action(
+        exec_ctx, grpc_chttp2_flowctl_get_bdp_action(&t->flow_control), t,
+        NULL);
     GRPC_CHTTP2_UNREF_TRANSPORT(exec_ctx, t, "keep_reading");
   } else {
     GRPC_CHTTP2_UNREF_TRANSPORT(exec_ctx, t, "reading_action");

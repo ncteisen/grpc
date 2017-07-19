@@ -715,6 +715,9 @@ typedef struct {
 grpc_chttp2_flowctl_action grpc_chttp2_flowctl_get_action(
     grpc_chttp2_transport_flowctl *tfc, grpc_chttp2_stream_flowctl *sfc);
 
+grpc_chttp2_flowctl_action grpc_chttp2_flowctl_get_bdp_action(
+    grpc_chttp2_transport_flowctl *tfc);
+
 // Takes in a flow control action and performs all the needed operations.
 void grpc_chttp2_act_on_flowctl_action(grpc_exec_ctx *exec_ctx,
                                        grpc_chttp2_flowctl_action action,
