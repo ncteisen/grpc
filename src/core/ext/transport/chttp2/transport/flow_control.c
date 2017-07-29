@@ -405,13 +405,7 @@ static double get_pid_controller_guess(grpc_chttp2_transport_flowctl* tfc,
 // Take in a target and modifies it based on the memory pressure of the system
 static double get_target_under_memory_pressure(
     grpc_chttp2_transport_flowctl* tfc, double target) {
-  // do not increase window under heavy memory pressure.
-  double memory_pressure = grpc_resource_quota_get_memory_pressure(
-      grpc_resource_user_quota(grpc_endpoint_get_resource_user(tfc->t->ep)));
-  if (memory_pressure > 0.8) {
-    target *= 1 - GPR_MIN(1, (memory_pressure - 0.8) / 0.1);
-  }
-  return target;
+  return (INT32_MAX);
 }
 
 grpc_chttp2_flowctl_action grpc_chttp2_flowctl_get_action(
