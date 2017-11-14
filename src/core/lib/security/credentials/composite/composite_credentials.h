@@ -36,7 +36,7 @@ grpc_composite_call_credentials_get_credentials(
 
 /* Returns creds if creds is of the specified type or the inner creds of the
    specified type (if found), if the creds is of type COMPOSITE.
-   If composite_creds is not NULL, *composite_creds will point to creds if of
+   If composite_creds is not nullptr, *composite_creds will point to creds if of
    type COMPOSITE in case of success. */
 grpc_call_credentials* grpc_credentials_contains_type(
     grpc_call_credentials* creds, const char* type,

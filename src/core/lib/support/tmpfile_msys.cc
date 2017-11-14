@@ -33,11 +33,11 @@
 #include "src/core/lib/support/tmpfile.h"
 
 FILE* gpr_tmpfile(const char* prefix, char** tmp_filename_out) {
-  FILE* result = NULL;
+  FILE* result = nullptr;
   char tmp_filename[MAX_PATH];
   UINT success;
 
-  if (tmp_filename_out != NULL) *tmp_filename_out = NULL;
+  if (tmp_filename_out != nullptr) *tmp_filename_out = nullptr;
 
   /* Generate a unique filename with our template + temporary path. */
   success = GetTempFileNameA(".", prefix, 0, tmp_filename);
@@ -48,7 +48,7 @@ FILE* gpr_tmpfile(const char* prefix, char** tmp_filename_out) {
     result = fopen(tmp_filename, "wb+");
     fprintf(stderr, "result = %p\n", result);
   }
-  if (result != NULL && tmp_filename_out) {
+  if (result != nullptr && tmp_filename_out) {
     *tmp_filename_out = gpr_strdup(tmp_filename);
   }
 

@@ -67,7 +67,7 @@ struct tsi_test_fixture {
   tsi_handshaker* client_handshaker;
   tsi_handshaker* server_handshaker;
   /* client/server TSI handshaker results used to store the result of TSI
-     handshake. If the handshake fails, the result will store NULL upon
+     handshake. If the handshake fails, the result will store nullptr upon
      finishing the handshake. */
   tsi_handshaker_result* client_result;
   tsi_handshaker_result* server_result;

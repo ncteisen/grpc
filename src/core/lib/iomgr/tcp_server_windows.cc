@@ -103,12 +103,12 @@ grpc_error* grpc_tcp_server_create(grpc_exec_ctx* exec_ctx,
   gpr_ref_init(&s->refs, 1);
   gpr_mu_init(&s->mu);
   s->active_ports = 0;
-  s->on_accept_cb = NULL;
-  s->on_accept_cb_arg = NULL;
-  s->head = NULL;
-  s->tail = NULL;
-  s->shutdown_starting.head = NULL;
-  s->shutdown_starting.tail = NULL;
+  s->on_accept_cb = nullptr;
+  s->on_accept_cb_arg = nullptr;
+  s->head = nullptr;
+  s->tail = nullptr;
+  s->shutdown_starting.head = nullptr;
+  s->shutdown_starting.tail = nullptr;
   s->shutdown_complete = shutdown_complete;
   *server = s;
   return GRPC_ERROR_NONE;
@@ -124,7 +124,7 @@ static void destroy_server(grpc_exec_ctx* exec_ctx, void* arg,
   while (s->head) {
     grpc_tcp_listener* sp = s->head;
     s->head = sp->next;
-    sp->next = NULL;
+    sp->next = nullptr;
     grpc_winsocket_destroy(sp->socket);
     gpr_free(sp);
   }
@@ -134,7 +134,7 @@ static void destroy_server(grpc_exec_ctx* exec_ctx, void* arg,
 
 static void finish_shutdown_locked(grpc_exec_ctx* exec_ctx,
                                    grpc_tcp_server* s) {
-  if (s->shutdown_complete != NULL) {
+  if (s->shutdown_complete != nullptr) {
     GRPC_CLOSURE_SCHED(exec_ctx, s->shutdown_complete, GRPC_ERROR_NONE);
   }
 
@@ -257,7 +257,7 @@ static grpc_error* start_accept_locked(grpc_exec_ctx* exec_ctx,
     return GRPC_ERROR_NONE;
   }
 
-  sock = WSASocket(AF_INET6, SOCK_STREAM, IPPROTO_TCP, NULL, 0,
+  sock = WSASocket(AF_INET6, SOCK_STREAM, IPPROTO_TCP, nullptr, 0,
                    WSA_FLAG_OVERLAPPED);
   if (sock == INVALID_SOCKET) {
     error = GRPC_WSA_ERROR(WSAGetLastError(), "WSASocket");
@@ -300,7 +300,7 @@ static void on_accept(grpc_exec_ctx* exec_ctx, void* arg, grpc_error* error) {
   grpc_tcp_listener* sp = (grpc_tcp_listener*)arg;
   SOCKET sock = sp->new_socket;
   grpc_winsocket_callback_info* info = &sp->socket->read_info;
-  grpc_endpoint* ep = NULL;
+  grpc_endpoint* ep = nullptr;
   grpc_resolved_address peer_name;
   char* peer_name_string;
   char* fd_name;
@@ -338,7 +338,7 @@ static void on_accept(grpc_exec_ctx* exec_ctx, void* arg, grpc_error* error) {
     closesocket(sock);
   } else {
     if (!sp->shutting_down) {
-      peer_name_string = NULL;
+      peer_name_string = nullptr;
       err = setsockopt(sock, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT,
                        (char*)&sp->socket->socket, sizeof(sp->socket->socket));
       if (err) {
@@ -375,7 +375,7 @@ static void on_accept(grpc_exec_ctx* exec_ctx, void* arg, grpc_error* error) {
     acceptor->from_server = sp->server;
     acceptor->port_index = sp->port_index;
     acceptor->fd_index = 0;
-    sp->server->on_accept_cb(exec_ctx, sp->server->on_accept_cb_arg, ep, NULL,
+    sp->server->on_accept_cb(exec_ctx, sp->server->on_accept_cb_arg, ep, nullptr,
                              acceptor);
   }
   /* As we were notified from the IOCP of one and exactly one accept,
@@ -394,7 +394,7 @@ static grpc_error* add_socket_to_server(grpc_tcp_server* s, SOCKET sock,
                                         const grpc_resolved_address* addr,
                                         unsigned port_index,
                                         grpc_tcp_listener** listener) {
-  grpc_tcp_listener* sp = NULL;
+  grpc_tcp_listener* sp = nullptr;
   int port = -1;
   int status;
   GUID guid = WSAID_ACCEPTEX;
@@ -406,14 +406,14 @@ static grpc_error* add_socket_to_server(grpc_tcp_server* s, SOCKET sock,
      interface-dependent. We'll cache it to avoid doing that again. */
   status =
       WSAIoctl(sock, SIO_GET_EXTENSION_FUNCTION_POINTER, &guid, sizeof(guid),
-               &AcceptEx, sizeof(AcceptEx), &ioctl_num_bytes, NULL, NULL);
+               &AcceptEx, sizeof(AcceptEx), &ioctl_num_bytes, nullptr, nullptr);
 
   if (status != 0) {
     char* utf8_message = gpr_format_message(WSAGetLastError());
     gpr_log(GPR_ERROR, "on_connect error: %s", utf8_message);
     gpr_free(utf8_message);
     closesocket(sock);
-    return NULL;
+    return nullptr;
   }
 
   error = prepare_socket(sock, addr, &port);
@@ -425,8 +425,8 @@ static grpc_error* add_socket_to_server(grpc_tcp_server* s, SOCKET sock,
   gpr_mu_lock(&s->mu);
   GPR_ASSERT(!s->on_accept_cb && "must add ports before starting server");
   sp = (grpc_tcp_listener*)gpr_malloc(sizeof(grpc_tcp_listener));
-  sp->next = NULL;
-  if (s->head == NULL) {
+  sp->next = nullptr;
+  if (s->head == nullptr) {
     s->head = sp;
   } else {
     s->tail->next = sp;
@@ -451,16 +451,16 @@ static grpc_error* add_socket_to_server(grpc_tcp_server* s, SOCKET sock,
 grpc_error* grpc_tcp_server_add_port(grpc_tcp_server* s,
                                      const grpc_resolved_address* addr,
                                      int* port) {
-  grpc_tcp_listener* sp = NULL;
+  grpc_tcp_listener* sp = nullptr;
   SOCKET sock;
   grpc_resolved_address addr6_v4mapped;
   grpc_resolved_address wildcard;
-  grpc_resolved_address* allocated_addr = NULL;
+  grpc_resolved_address* allocated_addr = nullptr;
   grpc_resolved_address sockname_temp;
   unsigned port_index = 0;
   grpc_error* error = GRPC_ERROR_NONE;
 
-  if (s->tail != NULL) {
+  if (s->tail != nullptr) {
     port_index = s->tail->port_index + 1;
   }
 
@@ -497,7 +497,7 @@ grpc_error* grpc_tcp_server_add_port(grpc_tcp_server* s,
     addr = &wildcard;
   }
 
-  sock = WSASocket(AF_INET6, SOCK_STREAM, IPPROTO_TCP, NULL, 0,
+  sock = WSASocket(AF_INET6, SOCK_STREAM, IPPROTO_TCP, nullptr, 0,
                    WSA_FLAG_OVERLAPPED);
   if (sock == INVALID_SOCKET) {
     error = GRPC_WSA_ERROR(WSAGetLastError(), "WSASocket");
@@ -516,7 +516,7 @@ done:
     error = error_out;
     *port = -1;
   } else {
-    GPR_ASSERT(sp != NULL);
+    GPR_ASSERT(sp != nullptr);
     *port = sp->port;
   }
   return error;

@@ -124,7 +124,7 @@ grpc_oauth2_token_fetcher_credentials_parse_server_response(
   grpc_json* json = nullptr;
 
   if (response == nullptr) {
-    gpr_log(GPR_ERROR, "Received NULL response.");
+    gpr_log(GPR_ERROR, "Received nullptr response.");
     status = GRPC_CREDENTIALS_ERROR;
     goto end;
   }

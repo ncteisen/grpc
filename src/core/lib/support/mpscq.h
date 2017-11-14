@@ -54,7 +54,7 @@ void gpr_mpscq_destroy(gpr_mpscq* q);
 // Returns true if this was possibly the first node (may return true
 // sporadically, will not return false sporadically)
 bool gpr_mpscq_push(gpr_mpscq* q, gpr_mpscq_node* n);
-// Pop a node (returns NULL if no node is ready - which doesn't indicate that
+// Pop a node (returns nullptr if no node is ready - which doesn't indicate that
 // the queue is empty!!)
 // Thread compatible - can only be called from one thread at a time
 gpr_mpscq_node* gpr_mpscq_pop(gpr_mpscq* q);
@@ -76,12 +76,12 @@ void gpr_locked_mpscq_destroy(gpr_locked_mpscq* q);
 // sporadically, will not return false sporadically)
 bool gpr_locked_mpscq_push(gpr_locked_mpscq* q, gpr_mpscq_node* n);
 
-// Pop a node (returns NULL if no node is ready - which doesn't indicate that
+// Pop a node (returns nullptr if no node is ready - which doesn't indicate that
 // the queue is empty!!)
 // Thread safe - can be called from multiple threads concurrently
 gpr_mpscq_node* gpr_locked_mpscq_try_pop(gpr_locked_mpscq* q);
 
-// Pop a node.  Returns NULL only if the queue was empty at some point after
+// Pop a node.  Returns nullptr only if the queue was empty at some point after
 // calling this function
 gpr_mpscq_node* gpr_locked_mpscq_pop(gpr_locked_mpscq* q);
 #ifdef __cplusplus

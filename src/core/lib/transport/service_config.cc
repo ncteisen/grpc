@@ -123,7 +123,7 @@ static size_t count_names_in_method_config_json(grpc_json* json) {
 }
 
 // Returns a path string for the JSON name object specified by \a json.
-// Returns NULL on error.  Caller takes ownership of result.
+// Returns nullptr on error.  Caller takes ownership of result.
 static char* parse_json_method_name(grpc_json* json) {
   if (json->type != GRPC_JSON_OBJECT) return nullptr;
   const char* service_name = nullptr;

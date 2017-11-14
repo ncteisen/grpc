@@ -52,7 +52,7 @@ int test_client(const char* root, const char* host, int port) {
     gpr_asprintf(&binary_path, "%s/interop_client", root);
     gpr_asprintf(&port_arg, "--server_port=%d", port);
 
-    execl(binary_path, binary_path, port_arg, NULL);
+    execl(binary_path, binary_path, port_arg, nullptr);
 
     gpr_free(binary_path);
     gpr_free(port_arg);

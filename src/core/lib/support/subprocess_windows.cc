@@ -44,7 +44,7 @@ gpr_subprocess* gpr_subprocess_create(int argc, const char** argv) {
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
 
-  char* args = gpr_strjoin_sep(argv, (size_t)argc, " ", NULL);
+  char* args = gpr_strjoin_sep(argv, (size_t)argc, " ", nullptr);
   TCHAR* args_tchar;
 
   args_tchar = gpr_char_to_tchar(args);
@@ -54,10 +54,10 @@ gpr_subprocess* gpr_subprocess_create(int argc, const char** argv) {
   si.cb = sizeof(si);
   memset(&pi, 0, sizeof(pi));
 
-  if (!CreateProcess(NULL, args_tchar, NULL, NULL, FALSE,
-                     CREATE_NEW_PROCESS_GROUP, NULL, NULL, &si, &pi)) {
+  if (!CreateProcess(NULL, args_tchar, nullptr, nullptr, FALSE,
+                     CREATE_NEW_PROCESS_GROUP, nullptr, nullptr, &si, &pi)) {
     gpr_free(args_tchar);
-    return NULL;
+    return nullptr;
   }
   gpr_free(args_tchar);
 

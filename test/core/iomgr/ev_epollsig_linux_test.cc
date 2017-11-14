@@ -121,7 +121,7 @@ static void test_pollset_cleanup(grpc_exec_ctx* exec_ctx,
   /*
    * Cases to test:
    *  case 1) Polling islands of both fd and pollset are NULL
-   *  case 2) Polling island of fd is NULL but that of pollset is not-NULL
+   *  case 2) Polling island of fd is nullptr but that of pollset is not-NULL
    *  case 3) Polling island of fd is not-NULL but that of pollset is NULL
    *  case 4) Polling islands of both fd and pollset are not-NULL and:
    *     case 4.1) Polling islands of fd and pollset are equal

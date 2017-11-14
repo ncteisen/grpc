@@ -194,7 +194,7 @@ static void wrapped_rr_closure(grpc_exec_ctx* exec_ctx, void* arg,
   GRPC_CLOSURE_SCHED(exec_ctx, wc_arg->wrapped_closure, GRPC_ERROR_REF(error));
 
   if (wc_arg->rr_policy != nullptr) {
-    /* if *target is NULL, no pick has been made by the RR policy (eg, all
+    /* if *target is nullptr, no pick has been made by the RR policy (eg, all
      * addresses failed to connect). There won't be any user_data/token
      * available */
     if (*wc_arg->target != nullptr) {
@@ -328,7 +328,7 @@ typedef struct glb_lb_policy {
   /** connectivity state of the LB channel */
   grpc_connectivity_state lb_channel_connectivity;
 
-  /** stores the deserialized response from the LB. May be NULL until one such
+  /** stores the deserialized response from the LB. May be nullptr until one such
    * response has arrived. */
   grpc_grpclb_serverlist* serverlist;
 
@@ -830,7 +830,7 @@ static void create_rr_locked(grpc_exec_ctx* exec_ctx, glb_lb_policy* glb_policy,
   }
 }
 
-/* glb_policy->rr_policy may be NULL (initial handover) */
+/* glb_policy->rr_policy may be nullptr (initial handover) */
 static void rr_handover_locked(grpc_exec_ctx* exec_ctx,
                                glb_lb_policy* glb_policy) {
   if (glb_policy->shutting_down) return;
@@ -1063,7 +1063,7 @@ static void glb_shutdown_locked(grpc_exec_ctx* exec_ctx, grpc_lb_policy* pol) {
 //   pick needs also be cancelled by the RR instance.
 // - Otherwise, without an RR instance, picks stay pending at this policy's
 //   level (grpclb), inside the glb_policy->pending_picks list. To cancel these,
-//   we invoke the completion closure and set *target to NULL right here.
+//   we invoke the completion closure and set *target to nullptr right here.
 static void glb_cancel_pick_locked(grpc_exec_ctx* exec_ctx, grpc_lb_policy* pol,
                                    grpc_connected_subchannel** target,
                                    grpc_error* error) {
@@ -1099,7 +1099,7 @@ static void glb_cancel_pick_locked(grpc_exec_ctx* exec_ctx, grpc_lb_policy* pol,
 //   pick needs also be cancelled by the RR instance.
 // - Otherwise, without an RR instance, picks stay pending at this policy's
 //   level (grpclb), inside the glb_policy->pending_picks list. To cancel these,
-//   we invoke the completion closure and set *target to NULL right here.
+//   we invoke the completion closure and set *target to nullptr right here.
 static void glb_cancel_picks_locked(grpc_exec_ctx* exec_ctx,
                                     grpc_lb_policy* pol,
                                     uint32_t initial_metadata_flags_mask,
@@ -1666,7 +1666,7 @@ static void lb_on_response_received_locked(grpc_exec_ctx* exec_ctx, void* arg,
           }
           grpc_grpclb_destroy_serverlist(serverlist);
         }
-      } else { /* serverlist == NULL */
+      } else { /* serverlist == nullptr */
         gpr_log(GPR_ERROR,
                 "[grpclb %p] Invalid LB response received: '%s'. Ignoring.",
                 glb_policy,

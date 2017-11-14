@@ -54,7 +54,7 @@ typedef struct grpc_lb_policy_pick_args {
    * grpc_lb_policy_cancel_picks() and \a GRPC_INITIAL_METADATA_* in
    * grpc_types.h */
   uint32_t initial_metadata_flags;
-  /** Storage for LB token in \a initial_metadata, or NULL if not used */
+  /** Storage for LB token in \a initial_metadata, or nullptr if not used */
   grpc_linked_mdelem* lb_token_mdelem_storage;
 } grpc_lb_policy_pick_args;
 
@@ -93,7 +93,7 @@ struct grpc_lb_policy_vtable {
       grpc_error** connectivity_error);
 
   /** call notify when the connectivity state of a channel changes from *state.
-      Updates *state with the new state of the policy. Calling with a NULL \a
+      Updates *state with the new state of the policy. Calling with a nullptr \a
       state cancels the subscription.  */
   void (*notify_on_state_change_locked)(grpc_exec_ctx* exec_ctx,
                                         grpc_lb_policy* policy,
@@ -145,11 +145,11 @@ void grpc_lb_policy_init(grpc_lb_policy* policy,
 
 /** Finds an appropriate subchannel for a call, based on \a pick_args.
 
-    \a target will be set to the selected subchannel, or NULL on failure
+    \a target will be set to the selected subchannel, or nullptr on failure
     or when the LB policy decides to drop the call.
 
     Upon success, \a user_data will be set to whatever opaque information
-    may need to be propagated from the LB policy, or NULL if not needed.
+    may need to be propagated from the LB policy, or nullptr if not needed.
     \a context will be populated with context to pass to the subchannel
     call, if needed.
 

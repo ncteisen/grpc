@@ -109,7 +109,7 @@ void grpc_call_combiner_stop(grpc_exec_ctx* exec_ctx,
 ///   register a new cancellation closure, the previous cancellation
 ///   closure will be scheduled with GRPC_ERROR_NONE.
 ///
-/// If \a closure is NULL, then no closure will be invoked on
+/// If \a closure is nullptr, then no closure will be invoked on
 /// cancellation; this effectively unregisters the previously set closure.
 /// However, most filters will not need to explicitly unregister their
 /// callbacks, as this is done automatically when the call is destroyed.

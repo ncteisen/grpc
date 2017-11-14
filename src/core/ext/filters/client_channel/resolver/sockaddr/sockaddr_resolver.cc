@@ -46,7 +46,7 @@ typedef struct {
   grpc_channel_args* channel_args;
   /** have we published? */
   bool published;
-  /** pending next completion, or NULL */
+  /** pending next completion, or nullptr */
   grpc_closure* next_completion;
   /** target result address for next completion */
   grpc_channel_args** target_result;

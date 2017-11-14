@@ -37,7 +37,7 @@ void grpc_subchannel_key_destroy(grpc_exec_ctx* exec_ctx,
                                  grpc_subchannel_key* key);
 
 /** Given a subchannel key, find the subchannel registered for it.
-    Returns NULL if no such channel exists.
+    Returns nullptr if no such channel exists.
     Thread-safe. */
 grpc_subchannel* grpc_subchannel_index_find(grpc_exec_ctx* exec_ctx,
                                             grpc_subchannel_key* key);

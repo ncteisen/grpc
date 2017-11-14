@@ -52,7 +52,7 @@ static grpc_error* blocking_resolve_address_impl(
     const char* name, const char* default_port,
     grpc_resolved_addresses** addresses) {
   struct addrinfo hints;
-  struct addrinfo *result = NULL, *resp;
+  struct addrinfo *result = nullptr, *resp;
   char* host;
   char* port;
   int s;
@@ -61,15 +61,15 @@ static grpc_error* blocking_resolve_address_impl(
 
   /* parse name, splitting it into host and port parts */
   gpr_split_host_port(name, &host, &port);
-  if (host == NULL) {
+  if (host == nullptr) {
     char* msg;
     gpr_asprintf(&msg, "unparseable host:port: '%s'", name);
     error = GRPC_ERROR_CREATE_FROM_COPIED_STRING(msg);
     gpr_free(msg);
     goto done;
   }
-  if (port == NULL) {
-    if (default_port == NULL) {
+  if (port == nullptr) {
+    if (default_port == nullptr) {
       char* msg;
       gpr_asprintf(&msg, "no port in name '%s'", name);
       error = GRPC_ERROR_CREATE_FROM_COPIED_STRING(msg);
@@ -97,13 +97,13 @@ static grpc_error* blocking_resolve_address_impl(
   (*addresses) =
       (grpc_resolved_addresses*)gpr_malloc(sizeof(grpc_resolved_addresses));
   (*addresses)->naddrs = 0;
-  for (resp = result; resp != NULL; resp = resp->ai_next) {
+  for (resp = result; resp != nullptr; resp = resp->ai_next) {
     (*addresses)->naddrs++;
   }
   (*addresses)->addrs = (grpc_resolved_address*)gpr_malloc(
       sizeof(grpc_resolved_address) * (*addresses)->naddrs);
   i = 0;
-  for (resp = result; resp != NULL; resp = resp->ai_next) {
+  for (resp = result; resp != nullptr; resp = resp->ai_next) {
     memcpy(&(*addresses)->addrs[i].addr, resp->ai_addr, resp->ai_addrlen);
     (*addresses)->addrs[i].len = resp->ai_addrlen;
     i++;
@@ -148,7 +148,7 @@ static void do_request_thread(grpc_exec_ctx* exec_ctx, void* rp,
 }
 
 void grpc_resolved_addresses_destroy(grpc_resolved_addresses* addrs) {
-  if (addrs != NULL) {
+  if (addrs != nullptr) {
     gpr_free(addrs->addrs);
   }
   gpr_free(addrs);

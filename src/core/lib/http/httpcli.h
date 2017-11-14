@@ -58,7 +58,7 @@ extern const grpc_httpcli_handshaker grpc_httpcli_ssl;
 typedef struct grpc_httpcli_request {
   /* The host name to connect to */
   char* host;
-  /* The host to verify in the SSL handshake (or NULL) */
+  /* The host to verify in the SSL handshake (or nullptr) */
   char* ssl_host_override;
   /* The main part of the request
      The following headers are supplied automatically and MUST NOT be set here:
@@ -99,7 +99,7 @@ void grpc_httpcli_get(grpc_exec_ctx* exec_ctx, grpc_httpcli_context* context,
    'request' contains request parameters - these are caller owned and can be
      destroyed once the call returns
    'body_bytes' and 'body_size' specify the payload for the post.
-     When there is no body, pass in NULL as body_bytes.
+     When there is no body, pass in nullptr as body_bytes.
    'deadline' contains a deadline for the request (or gpr_inf_future)
    'em' points to a caller owned event manager that must be alive for the
      lifetime of the request

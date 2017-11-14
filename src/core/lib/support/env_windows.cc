@@ -32,20 +32,20 @@
 
 const char* gpr_getenv_silent(const char* name, char** dst) {
   *dst = gpr_getenv(name);
-  return NULL;
+  return nullptr;
 }
 
 char* gpr_getenv(const char* name) {
-  char* result = NULL;
+  char* result = nullptr;
   DWORD size;
-  LPTSTR tresult = NULL;
+  LPTSTR tresult = nullptr;
   LPTSTR tname = gpr_char_to_tchar(name);
   DWORD ret;
 
-  ret = GetEnvironmentVariable(tname, NULL, 0);
+  ret = GetEnvironmentVariable(tname, nullptr, 0);
   if (ret == 0) {
     gpr_free(tname);
-    return NULL;
+    return nullptr;
   }
   size = ret * (DWORD)sizeof(TCHAR);
   tresult = (LPTSTR)gpr_malloc(size);
@@ -53,7 +53,7 @@ char* gpr_getenv(const char* name) {
   gpr_free(tname);
   if (ret == 0) {
     gpr_free(tresult);
-    return NULL;
+    return nullptr;
   }
   result = gpr_tchar_to_char(tresult);
   gpr_free(tresult);

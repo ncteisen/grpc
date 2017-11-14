@@ -175,7 +175,7 @@ void ArgsFinish(grpc_exec_ctx* exec_ctx, ArgsStruct* args) {
   grpc_exec_ctx_flush(exec_ctx);
   grpc_pollset_destroy(exec_ctx, args->pollset);
   gpr_free(args->pollset);
-  GRPC_COMBINER_UNREF(exec_ctx, args->lock, NULL);
+  GRPC_COMBINER_UNREF(exec_ctx, args->lock, nullptr);
 }
 
 gpr_timespec NSecondDeadline(int seconds) {
@@ -300,7 +300,7 @@ TEST(ResolverComponentTest, TestResolvesRelevantRecords) {
                             &on_resolver_result_changed);
   grpc_exec_ctx_flush(&exec_ctx);
   PollPollsetUntilRequestDone(&args);
-  GRPC_RESOLVER_UNREF(&exec_ctx, resolver, NULL);
+  GRPC_RESOLVER_UNREF(&exec_ctx, resolver, nullptr);
   ArgsFinish(&exec_ctx, &args);
   grpc_exec_ctx_finish(&exec_ctx);
 }

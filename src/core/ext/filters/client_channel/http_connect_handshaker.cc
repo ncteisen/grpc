@@ -80,7 +80,7 @@ static void http_connect_handshaker_unref(grpc_exec_ctx* exec_ctx,
   }
 }
 
-// Set args fields to NULL, saving the endpoint and read buffer for
+// Set args fields to nullptr, saving the endpoint and read buffer for
 // later destruction.
 static void cleanup_args_for_failure_locked(
     grpc_exec_ctx* exec_ctx, http_connect_handshaker* handshaker) {

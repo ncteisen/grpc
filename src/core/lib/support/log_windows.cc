@@ -34,7 +34,7 @@
 
 void gpr_log(const char* file, int line, gpr_log_severity severity,
              const char* format, ...) {
-  char* message = NULL;
+  char* message = nullptr;
   va_list args;
   int ret;
 
@@ -43,7 +43,7 @@ void gpr_log(const char* file, int line, gpr_log_severity severity,
   ret = _vscprintf(format, args);
   va_end(args);
   if (ret < 0) {
-    message = NULL;
+    message = nullptr;
   } else {
     /* Allocate a new buffer, with space for the NUL terminator. */
     size_t strp_buflen = (size_t)ret + 1;
@@ -56,7 +56,7 @@ void gpr_log(const char* file, int line, gpr_log_severity severity,
     if ((size_t)ret != strp_buflen - 1) {
       /* This should never happen. */
       gpr_free(message);
-      message = NULL;
+      message = nullptr;
     }
   }
 
@@ -75,7 +75,7 @@ extern "C" void gpr_default_log(gpr_log_func_args* args) {
 
   timer = (time_t)now.tv_sec;
   final_slash = strrchr(args->file, '\\');
-  if (final_slash == NULL)
+  if (final_slash == nullptr)
     display_file = args->file;
   else
     display_file = final_slash + 1;

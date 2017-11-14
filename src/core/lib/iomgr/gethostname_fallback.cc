@@ -23,6 +23,6 @@
 
 #include <stddef.h>
 
-char* grpc_gethostname() { return NULL; }
+char* grpc_gethostname() { return nullptr; }
 
 #endif  // GRPC_GETHOSTNAME_FALLBACK

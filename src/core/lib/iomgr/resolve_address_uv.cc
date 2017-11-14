@@ -59,7 +59,7 @@ static int retry_named_port_failure(int status, request* r,
         r->port = gpr_strdup(svc[i][1]);
         retry_status = uv_getaddrinfo(uv_default_loop(), req, getaddrinfo_cb,
                                       r->host, r->port, r->hints);
-        if (retry_status < 0 || getaddrinfo_cb == NULL) {
+        if (retry_status < 0 || getaddrinfo_cb == nullptr) {
           // The callback will not be called
           gpr_free(req);
         }
@@ -79,7 +79,7 @@ static grpc_error* handle_addrinfo_result(int status, struct addrinfo* result,
   size_t i;
   if (status != 0) {
     grpc_error* error;
-    *addresses = NULL;
+    *addresses = nullptr;
     error = GRPC_ERROR_CREATE_FROM_STATIC_STRING("getaddrinfo failed");
     error =
         grpc_error_set_str(error, GRPC_ERROR_STR_OS_ERROR,
@@ -89,13 +89,13 @@ static grpc_error* handle_addrinfo_result(int status, struct addrinfo* result,
   (*addresses) =
       (grpc_resolved_addresses*)gpr_malloc(sizeof(grpc_resolved_addresses));
   (*addresses)->naddrs = 0;
-  for (resp = result; resp != NULL; resp = resp->ai_next) {
+  for (resp = result; resp != nullptr; resp = resp->ai_next) {
     (*addresses)->naddrs++;
   }
   (*addresses)->addrs = (grpc_resolved_address*)gpr_malloc(
       sizeof(grpc_resolved_address) * (*addresses)->naddrs);
   i = 0;
-  for (resp = result; resp != NULL; resp = resp->ai_next) {
+  for (resp = result; resp != nullptr; resp = resp->ai_next) {
     memcpy(&(*addresses)->addrs[i].addr, resp->ai_addr, resp->ai_addrlen);
     (*addresses)->addrs[i].len = resp->ai_addrlen;
     i++;
@@ -145,16 +145,16 @@ static grpc_error* try_split_host_port(const char* name,
   /* parse name, splitting it into host and port parts */
   grpc_error* error;
   gpr_split_host_port(name, host, port);
-  if (*host == NULL) {
+  if (*host == nullptr) {
     char* msg;
     gpr_asprintf(&msg, "unparseable host:port: '%s'", name);
     error = GRPC_ERROR_CREATE_FROM_COPIED_STRING(msg);
     gpr_free(msg);
     return error;
   }
-  if (*port == NULL) {
+  if (*port == nullptr) {
     // TODO(murgatroid99): add tests for this case
-    if (default_port == NULL) {
+    if (default_port == nullptr) {
       char* msg;
       gpr_asprintf(&msg, "no port in name '%s'", name);
       error = GRPC_ERROR_CREATE_FROM_COPIED_STRING(msg);
@@ -180,7 +180,7 @@ static grpc_error* blocking_resolve_address_impl(
 
   GRPC_UV_ASSERT_SAME_THREAD();
 
-  req.addrinfo = NULL;
+  req.addrinfo = nullptr;
 
   err = try_split_host_port(name, default_port, &host, &port);
   if (err != GRPC_ERROR_NONE) {
@@ -193,12 +193,12 @@ static grpc_error* blocking_resolve_address_impl(
   hints.ai_socktype = SOCK_STREAM; /* stream socket */
   hints.ai_flags = AI_PASSIVE;     /* for wildcard IP address */
 
-  s = uv_getaddrinfo(uv_default_loop(), &req, NULL, host, port, &hints);
+  s = uv_getaddrinfo(uv_default_loop(), &req, nullptr, host, port, &hints);
   r.addresses = addresses;
   r.hints = &hints;
   r.host = host;
   r.port = port;
-  retry_status = retry_named_port_failure(s, &r, NULL);
+  retry_status = retry_named_port_failure(s, &r, nullptr);
   if (retry_status <= 0) {
     s = retry_status;
   }
@@ -218,7 +218,7 @@ grpc_error* (*grpc_blocking_resolve_address)(
     grpc_resolved_addresses** addresses) = blocking_resolve_address_impl;
 
 void grpc_resolved_addresses_destroy(grpc_resolved_addresses* addrs) {
-  if (addrs != NULL) {
+  if (addrs != nullptr) {
     gpr_free(addrs->addrs);
   }
   gpr_free(addrs);
@@ -229,11 +229,11 @@ static void resolve_address_impl(grpc_exec_ctx* exec_ctx, const char* name,
                                  grpc_pollset_set* interested_parties,
                                  grpc_closure* on_done,
                                  grpc_resolved_addresses** addrs) {
-  uv_getaddrinfo_t* req = NULL;
-  request* r = NULL;
-  struct addrinfo* hints = NULL;
-  char* host = NULL;
-  char* port = NULL;
+  uv_getaddrinfo_t* req = nullptr;
+  request* r = nullptr;
+  struct addrinfo* hints = nullptr;
+  char* host = nullptr;
+  char* port = nullptr;
   grpc_error* err;
   int s;
   GRPC_UV_ASSERT_SAME_THREAD();
@@ -264,7 +264,7 @@ static void resolve_address_impl(grpc_exec_ctx* exec_ctx, const char* name,
                      hints);
 
   if (s != 0) {
-    *addrs = NULL;
+    *addrs = nullptr;
     err = GRPC_ERROR_CREATE_FROM_STATIC_STRING("getaddrinfo failed");
     err = grpc_error_set_str(err, GRPC_ERROR_STR_OS_ERROR,
                              grpc_slice_from_static_string(uv_strerror(s)));

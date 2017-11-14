@@ -98,9 +98,9 @@ static grpc_error* init_call_elem(grpc_exec_ctx* exec_ctx,
   grpc_load_reporting_call_data lr_call_data = {GRPC_LR_POINT_CALL_CREATION,
                                                 (intptr_t)chand->id,
                                                 (intptr_t)calld->id,
-                                                NULL,
-                                                NULL,
-                                                NULL,
+                                                nullptr,
+                                                nullptr,
+                                                nullptr,
                                                 NULL};
   */
 
@@ -148,9 +148,9 @@ static grpc_error* init_channel_elem(grpc_exec_ctx* exec_ctx,
   grpc_load_reporting_call_data lr_call_data = {GRPC_LR_POINT_CHANNEL_CREATION,
                                                 (intptr_t)chand,
                                                 0,
-                                                NULL,
-                                                NULL,
-                                                NULL,
+                                                nullptr,
+                                                nullptr,
+                                                nullptr,
                                                 NULL};
                                                 */
 
@@ -166,9 +166,9 @@ static void destroy_channel_elem(grpc_exec_ctx* exec_ctx,
       GRPC_LR_POINT_CHANNEL_DESTRUCTION,
       (intptr_t)chand->id,
       0,
-      NULL,
-      NULL,
-      NULL,
+      nullptr,
+      nullptr,
+      nullptr,
       NULL};
   */
 }

@@ -127,7 +127,7 @@ static void tcp_client_connect_impl(grpc_exec_ctx* exec_ctx,
 
   GRPC_UV_ASSERT_SAME_THREAD();
 
-  if (channel_args != NULL) {
+  if (channel_args != nullptr) {
     for (size_t i = 0; i < channel_args->num_args; i++) {
       if (0 == strcmp(channel_args->args[i].key, GRPC_ARG_RESOURCE_QUOTA)) {
         grpc_resource_quota_unref_internal(exec_ctx, resource_quota);

@@ -68,7 +68,7 @@ grpc_iocp_work_status grpc_iocp_work(grpc_exec_ctx* exec_ctx,
       GetQueuedCompletionStatus(g_iocp, &bytes, &completion_key, &overlapped,
                                 deadline_to_millis_timeout(exec_ctx, deadline));
   grpc_exec_ctx_invalidate_now(exec_ctx);
-  if (success == 0 && overlapped == NULL) {
+  if (success == 0 && overlapped == nullptr) {
     return GRPC_IOCP_WORK_TIMEOUT;
   }
   GPR_ASSERT(completion_key && overlapped);
@@ -101,7 +101,7 @@ grpc_iocp_work_status grpc_iocp_work(grpc_exec_ctx* exec_ctx,
 
 void grpc_iocp_init(void) {
   g_iocp =
-      CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, (ULONG_PTR)NULL, 0);
+      CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, (ULONG_PTR)NULL, 0);
   GPR_ASSERT(g_iocp);
 }
 

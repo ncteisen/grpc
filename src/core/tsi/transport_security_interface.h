@@ -186,7 +186,7 @@ void tsi_frame_protector_destroy(tsi_frame_protector* self);
 /* This property is of type TSI_PEER_PROPERTY_STRING.  */
 #define TSI_CERTIFICATE_TYPE_PEER_PROPERTY "certificate_type"
 
-/* Property values may contain NULL characters just like C++ strings.
+/* Property values may contain nullptr characters just like C++ strings.
    The length field gives the length of the string. */
 typedef struct tsi_peer_property {
   char* name;
@@ -258,7 +258,7 @@ void tsi_handshaker_result_destroy(tsi_handshaker_result* self);
 
    void do_handshake(security_handshaker *h, ...) {
      // Start the handshake by the calling do_handshake_next.
-     do_handshake_next(h, NULL, 0);
+     do_handshake_next(h, nullptr, 0);
      ...
    }
 
@@ -277,9 +277,9 @@ void tsi_handshaker_result_destroy(tsi_handshaker_result* self);
                           const unsigned char* bytes_received,
                           size_t bytes_received_size) {
      tsi_result status = TSI_OK;
-     unsigned char *bytes_to_send = NULL;
+     unsigned char *bytes_to_send = nullptr;
      size_t bytes_to_send_size = 0;
-     tsi_handshaker_result *result = NULL;
+     tsi_handshaker_result *result = nullptr;
      status = tsi_handshaker_next(
          handshaker, bytes_received, bytes_received_size, &bytes_to_send,
          &bytes_to_send_size, &result, on_handshake_next_done, h);
@@ -310,7 +310,7 @@ void tsi_handshaker_result_destroy(tsi_handshaker_result* self);
        send_bytes_to_peer(bytes_to_send, bytes_to_send_size);
      }
 
-     if (result != NULL) {
+     if (result != nullptr) {
        // Handshake completed.
        h->result = result;
        // Check the Peer.
@@ -322,8 +322,8 @@ void tsi_handshaker_result_destroy(tsi_handshaker_result* self);
        if (status != TSI_OK) return;
 
        // Create the protector.
-       tsi_frame_protector* protector = NULL;
-       status = tsi_handshaker_result_create_frame_protector(result, NULL,
+       tsi_frame_protector* protector = nullptr;
+       status = tsi_handshaker_result_create_frame_protector(result, nullptr,
                                                              &protector);
        if (status != TSI_OK) return;
 
@@ -391,7 +391,7 @@ tsi_result tsi_handshaker_extract_peer(tsi_handshaker* self, tsi_peer* peer);
    that can be called on this object is Destroy.
    - max_output_protected_frame_size is an input/output parameter specifying the
      desired max output protected frame size as input and outputing the actual
-     max output frame size as the output. Passing NULL is OK and will result in
+     max output frame size as the output. Passing nullptr is OK and will result in
      the implementation choosing the default maximum protected frame size. Note
      that this size only applies to outgoing frames (generated with
      tsi_frame_protector_protect) and not incoming frames (input of
@@ -412,7 +412,7 @@ tsi_result tsi_handshaker_create_frame_protector(
    - bytes_to_send is the data buffer to be sent to the peer.
    - bytes_to_send_size is the size of data buffer to be sent to the peer.
    - handshaker_result is the result of handshake when the handshake completes,
-     is NULL otherwise.  */
+     is nullptr otherwise.  */
 typedef void (*tsi_handshaker_on_next_done_cb)(
     tsi_result status, void* user_data, const unsigned char* bytes_to_send,
     size_t bytes_to_send_size, tsi_handshaker_result* handshaker_result);
@@ -423,7 +423,7 @@ typedef void (*tsi_handshaker_on_next_done_cb)(
    - bytes_to_send is the data buffer to be sent to the peer.
    - bytes_to_send_size is the size of data buffer to be sent to the peer.
    - handshaker_result is the result of handshake if the handshake completes.
-   - cb is the callback function defined above. It can be NULL for synchronous
+   - cb is the callback function defined above. It can be nullptr for synchronous
      TSI handshaker implementation.
    - user_data is the argument to callback function passed from the caller.
    This method returns TSI_ASYNC if the TSI handshaker implementation is

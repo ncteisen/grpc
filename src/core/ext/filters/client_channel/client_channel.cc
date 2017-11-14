@@ -491,7 +491,7 @@ static void on_resolver_result_changed_locked(grpc_exec_ctx* exec_ctx,
             lb_policy_name_changed ? " (changed)" : "", service_config_json);
   }
   // Now swap out fields in chand.  Note that the new values may still
-  // be NULL if (e.g.) the resolver failed to return results or the
+  // be nullptr if (e.g.) the resolver failed to return results or the
   // results did not contain the necessary data.
   //
   // First, swap out the data used by cc_get_channel_info().
@@ -516,7 +516,7 @@ static void on_resolver_result_changed_locked(grpc_exec_ctx* exec_ctx,
   }
   chand->method_params_table = method_params_table;
   // If we have a new LB policy or are shutting down (in which case
-  // new_lb_policy will be NULL), swap out the LB policy, unreffing the
+  // new_lb_policy will be nullptr), swap out the LB policy, unreffing the
   // old one and removing its fds from chand->interested_parties.
   // Note that we do NOT do this if either (a) we updated the existing
   // LB policy above or (b) we failed to create the new LB policy (in

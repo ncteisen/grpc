@@ -41,9 +41,9 @@ struct grpc_lb_policy_factory {
 };
 
 /** A resolved address alongside any LB related information associated with it.
- * \a user_data, if not NULL, contains opaque data meant to be consumed by the
+ * \a user_data, if not nullptr, contains opaque data meant to be consumed by the
  * gRPC LB policy. Note that no all LB policies support \a user_data as input.
- * Those who don't will simply ignore it and will correspondingly return NULL in
+ * Those who don't will simply ignore it and will correspondingly return nullptr in
  * their namesake pick() output argument. */
 typedef struct grpc_lb_address {
   grpc_resolved_address address;
@@ -66,7 +66,7 @@ typedef struct grpc_lb_addresses {
 
 /** Returns a grpc_addresses struct with enough space for
     \a num_addresses addresses.  The \a user_data_vtable argument may be
-    NULL if no user data will be added. */
+    nullptr if no user data will be added. */
 grpc_lb_addresses* grpc_lb_addresses_create(
     size_t num_addresses, const grpc_lb_user_data_vtable* user_data_vtable);
 
@@ -102,7 +102,7 @@ void grpc_lb_addresses_destroy(grpc_exec_ctx* exec_ctx,
 grpc_arg grpc_lb_addresses_create_channel_arg(
     const grpc_lb_addresses* addresses);
 
-/** Returns the \a grpc_lb_addresses instance in \a channel_args or NULL */
+/** Returns the \a grpc_lb_addresses instance in \a channel_args or nullptr */
 grpc_lb_addresses* grpc_lb_addresses_find_channel_arg(
     const grpc_channel_args* channel_args);
 

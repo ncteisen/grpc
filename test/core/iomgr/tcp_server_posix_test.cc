@@ -285,7 +285,7 @@ static grpc_error* tcp_connect(grpc_exec_ctx* exec_ctx, const test_addr* remote,
 
 /* Tests a tcp server on "::" listeners with multiple ports. If channel_args is
    non-NULL, pass them to the server. If dst_addrs is non-NULL, use valid addrs
-   as destination addrs (port is not set). If dst_addrs is NULL, use listener
+   as destination addrs (port is not set). If dst_addrs is nullptr, use listener
    addrs as destination addrs. If test_dst_addrs is true, test connectivity with
    each destination address, set grpc_resolved_address::len=0 for failures, but
    don't fail the overall unitest. */

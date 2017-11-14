@@ -224,53 +224,53 @@ int main(int argc, char** argv) {
                   "xyz: abc\r\n"
                   "\r\n"
                   "hello world!",
-                  200, "hello world!", "xyz", "abc", NULL);
+                  200, "hello world!", "xyz", "abc", nullptr);
     test_succeeds(split_modes[i],
                   "HTTP/1.0 404 Not Found\r\n"
                   "\r\n",
-                  404, nullptr, NULL);
+                  404, nullptr, nullptr);
     test_succeeds(split_modes[i],
                   "HTTP/1.1 200 OK\r\n"
                   "xyz: abc\r\n"
                   "\r\n"
                   "hello world!",
-                  200, "hello world!", "xyz", "abc", NULL);
+                  200, "hello world!", "xyz", "abc", nullptr);
     test_succeeds(split_modes[i],
                   "HTTP/1.1 200 OK\n"
                   "\n"
                   "abc",
-                  200, "abc", NULL);
+                  200, "abc", nullptr);
     test_request_succeeds(split_modes[i],
                           "GET / HTTP/1.0\r\n"
                           "\r\n",
-                          "GET", GRPC_HTTP_HTTP10, "/", nullptr, NULL);
+                          "GET", GRPC_HTTP_HTTP10, "/", nullptr, nullptr);
     test_request_succeeds(split_modes[i],
                           "GET / HTTP/1.0\r\n"
                           "\r\n"
                           "xyz",
-                          "GET", GRPC_HTTP_HTTP10, "/", "xyz", NULL);
+                          "GET", GRPC_HTTP_HTTP10, "/", "xyz", nullptr);
     test_request_succeeds(split_modes[i],
                           "GET / HTTP/1.1\r\n"
                           "\r\n"
                           "xyz",
-                          "GET", GRPC_HTTP_HTTP11, "/", "xyz", NULL);
+                          "GET", GRPC_HTTP_HTTP11, "/", "xyz", nullptr);
     test_request_succeeds(split_modes[i],
                           "GET / HTTP/2.0\r\n"
                           "\r\n"
                           "xyz",
-                          "GET", GRPC_HTTP_HTTP20, "/", "xyz", NULL);
+                          "GET", GRPC_HTTP_HTTP20, "/", "xyz", nullptr);
     test_request_succeeds(split_modes[i],
                           "GET / HTTP/1.0\r\n"
                           "xyz: abc\r\n"
                           "\r\n"
                           "xyz",
                           "GET", GRPC_HTTP_HTTP10, "/", "xyz", "xyz", "abc",
-                          NULL);
+                          nullptr);
     test_request_succeeds(split_modes[i],
                           "GET / HTTP/1.0\n"
                           "\n"
                           "xyz",
-                          "GET", GRPC_HTTP_HTTP10, "/", "xyz", NULL);
+                          "GET", GRPC_HTTP_HTTP10, "/", "xyz", nullptr);
     test_fails(split_modes[i], "HTTP/1.0\r\n");
     test_fails(split_modes[i], "HTTP/1.2\r\n");
     test_fails(split_modes[i], "HTTP/1.0 000 XYX\r\n");

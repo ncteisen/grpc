@@ -26,7 +26,7 @@ extern "C" {
 #endif
 
 /* Encodes data using base64. It is the caller's responsability to free
-   the returned char * using gpr_free. Returns NULL on NULL input.
+   the returned char * using gpr_free. Returns nullptr on nullptr input.
    TODO(makdharma) : change the flags to bool from int */
 char* grpc_base64_encode(const void* data, size_t data_size, int url_safe,
                          int multiline);

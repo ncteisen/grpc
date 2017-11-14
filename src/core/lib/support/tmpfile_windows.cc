@@ -33,14 +33,14 @@
 #include "src/core/lib/support/tmpfile.h"
 
 FILE* gpr_tmpfile(const char* prefix, char** tmp_filename_out) {
-  FILE* result = NULL;
-  LPTSTR template_string = NULL;
+  FILE* result = nullptr;
+  LPTSTR template_string = nullptr;
   TCHAR tmp_path[MAX_PATH];
   TCHAR tmp_filename[MAX_PATH];
   DWORD status;
   UINT success;
 
-  if (tmp_filename_out != NULL) *tmp_filename_out = NULL;
+  if (tmp_filename_out != nullptr) *tmp_filename_out = nullptr;
 
   /* Convert our prefix to TCHAR. */
   template_string = gpr_char_to_tchar(prefix);

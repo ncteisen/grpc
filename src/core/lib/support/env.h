@@ -29,7 +29,7 @@ extern "C" {
 
 /* Gets the environment variable value with the specified name.
    Returns a newly allocated string. It is the responsability of the caller to
-   gpr_free the return value if not NULL (which means that the environment
+   gpr_free the return value if not nullptr (which means that the environment
    variable exists). */
 char* gpr_getenv(const char* name);
 

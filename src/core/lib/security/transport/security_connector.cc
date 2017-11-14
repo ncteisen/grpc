@@ -207,7 +207,7 @@ grpc_security_connector* grpc_security_connector_ref(
 #else
 grpc_security_connector* grpc_security_connector_ref(
     grpc_security_connector* sc) {
-  if (sc == NULL) return NULL;
+  if (sc == nullptr) return nullptr;
 #endif
   gpr_ref(&sc->refcount);
   return sc;
@@ -228,7 +228,7 @@ void grpc_security_connector_unref(grpc_exec_ctx* exec_ctx,
 #else
 void grpc_security_connector_unref(grpc_exec_ctx* exec_ctx,
                                    grpc_security_connector* sc) {
-  if (sc == NULL) return;
+  if (sc == nullptr) return;
 #endif
   if (gpr_unref(&sc->refcount)) sc->vtable->destroy(exec_ctx, sc);
 }
@@ -935,7 +935,7 @@ static grpc_security_connector_vtable ssl_channel_vtable = {
 static grpc_security_connector_vtable ssl_server_vtable = {
     ssl_server_destroy, ssl_server_check_peer, ssl_server_cmp};
 
-/* returns a NULL terminated slice. */
+/* returns a nullptr terminated slice. */
 static grpc_slice compute_default_pem_root_certs_once(void) {
   grpc_slice result = grpc_empty_slice();
 
@@ -957,7 +957,7 @@ static grpc_slice compute_default_pem_root_certs_once(void) {
       GPR_ASSERT(pem_root_certs != nullptr);
       result = grpc_slice_from_copied_buffer(
           pem_root_certs,
-          strlen(pem_root_certs) + 1);  // NULL terminator.
+          strlen(pem_root_certs) + 1);  // nullptr terminator.
     }
     gpr_free(pem_root_certs);
   }

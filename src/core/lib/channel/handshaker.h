@@ -53,7 +53,7 @@ typedef struct grpc_handshaker grpc_handshaker;
 /// A handshaker takes ownership of the members while a handshake is in
 /// progress.  Upon failure or shutdown of an in-progress handshaker,
 /// the handshaker is responsible for destroying the members and setting
-/// them to NULL before invoking the on_handshake_done callback.
+/// them to nullptr before invoking the on_handshake_done callback.
 ///
 /// For the on_handshake_done callback, all members are input arguments,
 /// which the callback takes ownership of.
@@ -81,7 +81,7 @@ typedef struct {
   /// Performs handshaking, modifying \a args as needed (e.g., to
   /// replace \a endpoint with a wrapped endpoint).
   /// When finished, invokes \a on_handshake_done.
-  /// \a acceptor will be NULL for client-side handshakers.
+  /// \a acceptor will be nullptr for client-side handshakers.
   void (*do_handshake)(grpc_exec_ctx* exec_ctx, grpc_handshaker* handshaker,
                        grpc_tcp_server_acceptor* acceptor,
                        grpc_closure* on_handshake_done,
@@ -139,7 +139,7 @@ void grpc_handshake_manager_shutdown(grpc_exec_ctx* exec_ctx,
 /// the \a on_handshake_done callback.
 /// Does NOT take ownership of \a channel_args.  Instead, makes a copy before
 /// invoking the first handshaker.
-/// \a acceptor will be NULL for client-side handshakers.
+/// \a acceptor will be nullptr for client-side handshakers.
 ///
 /// When done, invokes \a on_handshake_done with a grpc_handshaker_args
 /// object as its argument.  If the callback is invoked with error !=

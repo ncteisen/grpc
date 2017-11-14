@@ -51,10 +51,10 @@ void grpc_chttp2_stream_map_add(grpc_chttp2_stream_map* map, uint32_t key,
                                 void* value);
 
 /* Delete an existing key - returns the previous value of the key if it existed,
-   or NULL otherwise */
+   or nullptr otherwise */
 void* grpc_chttp2_stream_map_delete(grpc_chttp2_stream_map* map, uint32_t key);
 
-/* Return an existing key, or NULL if it does not exist */
+/* Return an existing key, or nullptr if it does not exist */
 void* grpc_chttp2_stream_map_find(grpc_chttp2_stream_map* map, uint32_t key);
 
 /* Return a random entry */

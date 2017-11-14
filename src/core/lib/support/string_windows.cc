@@ -41,13 +41,13 @@ int gpr_asprintf(char** strp, const char* format, ...) {
   ret = _vscprintf(format, args);
   va_end(args);
   if (ret < 0) {
-    *strp = NULL;
+    *strp = nullptr;
     return -1;
   }
 
   /* Allocate a new buffer, with space for the NUL terminator. */
   strp_buflen = (size_t)ret + 1;
-  if ((*strp = (char*)gpr_malloc(strp_buflen)) == NULL) {
+  if ((*strp = (char*)gpr_malloc(strp_buflen)) == nullptr) {
     /* This shouldn't happen, because gpr_malloc() calls abort(). */
     return -1;
   }
@@ -62,7 +62,7 @@ int gpr_asprintf(char** strp, const char* format, ...) {
 
   /* This should never happen. */
   gpr_free(*strp);
-  *strp = NULL;
+  *strp = nullptr;
   return -1;
 }
 

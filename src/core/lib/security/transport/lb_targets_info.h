@@ -29,7 +29,7 @@ extern "C" {
 grpc_arg grpc_lb_targets_info_create_channel_arg(
     grpc_slice_hash_table* targets_info);
 
-/** Return the instance of targets info in \a args or NULL */
+/** Return the instance of targets info in \a args or nullptr */
 grpc_slice_hash_table* grpc_lb_targets_info_find_in_args(
     const grpc_channel_args* args);
 

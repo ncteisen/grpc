@@ -34,7 +34,7 @@ extern "C" {
 
    High level authentication context object. Can optionally be chained. */
 
-/* Property names are always NULL terminated. */
+/* Property names are always nullptr terminated. */
 
 typedef struct {
   grpc_auth_property* array;

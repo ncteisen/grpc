@@ -71,10 +71,10 @@ void grpc_winsocket_shutdown(grpc_winsocket* winsocket) {
 
   status = WSAIoctl(winsocket->socket, SIO_GET_EXTENSION_FUNCTION_POINTER,
                     &guid, sizeof(guid), &DisconnectEx, sizeof(DisconnectEx),
-                    &ioctl_num_bytes, NULL, NULL);
+                    &ioctl_num_bytes, nullptr, nullptr);
 
   if (status == 0) {
-    DisconnectEx(winsocket->socket, NULL, 0, 0);
+    DisconnectEx(winsocket->socket, nullptr, 0, 0);
   } else {
     char* utf8_message = gpr_format_message(WSAGetLastError());
     gpr_log(GPR_INFO, "Unable to retrieve DisconnectEx pointer : %s",
@@ -92,8 +92,8 @@ static void destroy(grpc_winsocket* winsocket) {
 
 static bool check_destroyable(grpc_winsocket* winsocket) {
   return winsocket->destroy_called == true &&
-         winsocket->write_info.closure == NULL &&
-         winsocket->read_info.closure == NULL;
+         winsocket->write_info.closure == nullptr &&
+         winsocket->read_info.closure == nullptr;
 }
 
 void grpc_winsocket_destroy(grpc_winsocket* winsocket) {
@@ -112,7 +112,7 @@ the callback now.
 static void socket_notify_on_iocp(grpc_exec_ctx* exec_ctx,
                                   grpc_winsocket* socket, grpc_closure* closure,
                                   grpc_winsocket_callback_info* info) {
-  GPR_ASSERT(info->closure == NULL);
+  GPR_ASSERT(info->closure == nullptr);
   gpr_mu_lock(&socket->state_mu);
   if (info->has_pending_iocp) {
     info->has_pending_iocp = 0;
@@ -140,7 +140,7 @@ void grpc_socket_become_ready(grpc_exec_ctx* exec_ctx, grpc_winsocket* socket,
   gpr_mu_lock(&socket->state_mu);
   if (info->closure) {
     GRPC_CLOSURE_SCHED(exec_ctx, info->closure, GRPC_ERROR_NONE);
-    info->closure = NULL;
+    info->closure = nullptr;
   } else {
     info->has_pending_iocp = 1;
   }

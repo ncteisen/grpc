@@ -89,7 +89,7 @@ extern grpc_millis grpc_jwt_verifier_max_delay;
 
 /* The verifier can be created with some custom mappings to help with key
    discovery in the case where the issuer is an email address.
-   mappings can be NULL in which case num_mappings MUST be 0.
+   mappings can be nullptr in which case num_mappings MUST be 0.
    A verifier object has one built-in mapping (unless overridden):
    GRPC_GOOGLE_SERVICE_ACCOUNTS_EMAIL_DOMAIN ->
    GRPC_GOOGLE_SERVICE_ACCOUNTS_KEY_URL_PREFIX.*/

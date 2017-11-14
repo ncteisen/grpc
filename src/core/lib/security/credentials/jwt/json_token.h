@@ -60,7 +60,7 @@ void grpc_auth_json_key_destruct(grpc_auth_json_key* json_key);
 /* --- json token encoding and signing. --- */
 
 /* Caller is responsible for calling gpr_free on the returned value. May return
-   NULL on invalid input. The scope parameter may be NULL. */
+   nullptr on invalid input. The scope parameter may be NULL. */
 char* grpc_jwt_encode_and_sign(const grpc_auth_json_key* json_key,
                                const char* audience,
                                gpr_timespec token_lifetime, const char* scope);

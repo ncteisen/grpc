@@ -48,7 +48,7 @@ void cq_verify_empty(cq_verifier* v);
 void cq_verify_empty_timeout(cq_verifier* v, int timeout_sec);
 
 /* Various expectation matchers
-   Any functions taking ... expect a NULL terminated list of key/value pairs
+   Any functions taking ... expect a nullptr terminated list of key/value pairs
    (each pair using two parameter slots) of metadata that MUST be present in
    the event. */
 void cq_expect_completion(cq_verifier* v, const char* file, int line, void* tag,

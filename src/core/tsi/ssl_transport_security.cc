@@ -538,7 +538,7 @@ static tsi_result ssl_ctx_use_private_key(SSL_CTX* context, const char* pem_key,
 }
 
 /* Loads in-memory PEM verification certs into the SSL context and optionally
-   returns the verification cert names (root_names can be NULL). */
+   returns the verification cert names (root_names can be nullptr). */
 static tsi_result ssl_ctx_load_verification_certs(SSL_CTX* context,
                                                   const char* pem_roots,
                                                   size_t pem_roots_size,

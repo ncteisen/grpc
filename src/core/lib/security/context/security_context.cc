@@ -143,7 +143,7 @@ grpc_auth_context* grpc_auth_context_ref(grpc_auth_context* ctx,
   }
 #else
 grpc_auth_context* grpc_auth_context_ref(grpc_auth_context* ctx) {
-  if (ctx == NULL) return NULL;
+  if (ctx == nullptr) return nullptr;
 #endif
   gpr_ref(&ctx->refcount);
   return ctx;
@@ -161,7 +161,7 @@ void grpc_auth_context_unref(grpc_auth_context* ctx, const char* file, int line,
   }
 #else
 void grpc_auth_context_unref(grpc_auth_context* ctx) {
-  if (ctx == NULL) return;
+  if (ctx == nullptr) return;
 #endif
   if (gpr_unref(&ctx->refcount)) {
     size_t i;

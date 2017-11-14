@@ -72,22 +72,22 @@ int gpr_thd_new(gpr_thd_id* t, void (*thd_body)(void* arg), void* arg,
   *t = 0;
   if (gpr_thd_options_is_joinable(options)) {
     info->joinable = 1;
-    info->join_event = CreateEvent(NULL, FALSE, FALSE, NULL);
-    if (info->join_event == NULL) {
+    info->join_event = CreateEvent(NULL, FALSE, FALSE, nullptr);
+    if (info->join_event == nullptr) {
       gpr_free(info);
       return 0;
     }
   } else {
     info->joinable = 0;
   }
-  handle = CreateThread(NULL, 64 * 1024, thread_body, info, 0, NULL);
-  if (handle == NULL) {
+  handle = CreateThread(NULL, 64 * 1024, thread_body, info, 0, nullptr);
+  if (handle == nullptr) {
     destroy_thread(info);
   } else {
     *t = (gpr_thd_id)info;
     CloseHandle(handle);
   }
-  return handle != NULL;
+  return handle != nullptr;
 }
 
 gpr_thd_id gpr_thd_currentid(void) { return (gpr_thd_id)g_thd_info; }

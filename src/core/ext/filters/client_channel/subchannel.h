@@ -141,7 +141,7 @@ void grpc_connected_subchannel_ping(grpc_exec_ctx* exec_ctx,
                                     grpc_connected_subchannel* channel,
                                     grpc_closure* notify);
 
-/** retrieve the grpc_connected_subchannel - or NULL if called before
+/** retrieve the grpc_connected_subchannel - or nullptr if called before
     the subchannel becomes connected */
 grpc_connected_subchannel* grpc_subchannel_get_connected_subchannel(
     grpc_subchannel* subchannel);

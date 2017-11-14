@@ -73,7 +73,7 @@ grpc_channel* grpc_insecure_channel_create_from_fd(
 grpc_channel* grpc_insecure_channel_create_from_fd(
     const char* target, int fd, const grpc_channel_args* args) {
   GPR_ASSERT(0);
-  return NULL;
+  return nullptr;
 }
 
 #endif  // GPR_SUPPORT_CHANNELS_FROM_FD

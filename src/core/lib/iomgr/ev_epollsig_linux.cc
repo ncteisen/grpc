@@ -191,7 +191,7 @@ typedef struct polling_island {
    * use gpr_atm type here so that we can do atomic access on this and reduce
    * lock contention on 'mu' mutex.
    *
-   * Note that if this field is not NULL (i.e not 0), all the remaining fields
+   * Note that if this field is not nullptr (i.e not 0), all the remaining fields
    * (except mu and ref_count) are invalid and must be ignored. */
   gpr_atm merged_to;
 
@@ -464,7 +464,7 @@ static void polling_island_remove_fd_locked(polling_island* pi, grpc_fd* fd,
   }
 }
 
-/* Might return NULL in case of an error */
+/* Might return nullptr in case of an error */
 static polling_island* polling_island_create(grpc_exec_ctx* exec_ctx,
                                              grpc_fd* initial_fd,
                                              grpc_error** error) {
@@ -553,7 +553,7 @@ static polling_island* polling_island_lock(polling_island* pi) {
         break;
       }
 
-      /* pi->merged_to is not NULL i.e pi isn't the last node anymore. pi->mu
+      /* pi->merged_to is not nullptr i.e pi isn't the last node anymore. pi->mu
        * isn't the lock we are interested in. Continue traversing the list */
       gpr_mu_unlock(&pi->mu);
     }
@@ -879,7 +879,7 @@ static void fd_orphan(grpc_exec_ctx* exec_ctx, grpc_fd* fd,
        would actually contain the fd
      - Remove the fd from the latest polling island
      - Unlock the latest polling island
-     - Set fd->po.pi to NULL (but remove the ref on the polling island
+     - Set fd->po.pi to nullptr (but remove the ref on the polling island
        before doing this.) */
   if (fd->po.pi != nullptr) {
     polling_island* pi_latest = polling_island_lock(fd->po.pi);
@@ -890,7 +890,7 @@ static void fd_orphan(grpc_exec_ctx* exec_ctx, grpc_fd* fd,
     fd->po.pi = nullptr;
   }
 
-  /* If release_fd is not NULL, we should be relinquishing control of the file
+  /* If release_fd is not nullptr, we should be relinquishing control of the file
      descriptor fd->fd (but we still own the grpc_fd structure). */
   if (release_fd != nullptr) {
     *release_fd = fd->fd;
@@ -1054,7 +1054,7 @@ static grpc_error* pollset_kick(grpc_exec_ctx* exec_ctx, grpc_pollset* p,
       }
     }
   } else if (gpr_tls_get(&g_current_thread_pollset) != (intptr_t)p) {
-    /* Since worker == NULL, it means that we can kick "any" worker on this
+    /* Since worker == nullptr, it means that we can kick "any" worker on this
        pollset 'p'. If 'p' happens to be the same pollset this thread is
        currently polling (i.e in pollset_work() function), then there is no need
        to kick any other worker since the current thread can just absorb the
@@ -1139,7 +1139,7 @@ static void finish_shutdown_locked(grpc_exec_ctx* exec_ctx,
 
   pollset->finish_shutdown_called = true;
 
-  /* Release the ref and set pollset->po.pi to NULL */
+  /* Release the ref and set pollset->po.pi to nullptr */
   pollset_release_polling_island(exec_ctx, pollset, "ps_shutdown");
   GRPC_CLOSURE_SCHED(exec_ctx, pollset->shutdown_done, GRPC_ERROR_NONE);
 }
@@ -1421,9 +1421,9 @@ static void add_poll_object(grpc_exec_ctx* exec_ctx, poll_obj* bag,
 retry:
   /*
    * 1) If item->pi and bag->pi are both non-NULL and equal, do nothing
-   * 2) If item->pi and bag->pi are both NULL, create a new polling island (with
+   * 2) If item->pi and bag->pi are both nullptr, create a new polling island (with
    *    a refcount of 2) and point item->pi and bag->pi to the new island
-   * 3) If exactly one of item->pi or bag->pi is NULL, update it to point to
+   * 3) If exactly one of item->pi or bag->pi is nullptr, update it to point to
    *    the other's non-NULL pi
    * 4) Finally if item->pi and bag-pi are non-NULL and not-equal, merge the
    *    polling islands and update item->pi and bag->pi to point to the new
@@ -1441,7 +1441,7 @@ retry:
   if (item->pi == bag->pi) {
     pi_new = item->pi;
     if (pi_new == nullptr) {
-      /* GPR_ASSERT(item->pi == bag->pi == NULL) */
+      /* GPR_ASSERT(item->pi == bag->pi == nullptr) */
 
       /* If we are adding an fd to a bag (i.e pollset or pollset_set), then
        * we need to do some extra work to make TSAN happy */
@@ -1491,7 +1491,7 @@ retry:
           (void*)pi_new, poll_obj_string(item_type), poll_obj_string(bag_type));
     }
   } else if (item->pi == nullptr) {
-    /* GPR_ASSERT(bag->pi != NULL) */
+    /* GPR_ASSERT(bag->pi != nullptr) */
     /* Make pi_new point to latest pi*/
     pi_new = polling_island_lock(bag->pi);
 
@@ -1507,7 +1507,7 @@ retry:
         (void*)pi_new, poll_obj_string(item_type), (void*)item,
         poll_obj_string(bag_type), (void*)bag);
   } else if (bag->pi == nullptr) {
-    /* GPR_ASSERT(item->pi != NULL) */
+    /* GPR_ASSERT(item->pi != nullptr) */
     /* Make pi_new to point to latest pi */
     pi_new = polling_island_lock(item->pi);
     gpr_mu_unlock(&pi_new->mu);
@@ -1753,12 +1753,12 @@ const grpc_event_engine_vtable* grpc_init_epollsig_linux(
 #if defined(GRPC_POSIX_SOCKET)
 #include "src/core/lib/iomgr/ev_epollsig_linux.h"
 /* If GRPC_LINUX_EPOLL is not defined, it means epoll is not available. Return
- * NULL */
+ * nullptr */
 const grpc_event_engine_vtable* grpc_init_epollsig_linux(
     bool explicit_request) {
   gpr_log(GPR_ERROR,
           "Skipping epollsig becuase GRPC_LINUX_EPOLL is not defined.");
-  return NULL;
+  return nullptr;
 }
 #endif /* defined(GRPC_POSIX_SOCKET) */
 

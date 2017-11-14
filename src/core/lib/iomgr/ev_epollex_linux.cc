@@ -382,7 +382,7 @@ static void fd_orphan(grpc_exec_ctx* exec_ctx, grpc_fd* fd,
 
   fd->on_done_closure = on_done;
 
-  /* If release_fd is not NULL, we should be relinquishing control of the file
+  /* If release_fd is not nullptr, we should be relinquishing control of the file
      descriptor fd->fd (but we still own the grpc_fd structure). */
   if (release_fd != nullptr) {
     *release_fd = fd->fd;
@@ -1480,12 +1480,12 @@ const grpc_event_engine_vtable* grpc_init_epollex_linux(
 #if defined(GRPC_POSIX_SOCKET)
 #include "src/core/lib/iomgr/ev_epollex_linux.h"
 /* If GRPC_LINUX_EPOLL is not defined, it means epoll is not available. Return
- * NULL */
+ * nullptr */
 const grpc_event_engine_vtable* grpc_init_epollex_linux(
     bool explicitly_requested) {
   gpr_log(GPR_ERROR,
           "Skipping epollex becuase GRPC_LINUX_EPOLL is not defined.");
-  return NULL;
+  return nullptr;
 }
 #endif /* defined(GRPC_POSIX_SOCKET) */
 

@@ -99,7 +99,7 @@ void grpc_resource_user_shutdown(grpc_exec_ctx* exec_ctx,
                                  grpc_resource_user* resource_user);
 
 /* Allocate from the resource user (and its quota).
-   If optional_on_done is NULL, then allocate immediately. This may push the
+   If optional_on_done is nullptr, then allocate immediately. This may push the
    quota over-limit, at which point reclamation will kick in.
    If optional_on_done is non-NULL, it will be scheduled when the allocation has
    been granted by the quota. */

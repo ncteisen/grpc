@@ -833,8 +833,8 @@ static bool cq_is_next_finished(grpc_exec_ctx* exec_ctx, void* arg) {
     a->last_seen_things_queued_ever =
         gpr_atm_no_barrier_load(&cqd->things_queued_ever);
 
-    /* Pop a cq_completion from the queue. Returns NULL if the queue is empty
-     * might return NULL in some cases even if the queue is not empty; but
+    /* Pop a cq_completion from the queue. Returns nullptr if the queue is empty
+     * might return nullptr in some cases even if the queue is not empty; but
      * that
      * is ok and doesn't affect correctness. Might effect the tail latencies a
      * bit) */
@@ -923,7 +923,7 @@ static grpc_event cq_next(grpc_completion_queue* cq, gpr_timespec deadline,
       c->done(&exec_ctx, c->done_arg, c);
       break;
     } else {
-      /* If c == NULL it means either the queue is empty OR in an transient
+      /* If c == nullptr it means either the queue is empty OR in an transient
          inconsistent state. If it is the latter, we shold do a 0-timeout poll
          so that the thread comes back quickly from poll to make a second
          attempt at popping. Not doing this can potentially deadlock this
@@ -935,7 +935,7 @@ static grpc_event cq_next(grpc_completion_queue* cq, gpr_timespec deadline,
 
     if (gpr_atm_acq_load(&cqd->pending_events) == 0) {
       /* Before returning, check if the queue has any items left over (since
-         gpr_mpscq_pop() can sometimes return NULL even if the queue is not
+         gpr_mpscq_pop() can sometimes return nullptr even if the queue is not
          empty. If so, keep retrying but do not return GRPC_QUEUE_SHUTDOWN */
       if (cq_event_queue_num_items(&cqd->queue) > 0) {
         /* Go to the beginning of the loop. No point doing a poll because

@@ -126,9 +126,9 @@ static int fail_server_auth_check(grpc_channel_args* server_args) {
                                                     test_server1_cert};     \
     grpc_server_credentials* ssl_creds =                                    \
         grpc_ssl_server_credentials_create_ex(                              \
-            test_root_cert, &pem_cert_key_pair, 1, REQUEST_TYPE, NULL);     \
+            test_root_cert, &pem_cert_key_pair, 1, REQUEST_TYPE, nullptr);     \
     if (fail_server_auth_check(server_args)) {                              \
-      grpc_auth_metadata_processor processor = {process_auth_failure, NULL, \
+      grpc_auth_metadata_processor processor = {process_auth_failure, nullptr, \
                                                 NULL};                      \
       grpc_server_credentials_set_auth_metadata_processor(ssl_creds,        \
                                                           processor);       \
@@ -150,14 +150,14 @@ typedef enum { NONE, SELF_SIGNED, SIGNED, BAD_CERT_PAIR } certtype;
 #define CLIENT_INIT(cert_type)                                               \
   static void CLIENT_INIT_NAME(cert_type)(grpc_end2end_test_fixture * f,     \
                                           grpc_channel_args * client_args) { \
-    grpc_channel_credentials* ssl_creds = NULL;                              \
+    grpc_channel_credentials* ssl_creds = nullptr;                              \
     grpc_ssl_pem_key_cert_pair self_signed_client_key_cert_pair = {          \
         test_self_signed_client_key, test_self_signed_client_cert};          \
     grpc_ssl_pem_key_cert_pair signed_client_key_cert_pair = {               \
         test_signed_client_key, test_signed_client_cert};                    \
     grpc_ssl_pem_key_cert_pair bad_client_key_cert_pair = {                  \
         test_self_signed_client_key, test_signed_client_cert};               \
-    grpc_ssl_pem_key_cert_pair* key_cert_pair = NULL;                        \
+    grpc_ssl_pem_key_cert_pair* key_cert_pair = nullptr;                        \
     switch (cert_type) {                                                     \
       case SELF_SIGNED:                                                      \
         key_cert_pair = &self_signed_client_key_cert_pair;                   \
@@ -172,7 +172,7 @@ typedef enum { NONE, SELF_SIGNED, SIGNED, BAD_CERT_PAIR } certtype;
         break;                                                               \
     }                                                                        \
     ssl_creds =                                                              \
-        grpc_ssl_credentials_create(test_root_cert, key_cert_pair, NULL);    \
+        grpc_ssl_credentials_create(test_root_cert, key_cert_pair, nullptr);    \
     grpc_arg ssl_name_override = {                                           \
         GRPC_ARG_STRING,                                                     \
         const_cast<char*>(GRPC_SSL_TARGET_NAME_OVERRIDE_ARG),                \

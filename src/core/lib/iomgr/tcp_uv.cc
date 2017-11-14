@@ -147,7 +147,7 @@ static void read_callback(uv_stream_t* stream, ssize_t nread,
     return;
   }
   TCP_UNREF(&exec_ctx, tcp, "read");
-  tcp->read_cb = NULL;
+  tcp->read_cb = nullptr;
   // TODO(murgatroid99): figure out what the return value here means
   uv_read_stop(stream);
   if (nread == UV_EOF) {
@@ -185,7 +185,7 @@ static void uv_endpoint_read(grpc_exec_ctx* exec_ctx, grpc_endpoint* ep,
   int status;
   grpc_error* error = GRPC_ERROR_NONE;
   GRPC_UV_ASSERT_SAME_THREAD();
-  GPR_ASSERT(tcp->read_cb == NULL);
+  GPR_ASSERT(tcp->read_cb == nullptr);
   tcp->read_cb = cb;
   tcp->read_slices = read_slices;
   grpc_slice_buffer_reset_and_unref_internal(exec_ctx, read_slices);
@@ -211,7 +211,7 @@ static void write_callback(uv_write_t* req, int status) {
   grpc_error* error;
   grpc_exec_ctx exec_ctx = GRPC_EXEC_CTX_INIT;
   grpc_closure* cb = tcp->write_cb;
-  tcp->write_cb = NULL;
+  tcp->write_cb = nullptr;
   TCP_UNREF(&exec_ctx, tcp, "write");
   if (status == 0) {
     error = GRPC_ERROR_NONE;
@@ -258,7 +258,7 @@ static void uv_endpoint_write(grpc_exec_ctx* exec_ctx, grpc_endpoint* ep,
     return;
   }
 
-  GPR_ASSERT(tcp->write_cb == NULL);
+  GPR_ASSERT(tcp->write_cb == nullptr);
   tcp->write_slices = write_slices;
   GPR_ASSERT(tcp->write_slices->count <= UINT_MAX);
   if (tcp->write_slices->count == 0) {
@@ -272,7 +272,7 @@ static void uv_endpoint_write(grpc_exec_ctx* exec_ctx, grpc_endpoint* ep,
   buffer_count = (unsigned int)tcp->write_slices->count;
   buffers = (uv_buf_t*)gpr_malloc(sizeof(uv_buf_t) * buffer_count);
   grpc_resource_user_alloc(exec_ctx, tcp->resource_user,
-                           sizeof(uv_buf_t) * buffer_count, NULL);
+                           sizeof(uv_buf_t) * buffer_count, nullptr);
   for (i = 0; i < buffer_count; i++) {
     slice = &tcp->write_slices->slices[i];
     buffers[i].base = (char*)GRPC_SLICE_START_PTR(*slice);

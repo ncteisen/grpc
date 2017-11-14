@@ -44,9 +44,9 @@ typedef struct grpc_slice_hash_table_entry {
 
 /** Creates a new hash table of containing \a entries, which is an array
     of length \a num_entries.  Takes ownership of all keys and values in \a
-    entries.  Values will be cleaned up via \a destroy_value(). If not NULL, \a
+    entries.  Values will be cleaned up via \a destroy_value(). If not nullptr, \a
     value_cmp will be used to compare values in the context of \a
-    grpc_slice_hash_table_cmp. If NULL, raw pointer (\a GPR_ICMP) comparison
+    grpc_slice_hash_table_cmp. If nullptr, raw pointer (\a GPR_ICMP) comparison
     will be used. */
 grpc_slice_hash_table* grpc_slice_hash_table_create(
     size_t num_entries, grpc_slice_hash_table_entry* entries,
@@ -58,7 +58,7 @@ void grpc_slice_hash_table_unref(grpc_exec_ctx* exec_ctx,
                                  grpc_slice_hash_table* table);
 
 /** Returns the value from \a table associated with \a key.
-    Returns NULL if \a key is not found. */
+    Returns nullptr if \a key is not found. */
 void* grpc_slice_hash_table_get(const grpc_slice_hash_table* table,
                                 const grpc_slice key);
 

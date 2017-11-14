@@ -43,8 +43,8 @@
 LPTSTR
 gpr_char_to_tchar(LPCSTR input) {
   LPTSTR ret;
-  int needed = MultiByteToWideChar(CP_UTF8, 0, input, -1, NULL, 0);
-  if (needed <= 0) return NULL;
+  int needed = MultiByteToWideChar(CP_UTF8, 0, input, -1, nullptr, 0);
+  if (needed <= 0) return nullptr;
   ret = (LPTSTR)gpr_malloc((unsigned)needed * sizeof(TCHAR));
   MultiByteToWideChar(CP_UTF8, 0, input, -1, ret, needed);
   return ret;
@@ -53,10 +53,10 @@ gpr_char_to_tchar(LPCSTR input) {
 LPSTR
 gpr_tchar_to_char(LPCTSTR input) {
   LPSTR ret;
-  int needed = WideCharToMultiByte(CP_UTF8, 0, input, -1, NULL, 0, NULL, NULL);
-  if (needed <= 0) return NULL;
+  int needed = WideCharToMultiByte(CP_UTF8, 0, input, -1, nullptr, 0, nullptr, nullptr);
+  if (needed <= 0) return nullptr;
   ret = (LPSTR)gpr_malloc((unsigned)needed);
-  WideCharToMultiByte(CP_UTF8, 0, input, -1, ret, needed, NULL, NULL);
+  WideCharToMultiByte(CP_UTF8, 0, input, -1, ret, needed, nullptr, nullptr);
   return ret;
 }
 #else
@@ -71,8 +71,8 @@ char* gpr_format_message(int messageid) {
   DWORD status = FormatMessage(
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
           FORMAT_MESSAGE_IGNORE_INSERTS,
-      NULL, (DWORD)messageid, MAKELANGID(LANG_ENGLISH, SUBLANG_DEFAULT),
-      (LPTSTR)(&tmessage), 0, NULL);
+      nullptr, (DWORD)messageid, MAKELANGID(LANG_ENGLISH, SUBLANG_DEFAULT),
+      (LPTSTR)(&tmessage), 0, nullptr);
   if (status == 0) return gpr_strdup("Unable to retrieve error string");
   message = gpr_tchar_to_char(tmessage);
   LocalFree(tmessage);

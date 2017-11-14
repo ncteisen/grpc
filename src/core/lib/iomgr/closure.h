@@ -85,7 +85,7 @@ struct grpc_closure {
   /** Arguments to be passed to "cb". */
   void* cb_arg;
 
-  /** Scheduler to schedule against: NULL to schedule against current execution
+  /** Scheduler to schedule against: nullptr to schedule against current execution
       context */
   grpc_closure_scheduler* scheduler;
 
@@ -138,7 +138,7 @@ grpc_closure* grpc_closure_create(grpc_iomgr_cb_func cb, void* cb_arg,
 #endif
 
 #define GRPC_CLOSURE_LIST_INIT \
-  { NULL, NULL }
+  { nullptr, nullptr }
 
 void grpc_closure_list_init(grpc_closure_list* list);
 

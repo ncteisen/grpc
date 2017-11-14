@@ -65,9 +65,9 @@ void grpc_channel_init_shutdown(void);
 /// \a args are configuration arguments for the channel stack
 /// \a initial_refs is the initial refcount to give the channel stack
 /// \a destroy and \a destroy_arg specify how to destroy the channel stack
-///    if destroy_arg is NULL, the returned value from this function will be
+///    if destroy_arg is nullptr, the returned value from this function will be
 ///    substituted
-/// \a optional_transport is either NULL or a constructed transport object
+/// \a optional_transport is either nullptr or a constructed transport object
 /// Returns a pointer to the base of the memory allocated (the actual channel
 /// stack object will be prefix_bytes past that pointer)
 bool grpc_channel_init_create_stack(grpc_exec_ctx* exec_ctx,

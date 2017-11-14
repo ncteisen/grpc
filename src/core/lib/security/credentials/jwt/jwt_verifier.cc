@@ -470,9 +470,9 @@ static BIGNUM* bignum_from_base64(grpc_exec_ctx* exec_ctx, const char* b64) {
 
 // Provide compatibility across OpenSSL 1.02 and 1.1.
 static int RSA_set0_key(RSA* r, BIGNUM* n, BIGNUM* e, BIGNUM* d) {
-  /* If the fields n and e in r are NULL, the corresponding input
+  /* If the fields n and e in r are nullptr, the corresponding input
    * parameters MUST be non-NULL for n and e.  d may be
-   * left NULL (in case only the public key is used).
+   * left nullptr (in case only the public key is used).
    */
   if ((r->n == nullptr && n == nullptr) || (r->e == nullptr && e == nullptr)) {
     return 0;

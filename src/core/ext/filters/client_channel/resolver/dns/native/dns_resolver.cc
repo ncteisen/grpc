@@ -59,7 +59,7 @@ typedef struct {
   int published_version;
   /** which version of the result is current? */
   int resolved_version;
-  /** pending next completion, or NULL */
+  /** pending next completion, or nullptr */
   grpc_closure* next_completion;
   /** target result address for next completion */
   grpc_channel_args** target_result;

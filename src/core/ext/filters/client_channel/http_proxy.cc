@@ -36,7 +36,7 @@
 
 /**
  * Parses the 'http_proxy' env var and returns the proxy hostname to resolve or
- * NULL on error. Also sets 'user_cred' to user credentials if present in the
+ * nullptr on error. Also sets 'user_cred' to user credentials if present in the
  * 'http_proxy' env var, otherwise leaves it unchanged. It is caller's
  * responsibility to gpr_free user_cred.
  */

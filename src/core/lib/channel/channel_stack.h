@@ -114,7 +114,7 @@ typedef struct {
      elem is initialized at the start of the call, and elem->call_data is what
      needs initializing.
      The filter does not need to do any chaining.
-     server_transport_data is an opaque pointer. If it is NULL, this call is
+     server_transport_data is an opaque pointer. If it is nullptr, this call is
      on a client; if it is non-NULL, then it points to memory owned by the
      transport and is on the server. Most filters want to ignore this
      argument.
@@ -220,7 +220,7 @@ void grpc_channel_stack_destroy(grpc_exec_ctx* exec_ctx,
                                 grpc_channel_stack* stack);
 
 /* Initialize a call stack given a channel stack. transport_server_data is
-   expected to be NULL on a client, or an opaque transport owned pointer on the
+   expected to be nullptr on a client, or an opaque transport owned pointer on the
    server. */
 grpc_error* grpc_call_stack_init(grpc_exec_ctx* exec_ctx,
                                  grpc_channel_stack* channel_stack,

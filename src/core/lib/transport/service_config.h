@@ -38,7 +38,7 @@ void grpc_service_config_parse_global_params(
     void (*process_json)(const grpc_json* json, void* arg), void* arg);
 
 /// Gets the LB policy name from \a service_config.
-/// Returns NULL if no LB policy name was specified.
+/// Returns nullptr if no LB policy name was specified.
 /// Caller does NOT take ownership.
 const char* grpc_service_config_get_lb_policy_name(
     const grpc_service_config* service_config);
@@ -47,7 +47,7 @@ const char* grpc_service_config_get_lb_policy_name(
 /// The table's keys are request paths.  The table's value type is
 /// returned by \a create_value(), based on data parsed from the JSON tree.
 /// \a ref_value() and \a unref_value() are used to ref and unref values.
-/// Returns NULL on error.
+/// Returns nullptr on error.
 grpc_slice_hash_table* grpc_service_config_create_method_config_table(
     grpc_exec_ctx* exec_ctx, const grpc_service_config* service_config,
     void* (*create_value)(const grpc_json* method_config_json),
@@ -58,7 +58,7 @@ grpc_slice_hash_table* grpc_service_config_create_method_config_table(
 /// \a grpc_service_config_create_method_config_table().
 /// Gets the method config for the specified \a path, which should be of
 /// the form "/service/method".
-/// Returns NULL if the method has no config.
+/// Returns nullptr if the method has no config.
 /// Caller does NOT own a reference to the result.
 void* grpc_method_config_table_get(grpc_exec_ctx* exec_ctx,
                                    const grpc_slice_hash_table* table,

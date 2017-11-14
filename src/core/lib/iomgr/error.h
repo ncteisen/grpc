@@ -138,14 +138,14 @@ grpc_error* grpc_error_create(const char* file, int line, grpc_slice desc,
 /// \a referencing is an array of num_referencing elements indicating one or
 /// more errors that are believed to have contributed to this one
 /// err = grpc_error_create(x, y, z, r, nr) is equivalent to:
-///   err = grpc_error_create(x, y, z, NULL, 0);
+///   err = grpc_error_create(x, y, z, nullptr, 0);
 ///   for (i=0; i<nr; i++) err = grpc_error_add_child(err, r[i]);
 #define GRPC_ERROR_CREATE_FROM_STATIC_STRING(desc)                           \
   grpc_error_create(__FILE__, __LINE__, grpc_slice_from_static_string(desc), \
-                    NULL, 0)
+                    nullptr, 0)
 #define GRPC_ERROR_CREATE_FROM_COPIED_STRING(desc)                           \
   grpc_error_create(__FILE__, __LINE__, grpc_slice_from_copied_string(desc), \
-                    NULL, 0)
+                    nullptr, 0)
 
 // Create an error that references some other errors. This function adds a
 // reference to each error in errs - it does not consume an existing reference

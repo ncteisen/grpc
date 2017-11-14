@@ -44,7 +44,7 @@ void grpc_register_resolver_type(grpc_resolver_factory* factory);
     to locate a registered resolver factory based on the URI scheme.
     If parsing or location fails, prefixes default_prefix from
     grpc_resolver_registry_init to target, and tries again (if default_prefix
-    was not NULL).
+    was not nullptr).
     If a resolver factory was found, use it to instantiate a resolver and
     return it.
     If a resolver factory was not found, return NULL.

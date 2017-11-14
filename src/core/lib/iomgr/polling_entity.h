@@ -49,10 +49,10 @@ grpc_polling_entity grpc_polling_entity_create_from_pollset_set(
 grpc_polling_entity grpc_polling_entity_create_from_pollset(
     grpc_pollset* pollset);
 
-/** If \a pollent contains a pollset, return it. Otherwise, return NULL */
+/** If \a pollent contains a pollset, return it. Otherwise, return nullptr */
 grpc_pollset* grpc_polling_entity_pollset(grpc_polling_entity* pollent);
 
-/** If \a pollent contains a pollset_set, return it. Otherwise, return NULL */
+/** If \a pollent contains a pollset_set, return it. Otherwise, return nullptr */
 grpc_pollset_set* grpc_polling_entity_pollset_set(grpc_polling_entity* pollent);
 
 bool grpc_polling_entity_is_empty(const grpc_polling_entity* pollent);

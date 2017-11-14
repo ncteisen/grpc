@@ -79,7 +79,7 @@ grpc_error* grpc_tcp_server_create(grpc_exec_ctx* exec_ctx,
                                    grpc_tcp_server** server) {
   grpc_tcp_server* s = (grpc_tcp_server*)gpr_malloc(sizeof(grpc_tcp_server));
   s->resource_quota = grpc_resource_quota_create(NULL);
-  for (size_t i = 0; i < (args == NULL ? 0 : args->num_args); i++) {
+  for (size_t i = 0; i < (args == nullptr ? 0 : args->num_args); i++) {
     if (0 == strcmp(GRPC_ARG_RESOURCE_QUOTA, args->args[i].key)) {
       if (args->args[i].type == GRPC_ARG_POINTER) {
         grpc_resource_quota_unref_internal(exec_ctx, s->resource_quota);
@@ -94,13 +94,13 @@ grpc_error* grpc_tcp_server_create(grpc_exec_ctx* exec_ctx,
     }
   }
   gpr_ref_init(&s->refs, 1);
-  s->on_accept_cb = NULL;
-  s->on_accept_cb_arg = NULL;
+  s->on_accept_cb = nullptr;
+  s->on_accept_cb_arg = nullptr;
   s->open_ports = 0;
-  s->head = NULL;
-  s->tail = NULL;
-  s->shutdown_starting.head = NULL;
-  s->shutdown_starting.tail = NULL;
+  s->head = nullptr;
+  s->tail = nullptr;
+  s->shutdown_starting.head = nullptr;
+  s->shutdown_starting.tail = nullptr;
   s->shutdown_complete = shutdown_complete;
   s->shutdown = false;
   *server = s;
@@ -121,14 +121,14 @@ void grpc_tcp_server_shutdown_starting_add(grpc_tcp_server* s,
 
 static void finish_shutdown(grpc_exec_ctx* exec_ctx, grpc_tcp_server* s) {
   GPR_ASSERT(s->shutdown);
-  if (s->shutdown_complete != NULL) {
+  if (s->shutdown_complete != nullptr) {
     GRPC_CLOSURE_SCHED(exec_ctx, s->shutdown_complete, GRPC_ERROR_NONE);
   }
 
   while (s->head) {
     grpc_tcp_listener* sp = s->head;
     s->head = sp->next;
-    sp->next = NULL;
+    sp->next = nullptr;
     gpr_free(sp->handle);
     gpr_free(sp);
   }
@@ -178,7 +178,7 @@ void grpc_tcp_server_unref(grpc_exec_ctx* exec_ctx, grpc_tcp_server* s) {
     /* Complete shutdown_starting work before destroying. */
     grpc_exec_ctx local_exec_ctx = GRPC_EXEC_CTX_INIT;
     GRPC_CLOSURE_LIST_SCHED(&local_exec_ctx, &s->shutdown_starting);
-    if (exec_ctx == NULL) {
+    if (exec_ctx == nullptr) {
       grpc_exec_ctx_flush(&local_exec_ctx);
       tcp_server_destroy(&local_exec_ctx, s);
       grpc_exec_ctx_finish(&local_exec_ctx);
@@ -192,8 +192,8 @@ void grpc_tcp_server_unref(grpc_exec_ctx* exec_ctx, grpc_tcp_server* s) {
 static void finish_accept(grpc_exec_ctx* exec_ctx, grpc_tcp_listener* sp) {
   grpc_tcp_server_acceptor* acceptor =
       (grpc_tcp_server_acceptor*)gpr_malloc(sizeof(*acceptor));
-  uv_tcp_t* client = NULL;
-  grpc_endpoint* ep = NULL;
+  uv_tcp_t* client = nullptr;
+  grpc_endpoint* ep = nullptr;
   grpc_resolved_address peer_name;
   char* peer_name_string;
   int err;
@@ -203,7 +203,7 @@ static void finish_accept(grpc_exec_ctx* exec_ctx, grpc_tcp_listener* sp) {
   uv_tcp_init(uv_default_loop(), client);
   // UV documentation says this is guaranteed to succeed
   uv_accept((uv_stream_t*)server, (uv_stream_t*)client);
-  peer_name_string = NULL;
+  peer_name_string = nullptr;
   memset(&peer_name, 0, sizeof(grpc_resolved_address));
   peer_name.len = sizeof(struct sockaddr_storage);
   err = uv_tcp_getpeername(client, (struct sockaddr*)&peer_name.addr,
@@ -225,7 +225,7 @@ static void finish_accept(grpc_exec_ctx* exec_ctx, grpc_tcp_listener* sp) {
   acceptor->from_server = sp->server;
   acceptor->port_index = sp->port_index;
   acceptor->fd_index = 0;
-  sp->server->on_accept_cb(exec_ctx, sp->server->on_accept_cb_arg, ep, NULL,
+  sp->server->on_accept_cb(exec_ctx, sp->server->on_accept_cb_arg, ep, nullptr,
                            acceptor);
   gpr_free(peer_name_string);
 }
@@ -264,7 +264,7 @@ static grpc_error* add_socket_to_server(grpc_tcp_server* s, uv_tcp_t* handle,
                                         const grpc_resolved_address* addr,
                                         unsigned port_index,
                                         grpc_tcp_listener** listener) {
-  grpc_tcp_listener* sp = NULL;
+  grpc_tcp_listener* sp = nullptr;
   int port = -1;
   int status;
   grpc_error* error;
@@ -305,8 +305,8 @@ static grpc_error* add_socket_to_server(grpc_tcp_server* s, uv_tcp_t* handle,
   GPR_ASSERT(port >= 0);
   GPR_ASSERT(!s->on_accept_cb && "must add ports before starting server");
   sp = (grpc_tcp_listener*)gpr_zalloc(sizeof(grpc_tcp_listener));
-  sp->next = NULL;
-  if (s->head == NULL) {
+  sp->next = nullptr;
+  if (s->head == nullptr) {
     s->head = sp;
   } else {
     s->tail->next = sp;
@@ -329,11 +329,11 @@ grpc_error* grpc_tcp_server_add_port(grpc_tcp_server* s,
                                      const grpc_resolved_address* addr,
                                      int* port) {
   // This function is mostly copied from tcp_server_windows.c
-  grpc_tcp_listener* sp = NULL;
+  grpc_tcp_listener* sp = nullptr;
   uv_tcp_t* handle;
   grpc_resolved_address addr6_v4mapped;
   grpc_resolved_address wildcard;
-  grpc_resolved_address* allocated_addr = NULL;
+  grpc_resolved_address* allocated_addr = nullptr;
   grpc_resolved_address sockname_temp;
   unsigned port_index = 0;
   int status;
@@ -342,7 +342,7 @@ grpc_error* grpc_tcp_server_add_port(grpc_tcp_server* s,
 
   GRPC_UV_ASSERT_SAME_THREAD();
 
-  if (s->tail != NULL) {
+  if (s->tail != nullptr) {
     port_index = s->tail->port_index + 1;
   }
 
@@ -422,7 +422,7 @@ grpc_error* grpc_tcp_server_add_port(grpc_tcp_server* s,
     error = error_out;
     *port = -1;
   } else {
-    GPR_ASSERT(sp != NULL);
+    GPR_ASSERT(sp != nullptr);
     *port = sp->port;
   }
   return error;

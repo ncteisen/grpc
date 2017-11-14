@@ -32,7 +32,7 @@ struct tsi_zero_copy_grpc_protector;
 extern grpc_tracer_flag grpc_trace_secure_endpoint;
 
 /* Takes ownership of protector, zero_copy_protector, and to_wrap, and refs
- * leftover_slices. If zero_copy_protector is not NULL, protector will never be
+ * leftover_slices. If zero_copy_protector is not nullptr, protector will never be
  * used. */
 grpc_endpoint* grpc_secure_endpoint_create(
     struct tsi_frame_protector* protector,

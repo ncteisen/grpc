@@ -87,7 +87,7 @@ struct grpc_fd {
      or write_watcher fields are set respectively. A watcher may be asked
      to poll for both, in which case both fields will be set.
 
-     read_watcher and write_watcher may be NULL if no watcher has been
+     read_watcher and write_watcher may be nullptr if no watcher has been
      asked to poll for reads or writes.
 
      If an fd_watcher is not asked to poll for reads or writes, it's added

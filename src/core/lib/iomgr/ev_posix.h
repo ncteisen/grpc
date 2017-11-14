@@ -102,8 +102,8 @@ int grpc_fd_wrapped_fd(grpc_fd* fd);
 
 /* Releases fd to be asynchronously destroyed.
    on_done is called when the underlying file descriptor is definitely close()d.
-   If on_done is NULL, no callback will be made.
-   If release_fd is not NULL, it's set to fd and fd will not be closed.
+   If on_done is nullptr, no callback will be made.
+   If release_fd is not nullptr, it's set to fd and fd will not be closed.
    Requires: *fd initialized; no outstanding notify_on_read or
    notify_on_write.
    MUST NOT be called with a pollset lock taken */

@@ -150,7 +150,7 @@ typedef struct grpc_transport_stream_op_batch {
 struct grpc_transport_stream_op_batch_payload {
   struct {
     grpc_metadata_batch* send_initial_metadata;
-    /** Iff send_initial_metadata != NULL, flags associated with
+    /** Iff send_initial_metadata != nullptr, flags associated with
         send_initial_metadata: a bitfield of GRPC_INITIAL_METADATA_xxx */
     uint32_t send_initial_metadata_flags;
     // If non-NULL, will be set by the transport to the peer string
@@ -176,7 +176,7 @@ struct grpc_transport_stream_op_batch_payload {
     uint32_t* recv_flags;
     /** Should be enqueued when initial metadata is ready to be processed. */
     grpc_closure* recv_initial_metadata_ready;
-    // If not NULL, will be set to true if trailing metadata is
+    // If not nullptr, will be set to true if trailing metadata is
     // immediately available.  This may be a signal that we received a
     // Trailers-Only response.
     bool* trailing_metadata_available;
@@ -227,7 +227,7 @@ struct grpc_transport_stream_op_batch_payload {
 typedef struct grpc_transport_op {
   /** Called when processing of this op is done. */
   grpc_closure* on_consumed;
-  /** connectivity monitoring - set connectivity_state to NULL to unsubscribe */
+  /** connectivity monitoring - set connectivity_state to nullptr to unsubscribe */
   grpc_closure* on_connectivity_state_change;
   grpc_connectivity_state* connectivity_state;
   /** should the transport be disconnected
@@ -251,7 +251,7 @@ typedef struct grpc_transport_op {
   grpc_pollset* bind_pollset;
   /** add this transport to a pollset_set */
   grpc_pollset_set* bind_pollset_set;
-  /** send a ping, call this back if not NULL */
+  /** send a ping, call this back if not nullptr */
   grpc_closure* send_ping;
 
   /***************************************************************************
@@ -273,7 +273,7 @@ size_t grpc_transport_stream_size(grpc_transport* transport);
    Arguments:
      transport   - the transport on which to create this stream
      stream      - a pointer to uninitialized memory to initialize
-     server_data - either NULL for a client initiated stream, or a pointer
+     server_data - either nullptr for a client initiated stream, or a pointer
                    supplied from the accept_stream callback function */
 int grpc_transport_init_stream(grpc_exec_ctx* exec_ctx,
                                grpc_transport* transport, grpc_stream* stream,

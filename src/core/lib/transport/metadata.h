@@ -122,7 +122,7 @@ grpc_mdelem grpc_mdelem_from_grpc_metadata(grpc_exec_ctx* exec_ctx,
                                            grpc_metadata* metadata);
 
 /* Does not unref the slices; if a new non-interned mdelem is needed, allocates
-   one if compatible_external_backing_store is NULL, or uses
+   one if compatible_external_backing_store is nullptr, or uses
    compatible_external_backing_store if it is non-NULL (in which case it's the
    users responsibility to ensure that it outlives usage) */
 grpc_mdelem grpc_mdelem_create(
@@ -158,7 +158,7 @@ void grpc_mdelem_unref(grpc_exec_ctx* exec_ctx, grpc_mdelem md);
 #define GRPC_MDVALUE(md) (GRPC_MDELEM_DATA(md)->value)
 
 #define GRPC_MDNULL GRPC_MAKE_MDELEM(NULL, GRPC_MDELEM_STORAGE_EXTERNAL)
-#define GRPC_MDISNULL(md) (GRPC_MDELEM_DATA(md) == NULL)
+#define GRPC_MDISNULL(md) (GRPC_MDELEM_DATA(md) == nullptr)
 
 /* We add 32 bytes of padding as per RFC-7540 section 6.5.2. */
 #define GRPC_MDELEM_LENGTH(e)                                                  \

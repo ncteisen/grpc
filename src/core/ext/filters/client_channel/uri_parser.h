@@ -35,12 +35,12 @@ typedef struct {
   char** query_parts;
   /** Number of elements in \a query_parts and \a query_parts_values */
   size_t num_query_parts;
-  /** Split each query part by '='. NULL if not present. */
+  /** Split each query part by '='. nullptr if not present. */
   char** query_parts_values;
   char* fragment;
 } grpc_uri;
 
-/** parse a uri, return NULL on failure */
+/** parse a uri, return nullptr on failure */
 grpc_uri* grpc_uri_parse(grpc_exec_ctx* exec_ctx, const char* uri_text,
                          bool suppress_errors);
 

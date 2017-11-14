@@ -86,7 +86,7 @@ struct shutdown_fd_args {
 struct grpc_udp_server {
   gpr_mu mu;
 
-  /* factory to use for creating and binding sockets, or NULL */
+  /* factory to use for creating and binding sockets, or nullptr */
   grpc_socket_factory* socket_factory;
 
   /* active port count: how many ports are actually still listening */

@@ -355,7 +355,7 @@ static void request_matcher_kill_requests(grpc_exec_ctx* exec_ctx,
        2. no other threads are pulling (since the shut down process is single
           threaded)
        So, we can ignore the queue lock and just pop, with the guarantee that a
-       NULL returned here truly means that the queue is empty */
+       nullptr returned here truly means that the queue is empty */
     while ((rc = (requested_call*)gpr_mpscq_pop(
                 &rm->requests_per_cq[i].queue)) != nullptr) {
       fail_call(exec_ctx, server, i, rc, GRPC_ERROR_REF(error));

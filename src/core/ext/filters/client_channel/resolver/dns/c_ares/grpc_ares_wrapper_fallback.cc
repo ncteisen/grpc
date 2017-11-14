@@ -30,7 +30,7 @@ static grpc_ares_request* grpc_dns_lookup_ares_impl(
     const char* default_port, grpc_pollset_set* interested_parties,
     grpc_closure* on_done, grpc_lb_addresses** addrs, bool check_grpclb,
     char** service_config_json) {
-  return NULL;
+  return nullptr;
 }
 
 grpc_ares_request* (*grpc_dns_lookup_ares)(

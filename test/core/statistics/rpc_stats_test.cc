@@ -39,11 +39,11 @@ static void test_init_shutdown(void) {
 }
 
 static void test_create_and_destroy(void) {
-  census_rpc_stats* stats = NULL;
+  census_rpc_stats* stats = nullptr;
   census_aggregated_rpc_stats agg_stats = {0, NULL};
 
   stats = census_rpc_stats_create_empty();
-  GPR_ASSERT(stats != NULL);
+  GPR_ASSERT(stats != nullptr);
   GPR_ASSERT(stats->cnt == 0 && stats->rpc_error_cnt == 0 &&
              stats->app_error_cnt == 0 && stats->elapsed_time_ms == 0.0 &&
              stats->api_request_bytes == 0 && stats->wire_request_bytes == 0 &&
@@ -52,14 +52,14 @@ static void test_create_and_destroy(void) {
 
   census_aggregated_rpc_stats_set_empty(&agg_stats);
   GPR_ASSERT(agg_stats.num_entries == 0);
-  GPR_ASSERT(agg_stats.stats == NULL);
+  GPR_ASSERT(agg_stats.stats == nullptr);
   agg_stats.num_entries = 1;
   agg_stats.stats = (census_per_method_rpc_stats*)gpr_malloc(
       sizeof(census_per_method_rpc_stats));
   agg_stats.stats[0].method = gpr_strdup("foo");
   census_aggregated_rpc_stats_set_empty(&agg_stats);
   GPR_ASSERT(agg_stats.num_entries == 0);
-  GPR_ASSERT(agg_stats.stats == NULL);
+  GPR_ASSERT(agg_stats.stats == nullptr);
 }
 
 #define ASSERT_NEAR(a, b) \
@@ -80,11 +80,11 @@ static void test_record_and_get_stats(void) {
   /* Server stats expect to be empty */
   census_get_server_stats(&agg_stats);
   GPR_ASSERT(agg_stats.num_entries == 0);
-  GPR_ASSERT(agg_stats.stats == NULL);
+  GPR_ASSERT(agg_stats.stats == nullptr);
   /* Client stats expect to have one entry */
   census_get_client_stats(&agg_stats);
   GPR_ASSERT(agg_stats.num_entries == 1);
-  GPR_ASSERT(agg_stats.stats != NULL);
+  GPR_ASSERT(agg_stats.stats != nullptr);
   GPR_ASSERT(strcmp(agg_stats.stats[0].method, "m1") == 0);
   GPR_ASSERT(agg_stats.stats[0].minute_stats.cnt == 2 &&
              agg_stats.stats[0].hour_stats.cnt == 2 &&
@@ -124,7 +124,7 @@ static void test_record_and_get_stats(void) {
   /* Check client stats */
   census_get_client_stats(&agg_stats);
   GPR_ASSERT(agg_stats.num_entries == 2);
-  GPR_ASSERT(agg_stats.stats != NULL);
+  GPR_ASSERT(agg_stats.stats != nullptr);
   GPR_ASSERT((strcmp(agg_stats.stats[0].method, "m2") == 0 &&
               strcmp(agg_stats.stats[1].method, "m4") == 0) ||
              (strcmp(agg_stats.stats[0].method, "m4") == 0 &&
@@ -146,10 +146,10 @@ static void test_record_stats_on_unknown_op_id(void) {
   census_record_rpc_server_stats(unknown_id, &stats);
   census_get_server_stats(&agg_stats);
   GPR_ASSERT(agg_stats.num_entries == 0);
-  GPR_ASSERT(agg_stats.stats == NULL);
+  GPR_ASSERT(agg_stats.stats == nullptr);
   census_get_client_stats(&agg_stats);
   GPR_ASSERT(agg_stats.num_entries == 0);
-  GPR_ASSERT(agg_stats.stats == NULL);
+  GPR_ASSERT(agg_stats.stats == nullptr);
   census_aggregated_rpc_stats_set_empty(&agg_stats);
   census_shutdown();
 }

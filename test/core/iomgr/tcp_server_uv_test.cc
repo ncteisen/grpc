@@ -62,7 +62,7 @@ typedef struct server_weak_ref {
 static on_connect_result g_result = {NULL, 0, 0};
 
 static void on_connect_result_init(on_connect_result* result) {
-  result->server = NULL;
+  result->server = nullptr;
   result->port_index = 0;
   result->fd_index = 0;
 }
@@ -77,11 +77,11 @@ static void on_connect_result_set(on_connect_result* result,
 static void server_weak_ref_shutdown(grpc_exec_ctx* exec_ctx, void* arg,
                                      grpc_error* error) {
   server_weak_ref* weak_ref = static_cast<server_weak_ref*>(arg);
-  weak_ref->server = NULL;
+  weak_ref->server = nullptr;
 }
 
 static void server_weak_ref_init(server_weak_ref* weak_ref) {
-  weak_ref->server = NULL;
+  weak_ref->server = nullptr;
   GRPC_CLOSURE_INIT(&weak_ref->server_shutdown, server_weak_ref_shutdown,
                     weak_ref, grpc_schedule_on_exec_ctx);
 }
@@ -112,7 +112,7 @@ static void on_connect(grpc_exec_ctx* exec_ctx, void* arg, grpc_endpoint* tcp,
   g_result = temp_result;
   g_nconnects++;
   GPR_ASSERT(GRPC_LOG_IF_ERROR("pollset_kick",
-                               grpc_pollset_kick(exec_ctx, g_pollset, NULL)));
+                               grpc_pollset_kick(exec_ctx, g_pollset, nullptr)));
   gpr_mu_unlock(g_mu);
 }
 
@@ -120,7 +120,7 @@ static void test_no_op(void) {
   grpc_exec_ctx exec_ctx = GRPC_EXEC_CTX_INIT;
   grpc_tcp_server* s;
   GPR_ASSERT(GRPC_ERROR_NONE ==
-             grpc_tcp_server_create(&exec_ctx, NULL, NULL, &s));
+             grpc_tcp_server_create(&exec_ctx, nullptr, nullptr, &s));
   grpc_tcp_server_unref(&exec_ctx, s);
   grpc_exec_ctx_finish(&exec_ctx);
 }
@@ -129,9 +129,9 @@ static void test_no_op_with_start(void) {
   grpc_exec_ctx exec_ctx = GRPC_EXEC_CTX_INIT;
   grpc_tcp_server* s;
   GPR_ASSERT(GRPC_ERROR_NONE ==
-             grpc_tcp_server_create(&exec_ctx, NULL, NULL, &s));
+             grpc_tcp_server_create(&exec_ctx, nullptr, nullptr, &s));
   LOG_TEST("test_no_op_with_start");
-  grpc_tcp_server_start(&exec_ctx, s, NULL, 0, on_connect, NULL);
+  grpc_tcp_server_start(&exec_ctx, s, nullptr, 0, on_connect, nullptr);
   grpc_tcp_server_unref(&exec_ctx, s);
   grpc_exec_ctx_finish(&exec_ctx);
 }
@@ -142,7 +142,7 @@ static void test_no_op_with_port(void) {
   struct sockaddr_in* addr = (struct sockaddr_in*)resolved_addr.addr;
   grpc_tcp_server* s;
   GPR_ASSERT(GRPC_ERROR_NONE ==
-             grpc_tcp_server_create(&exec_ctx, NULL, NULL, &s));
+             grpc_tcp_server_create(&exec_ctx, nullptr, nullptr, &s));
   LOG_TEST("test_no_op_with_port");
 
   memset(&resolved_addr, 0, sizeof(resolved_addr));
@@ -163,7 +163,7 @@ static void test_no_op_with_port_and_start(void) {
   struct sockaddr_in* addr = (struct sockaddr_in*)resolved_addr.addr;
   grpc_tcp_server* s;
   GPR_ASSERT(GRPC_ERROR_NONE ==
-             grpc_tcp_server_create(&exec_ctx, NULL, NULL, &s));
+             grpc_tcp_server_create(&exec_ctx, nullptr, nullptr, &s));
   LOG_TEST("test_no_op_with_port_and_start");
   int port;
 
@@ -174,7 +174,7 @@ static void test_no_op_with_port_and_start(void) {
                  GRPC_ERROR_NONE &&
              port > 0);
 
-  grpc_tcp_server_start(&exec_ctx, s, NULL, 0, on_connect, NULL);
+  grpc_tcp_server_start(&exec_ctx, s, nullptr, 0, on_connect, nullptr);
 
   grpc_tcp_server_unref(&exec_ctx, s);
   grpc_exec_ctx_finish(&exec_ctx);
@@ -205,7 +205,7 @@ static void tcp_connect(grpc_exec_ctx* exec_ctx, const struct sockaddr* remote,
   gpr_log(GPR_DEBUG, "wait");
   while (g_nconnects == nconnects_before &&
          gpr_time_cmp(deadline, gpr_now(deadline.clock_type)) > 0) {
-    grpc_pollset_worker* worker = NULL;
+    grpc_pollset_worker* worker = nullptr;
     GPR_ASSERT(GRPC_LOG_IF_ERROR(
         "pollset_work",
         grpc_pollset_work(exec_ctx, g_pollset, &worker,
@@ -234,7 +234,7 @@ static void test_connect(unsigned n) {
   int svr1_port;
   grpc_tcp_server* s;
   GPR_ASSERT(GRPC_ERROR_NONE ==
-             grpc_tcp_server_create(&exec_ctx, NULL, NULL, &s));
+             grpc_tcp_server_create(&exec_ctx, nullptr, nullptr, &s));
   unsigned i;
   server_weak_ref weak_ref;
   server_weak_ref_init(&weak_ref);
@@ -257,7 +257,7 @@ static void test_connect(unsigned n) {
                  GRPC_ERROR_NONE &&
              svr_port == svr1_port);
 
-  grpc_tcp_server_start(&exec_ctx, s, &g_pollset, 1, on_connect, NULL);
+  grpc_tcp_server_start(&exec_ctx, s, &g_pollset, 1, on_connect, nullptr);
 
   GPR_ASSERT(uv_ip6_addr("::", svr_port, (struct sockaddr_in6*)addr1) == 0);
 
@@ -268,7 +268,7 @@ static void test_connect(unsigned n) {
                 &result);
     GPR_ASSERT(result.port_index == 0);
     GPR_ASSERT(result.server == s);
-    if (weak_ref.server == NULL) {
+    if (weak_ref.server == nullptr) {
       server_weak_ref_set(&weak_ref, result.server);
     }
     grpc_tcp_server_unref(&exec_ctx, result.server);
@@ -282,13 +282,13 @@ static void test_connect(unsigned n) {
   }
 
   /* Weak ref to server valid until final unref. */
-  GPR_ASSERT(weak_ref.server != NULL);
+  GPR_ASSERT(weak_ref.server != nullptr);
 
   grpc_tcp_server_unref(&exec_ctx, s);
   grpc_exec_ctx_finish(&exec_ctx);
 
   /* Weak ref lost. */
-  GPR_ASSERT(weak_ref.server == NULL);
+  GPR_ASSERT(weak_ref.server == nullptr);
 }
 
 static void destroy_pollset(grpc_exec_ctx* exec_ctx, void* p,

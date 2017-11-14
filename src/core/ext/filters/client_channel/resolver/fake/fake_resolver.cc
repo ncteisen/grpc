@@ -53,7 +53,7 @@ typedef struct {
   // passed-in parameters
   grpc_channel_args* channel_args;
 
-  // If not NULL, the next set of resolution results to be returned to
+  // If not nullptr, the next set of resolution results to be returned to
   // grpc_resolver_next_locked()'s closure.
   grpc_channel_args* next_results;
 

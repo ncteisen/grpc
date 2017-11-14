@@ -63,7 +63,7 @@ static void print_current_stack() {
   CaptureStackBackTraceType func = (CaptureStackBackTraceType)(GetProcAddress(
       LoadLibrary(_T("kernel32.dll")), "RtlCaptureStackBackTrace"));
 
-  if (func == NULL) return;  // WOE 29.SEP.2010
+  if (func == nullptr) return;  // WOE 29.SEP.2010
 
 // Quote from Microsoft Documentation:
 // ## Windows Server 2003 and Windows XP:
@@ -76,8 +76,8 @@ static void print_current_stack() {
   SYMBOL_INFOW* symbol;
   HANDLE process;
   process = GetCurrentProcess();
-  SymInitialize(process, NULL, TRUE);
-  frames = (func)(0, MAX_CALLERS, callers_stack, NULL);
+  SymInitialize(process, nullptr, TRUE);
+  frames = (func)(0, MAX_CALLERS, callers_stack, nullptr);
   symbol =
       (SYMBOL_INFOW*)calloc(sizeof(SYMBOL_INFOW) + 256 * sizeof(wchar_t), 1);
   symbol->MaxNameLen = 255;
@@ -185,7 +185,7 @@ static void abort_handler(int sig) {
 }
 
 static void install_crash_handler() {
-  if (!SymInitialize(GetCurrentProcess(), NULL, TRUE)) {
+  if (!SymInitialize(GetCurrentProcess(), nullptr, TRUE)) {
     fprintf(stderr, "SymInitialize failed: %d\n", GetLastError());
   }
   SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)crash_handler);

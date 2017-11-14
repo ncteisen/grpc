@@ -82,7 +82,7 @@ void grpc_resolver_channel_saw_error_locked(grpc_exec_ctx* exec_ctx,
 /** Get the next result from the resolver.  Expected to set \a *result with
     new channel args and then schedule \a on_complete for execution.
 
-    If resolution is fatally broken, set \a *result to NULL and
+    If resolution is fatally broken, set \a *result to nullptr and
     schedule \a on_complete.
 
     Must be called from the combiner passed as a resolver_arg at construction

@@ -241,7 +241,7 @@ const char* grpc_stats_counter_doc[GRPC_STATS_COUNTER_COUNT] = {
     "queue. High value here indicates high contention on completion queues",
     "Number of lock (trylock) acquisition successes on completion queue event "
     "queue.",
-    "Number of times NULL was popped out of completion queue's event queue "
+    "Number of times nullptr was popped out of completion queue's event queue "
     "even though the event queue was not empty",
 };
 const char* grpc_stats_histogram_name[GRPC_STATS_HISTOGRAM_COUNT] = {

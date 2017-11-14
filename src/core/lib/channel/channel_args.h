@@ -35,7 +35,7 @@ grpc_channel_args* grpc_channel_args_copy(const grpc_channel_args* src);
 /** Copy the arguments in \a src into a new instance, stably sorting keys */
 grpc_channel_args* grpc_channel_args_normalize(const grpc_channel_args* src);
 
-/** Copy the arguments in \a src and append \a to_add. If \a to_add is NULL, it
+/** Copy the arguments in \a src and append \a to_add. If \a to_add is nullptr, it
  * is equivalent to calling \a grpc_channel_args_copy. */
 grpc_channel_args* grpc_channel_args_copy_and_add(const grpc_channel_args* src,
                                                   const grpc_arg* to_add,
@@ -129,7 +129,7 @@ int grpc_channel_args_compare(const grpc_channel_args* a,
 grpc_channel_args* grpc_channel_args_set_socket_mutator(
     grpc_channel_args* a, grpc_socket_mutator* mutator);
 
-/** Returns the value of argument \a name from \a args, or NULL if not found. */
+/** Returns the value of argument \a name from \a args, or nullptr if not found. */
 const grpc_arg* grpc_channel_args_find(const grpc_channel_args* args,
                                        const char* name);
 

@@ -291,7 +291,7 @@ class Server::SyncRequestThreadManager : public ThreadManager {
     if (!sync_req) {
       // No tag. Nothing to work on. This is an unlikley scenario and possibly a
       // bug in RPC Manager implementation.
-      gpr_log(GPR_ERROR, "Sync server. DoWork() was called with NULL tag");
+      gpr_log(GPR_ERROR, "Sync server. DoWork() was called with nullptr tag");
       return;
     }
 

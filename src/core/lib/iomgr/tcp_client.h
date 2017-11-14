@@ -31,7 +31,7 @@ extern "C" {
 
 /* Asynchronously connect to an address (specified as (addr, len)), and call
    cb with arg and the completed connection when done (or call cb with arg and
-   NULL on failure).
+   nullptr on failure).
    interested_parties points to a set of pollsets that would be interested
    in this connection being established (in order to continue their work) */
 void grpc_tcp_client_connect(grpc_exec_ctx* exec_ctx, grpc_closure* on_connect,

@@ -84,14 +84,14 @@ struct grpc_exec_ctx {
    prefer to use GRPC_EXEC_CTX_INIT whenever possible */
 #define GRPC_EXEC_CTX_INITIALIZER(flags, finish_check, finish_check_arg) \
   {                                                                      \
-    GRPC_CLOSURE_LIST_INIT, NULL, NULL, flags, gpr_cpu_current_cpu(),    \
+    GRPC_CLOSURE_LIST_INIT, nullptr, nullptr, flags, gpr_cpu_current_cpu(),    \
         finish_check_arg, finish_check, false, 0                         \
   }
 
 /* initialize an execution context at the top level of an API call into grpc
    (this is safe to use elsewhere, though possibly not as efficient) */
 #define GRPC_EXEC_CTX_INIT \
-  GRPC_EXEC_CTX_INITIALIZER(GRPC_EXEC_CTX_FLAG_IS_FINISHED, NULL, NULL)
+  GRPC_EXEC_CTX_INITIALIZER(GRPC_EXEC_CTX_FLAG_IS_FINISHED, nullptr, nullptr)
 
 extern grpc_closure_scheduler* grpc_schedule_on_exec_ctx;
 

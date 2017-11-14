@@ -43,13 +43,13 @@ const char* gpr_getenv_silent(const char* name, char** dst) {
   char* result = nullptr;
 #if defined(GPR_BACKWARDS_COMPATIBILITY_MODE)
   typedef char* (*getenv_type)(const char*);
-  static getenv_type getenv_func = NULL;
+  static getenv_type getenv_func = nullptr;
   /* Check to see which getenv variant is supported (go from most
    * to least secure) */
   const char* names[] = {"secure_getenv", "__secure_getenv", "getenv"};
-  for (size_t i = 0; getenv_func == NULL && i < GPR_ARRAY_SIZE(names); i++) {
+  for (size_t i = 0; getenv_func == nullptr && i < GPR_ARRAY_SIZE(names); i++) {
     getenv_func = (getenv_type)dlsym(RTLD_DEFAULT, names[i]);
-    if (getenv_func != NULL && strstr(names[i], "secure") == NULL) {
+    if (getenv_func != nullptr && strstr(names[i], "secure") == nullptr) {
       insecure_func_used = names[i];
     }
   }

@@ -3618,7 +3618,7 @@ static void test_stress(int amount_of_stress) {
     GPR_ASSERT(i);
     if (rand() < RAND_MAX / 2) {
       added[idx] = i;
-      printf("avl = gpr_avl_add(avl, box(%d), box(%d), NULL); /* d=%d */\n",
+      printf("avl = gpr_avl_add(avl, box(%d), box(%d), nullptr); /* d=%d */\n",
              idx, i, deletions);
       avl = gpr_avl_add(avl, box(idx), box(i), nullptr);
     } else {

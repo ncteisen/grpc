@@ -49,7 +49,7 @@ typedef void (*grpc_tcp_server_cb)(grpc_exec_ctx* exec_ctx, void* arg,
                                    grpc_tcp_server_acceptor* acceptor);
 
 /* Create a server, initially not bound to any ports. The caller owns one ref.
-   If shutdown_complete is not NULL, it will be used by
+   If shutdown_complete is not nullptr, it will be used by
    grpc_tcp_server_unref() when the ref count reaches zero. */
 grpc_error* grpc_tcp_server_create(grpc_exec_ctx* exec_ctx,
                                    grpc_closure* shutdown_complete,

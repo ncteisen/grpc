@@ -50,7 +50,7 @@ extern void (*grpc_resolve_address)(grpc_exec_ctx* exec_ctx, const char* addr,
 /* Destroy resolved addresses */
 void grpc_resolved_addresses_destroy(grpc_resolved_addresses* addresses);
 
-/* Resolve addr in a blocking fashion. Returns NULL on failure. On success,
+/* Resolve addr in a blocking fashion. Returns nullptr on failure. On success,
    result must be freed with grpc_resolved_addresses_destroy. */
 extern grpc_error* (*grpc_blocking_resolve_address)(
     const char* name, const char* default_port,

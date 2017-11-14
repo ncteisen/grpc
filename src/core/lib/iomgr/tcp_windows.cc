@@ -55,8 +55,8 @@ static grpc_error* set_non_block(SOCKET sock) {
   int status;
   uint32_t param = 1;
   DWORD ret;
-  status = WSAIoctl(sock, GRPC_FIONBIO, &param, sizeof(param), NULL, 0, &ret,
-                    NULL, NULL);
+  status = WSAIoctl(sock, GRPC_FIONBIO, &param, sizeof(param), nullptr, 0, &ret,
+                    nullptr, nullptr);
   return status == 0
              ? GRPC_ERROR_NONE
              : GRPC_WSA_ERROR(WSAGetLastError(), "WSAIoctl(GRPC_FIONBIO)");
@@ -187,7 +187,7 @@ static void on_read(grpc_exec_ctx* exec_ctx, void* tcpp, grpc_error* error) {
     }
   }
 
-  tcp->read_cb = NULL;
+  tcp->read_cb = nullptr;
   TCP_UNREF(exec_ctx, tcp, "read");
   GRPC_CLOSURE_SCHED(exec_ctx, cb, error);
 }
@@ -224,7 +224,7 @@ static void win_read(grpc_exec_ctx* exec_ctx, grpc_endpoint* ep,
 
   /* First let's try a synchronous, non-blocking read. */
   status =
-      WSARecv(tcp->socket->socket, &buffer, 1, &bytes_read, &flags, NULL, NULL);
+      WSARecv(tcp->socket->socket, &buffer, 1, &bytes_read, &flags, nullptr, nullptr);
   info->wsa_error = status == 0 ? 0 : WSAGetLastError();
 
   /* Did we get data immediately ? Yay. */
@@ -237,7 +237,7 @@ static void win_read(grpc_exec_ctx* exec_ctx, grpc_endpoint* ep,
   /* Otherwise, let's retry, by queuing a read. */
   memset(&tcp->socket->read_info.overlapped, 0, sizeof(OVERLAPPED));
   status = WSARecv(tcp->socket->socket, &buffer, 1, &bytes_read, &flags,
-                   &info->overlapped, NULL);
+                   &info->overlapped, nullptr);
 
   if (status != 0) {
     int wsa_error = WSAGetLastError();
@@ -263,7 +263,7 @@ static void on_write(grpc_exec_ctx* exec_ctx, void* tcpp, grpc_error* error) {
 
   gpr_mu_lock(&tcp->mu);
   cb = tcp->write_cb;
-  tcp->write_cb = NULL;
+  tcp->write_cb = nullptr;
   gpr_mu_unlock(&tcp->mu);
 
   if (error == GRPC_ERROR_NONE) {
@@ -288,7 +288,7 @@ static void win_write(grpc_exec_ctx* exec_ctx, grpc_endpoint* ep,
   DWORD bytes_sent;
   int status;
   WSABUF local_buffers[16];
-  WSABUF* allocated = NULL;
+  WSABUF* allocated = nullptr;
   WSABUF* buffers = local_buffers;
   size_t len;
 
@@ -317,7 +317,7 @@ static void win_write(grpc_exec_ctx* exec_ctx, grpc_endpoint* ep,
 
   /* First, let's try a synchronous, non-blocking write. */
   status = WSASend(socket->socket, buffers, (DWORD)tcp->write_slices->count,
-                   &bytes_sent, 0, NULL, NULL);
+                   &bytes_sent, 0, nullptr, nullptr);
   info->wsa_error = status == 0 ? 0 : WSAGetLastError();
 
   /* We would kind of expect to get a WSAEWOULDBLOCK here, especially on a busy
@@ -338,7 +338,7 @@ static void win_write(grpc_exec_ctx* exec_ctx, grpc_endpoint* ep,
      operation, this time asynchronously. */
   memset(&socket->write_info.overlapped, 0, sizeof(OVERLAPPED));
   status = WSASend(socket->socket, buffers, (DWORD)tcp->write_slices->count,
-                   &bytes_sent, 0, &socket->write_info.overlapped, NULL);
+                   &bytes_sent, 0, &socket->write_info.overlapped, nullptr);
   if (allocated) gpr_free(allocated);
 
   if (status != 0) {
@@ -431,7 +431,7 @@ grpc_endpoint* grpc_tcp_create(grpc_exec_ctx* exec_ctx, grpc_winsocket* socket,
                                grpc_channel_args* channel_args,
                                const char* peer_string) {
   grpc_resource_quota* resource_quota = grpc_resource_quota_create(NULL);
-  if (channel_args != NULL) {
+  if (channel_args != nullptr) {
     for (size_t i = 0; i < channel_args->num_args; i++) {
       if (0 == strcmp(channel_args->args[i].key, GRPC_ARG_RESOURCE_QUOTA)) {
         grpc_resource_quota_unref_internal(exec_ctx, resource_quota);

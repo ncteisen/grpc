@@ -58,17 +58,17 @@ typedef struct {
 
 /* Creates a client handshaker factory.
    - pem_key_cert_pair is a pointer to the object containing client's private
-     key and certificate chain. This parameter can be NULL if the client does
+     key and certificate chain. This parameter can be nullptr if the client does
      not have such a key/cert pair.
    - pem_roots_cert is the NULL-terminated string containing the PEM encoding of
-     the client root certificates. This parameter may be NULL if the server does
+     the client root certificates. This parameter may be nullptr if the server does
      not want the client to be authenticated with SSL.
    - cipher_suites contains an optional list of the ciphers that the client
      supports. The format of this string is described in:
      https://www.openssl.org/docs/apps/ciphers.html.
-     This parameter can be set to NULL to use the default set of ciphers.
+     This parameter can be set to nullptr to use the default set of ciphers.
      TODO(jboeuf): Revisit the format of this parameter.
-   - alpn_protocols is an array containing the NULL terminated protocol names
+   - alpn_protocols is an array containing the nullptr terminated protocol names
      that the handshakers created with this factory support. This parameter can
      be NULL.
    - num_alpn_protocols is the number of alpn protocols and associated lengths
@@ -118,9 +118,9 @@ typedef struct tsi_ssl_server_handshaker_factory
    - cipher_suites contains an optional list of the ciphers that the server
      supports. The format of this string is described in:
      https://www.openssl.org/docs/apps/ciphers.html.
-     This parameter can be set to NULL to use the default set of ciphers.
+     This parameter can be set to nullptr to use the default set of ciphers.
      TODO(jboeuf): Revisit the format of this parameter.
-   - alpn_protocols is an array containing the NULL terminated protocol names
+   - alpn_protocols is an array containing the nullptr terminated protocol names
      that the handshakers created with this factory support. This parameter can
      be NULL.
    - num_alpn_protocols is the number of alpn protocols and associated lengths
@@ -141,7 +141,7 @@ tsi_result tsi_create_ssl_server_handshaker_factory(
    certificate authentication.
    - client_certificate_request, if set to non-zero will force the client to
      authenticate with an SSL cert. Note that this option is ignored if
-     pem_client_root_certs is NULL or pem_client_roots_certs_size is 0 */
+     pem_client_root_certs is nullptr or pem_client_roots_certs_size is 0 */
 tsi_result tsi_create_ssl_server_handshaker_factory_ex(
     const tsi_ssl_pem_key_cert_pair* pem_key_cert_pairs,
     size_t num_key_cert_pairs, const char* pem_client_root_certs,

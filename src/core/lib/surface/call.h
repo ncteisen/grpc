@@ -41,7 +41,7 @@ typedef struct grpc_call_create_args {
   uint32_t propagation_mask;
 
   grpc_completion_queue* cq;
-  /* if not NULL, it'll be used in lieu of cq */
+  /* if not nullptr, it'll be used in lieu of cq */
   grpc_pollset_set* pollset_set_alternative;
 
   const void* server_transport_data;
