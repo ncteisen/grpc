@@ -53,7 +53,8 @@ gpr_char_to_tchar(LPCSTR input) {
 LPSTR
 gpr_tchar_to_char(LPCTSTR input) {
   LPSTR ret;
-  int needed = WideCharToMultiByte(CP_UTF8, 0, input, -1, nullptr, 0, nullptr, nullptr);
+  int needed =
+      WideCharToMultiByte(CP_UTF8, 0, input, -1, nullptr, 0, nullptr, nullptr);
   if (needed <= 0) return nullptr;
   ret = (LPSTR)gpr_malloc((unsigned)needed);
   WideCharToMultiByte(CP_UTF8, 0, input, -1, ret, needed, nullptr, nullptr);

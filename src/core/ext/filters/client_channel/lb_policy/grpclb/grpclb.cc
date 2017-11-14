@@ -328,8 +328,8 @@ typedef struct glb_lb_policy {
   /** connectivity state of the LB channel */
   grpc_connectivity_state lb_channel_connectivity;
 
-  /** stores the deserialized response from the LB. May be nullptr until one such
-   * response has arrived. */
+  /** stores the deserialized response from the LB. May be nullptr until one
+   * such response has arrived. */
   grpc_grpclb_serverlist* serverlist;
 
   /** Index into serverlist for next pick.

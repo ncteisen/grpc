@@ -44,8 +44,8 @@ typedef struct grpc_slice_hash_table_entry {
 
 /** Creates a new hash table of containing \a entries, which is an array
     of length \a num_entries.  Takes ownership of all keys and values in \a
-    entries.  Values will be cleaned up via \a destroy_value(). If not nullptr, \a
-    value_cmp will be used to compare values in the context of \a
+    entries.  Values will be cleaned up via \a destroy_value(). If not nullptr,
+   \a value_cmp will be used to compare values in the context of \a
     grpc_slice_hash_table_cmp. If nullptr, raw pointer (\a GPR_ICMP) comparison
     will be used. */
 grpc_slice_hash_table* grpc_slice_hash_table_create(

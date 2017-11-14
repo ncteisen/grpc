@@ -375,8 +375,8 @@ static void on_accept(grpc_exec_ctx* exec_ctx, void* arg, grpc_error* error) {
     acceptor->from_server = sp->server;
     acceptor->port_index = sp->port_index;
     acceptor->fd_index = 0;
-    sp->server->on_accept_cb(exec_ctx, sp->server->on_accept_cb_arg, ep, nullptr,
-                             acceptor);
+    sp->server->on_accept_cb(exec_ctx, sp->server->on_accept_cb_arg, ep,
+                             nullptr, acceptor);
   }
   /* As we were notified from the IOCP of one and exactly one accept,
      the former socked we created has now either been destroy or assigned

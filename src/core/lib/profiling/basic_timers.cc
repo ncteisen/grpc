@@ -153,7 +153,8 @@ static void writing_thread(void* unused) {
   gpr_timer_log* log;
   pthread_mutex_lock(&g_mu);
   for (;;) {
-    while ((log = timer_log_pop_front(&g_done_logs)) == nullptr && !g_shutdown) {
+    while ((log = timer_log_pop_front(&g_done_logs)) == nullptr &&
+           !g_shutdown) {
       pthread_cond_wait(&g_cv, &g_mu);
     }
     if (log != nullptr) {

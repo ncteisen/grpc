@@ -61,8 +61,8 @@ typedef struct {
      key and certificate chain. This parameter can be nullptr if the client does
      not have such a key/cert pair.
    - pem_roots_cert is the NULL-terminated string containing the PEM encoding of
-     the client root certificates. This parameter may be nullptr if the server does
-     not want the client to be authenticated with SSL.
+     the client root certificates. This parameter may be nullptr if the server
+   does not want the client to be authenticated with SSL.
    - cipher_suites contains an optional list of the ciphers that the client
      supports. The format of this string is described in:
      https://www.openssl.org/docs/apps/ciphers.html.

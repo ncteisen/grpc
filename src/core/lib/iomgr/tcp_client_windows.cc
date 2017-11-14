@@ -160,9 +160,9 @@ static void tcp_client_connect_impl(
 
   /* Grab the function pointer for ConnectEx for that specific socket.
      It may change depending on the interface. */
-  status =
-      WSAIoctl(sock, SIO_GET_EXTENSION_FUNCTION_POINTER, &guid, sizeof(guid),
-               &ConnectEx, sizeof(ConnectEx), &ioctl_num_bytes, nullptr, nullptr);
+  status = WSAIoctl(sock, SIO_GET_EXTENSION_FUNCTION_POINTER, &guid,
+                    sizeof(guid), &ConnectEx, sizeof(ConnectEx),
+                    &ioctl_num_bytes, nullptr, nullptr);
 
   if (status != 0) {
     error = GRPC_WSA_ERROR(WSAGetLastError(),
@@ -181,8 +181,8 @@ static void tcp_client_connect_impl(
 
   socket = grpc_winsocket_create(sock, "client");
   info = &socket->write_info;
-  success = ConnectEx(sock, (struct sockaddr*)&addr->addr, (int)addr->len, nullptr,
-                      0, nullptr, &info->overlapped);
+  success = ConnectEx(sock, (struct sockaddr*)&addr->addr, (int)addr->len,
+                      nullptr, 0, nullptr, &info->overlapped);
 
   /* It wouldn't be unusual to get a success immediately. But we'll still get
      an IOCP notification, so let's ignore it. */

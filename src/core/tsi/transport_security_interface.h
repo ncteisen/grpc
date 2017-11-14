@@ -391,8 +391,8 @@ tsi_result tsi_handshaker_extract_peer(tsi_handshaker* self, tsi_peer* peer);
    that can be called on this object is Destroy.
    - max_output_protected_frame_size is an input/output parameter specifying the
      desired max output protected frame size as input and outputing the actual
-     max output frame size as the output. Passing nullptr is OK and will result in
-     the implementation choosing the default maximum protected frame size. Note
+     max output frame size as the output. Passing nullptr is OK and will result
+   in the implementation choosing the default maximum protected frame size. Note
      that this size only applies to outgoing frames (generated with
      tsi_frame_protector_protect) and not incoming frames (input of
      tsi_frame_protector_unprotect).
@@ -423,8 +423,8 @@ typedef void (*tsi_handshaker_on_next_done_cb)(
    - bytes_to_send is the data buffer to be sent to the peer.
    - bytes_to_send_size is the size of data buffer to be sent to the peer.
    - handshaker_result is the result of handshake if the handshake completes.
-   - cb is the callback function defined above. It can be nullptr for synchronous
-     TSI handshaker implementation.
+   - cb is the callback function defined above. It can be nullptr for
+   synchronous TSI handshaker implementation.
    - user_data is the argument to callback function passed from the caller.
    This method returns TSI_ASYNC if the TSI handshaker implementation is
    asynchronous, and in this case, the callback is guaranteed to run in another

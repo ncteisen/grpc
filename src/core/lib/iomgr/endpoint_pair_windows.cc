@@ -54,8 +54,8 @@ static void create_sockets(SOCKET sv[2]) {
                        WSA_FLAG_OVERLAPPED);
   GPR_ASSERT(cli_sock != INVALID_SOCKET);
 
-  GPR_ASSERT(WSAConnect(cli_sock, (struct sockaddr*)&addr, addr_len, nullptr, nullptr,
-                        nullptr, nullptr) == 0);
+  GPR_ASSERT(WSAConnect(cli_sock, (struct sockaddr*)&addr, addr_len, nullptr,
+                        nullptr, nullptr, nullptr) == 0);
   svr_sock = accept(lst_sock, (struct sockaddr*)&addr, &addr_len);
   GPR_ASSERT(svr_sock != INVALID_SOCKET);
 

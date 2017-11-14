@@ -36,8 +36,8 @@ void grpc_register_lb_policy(grpc_lb_policy_factory* factory);
 
 /** Create a \a grpc_lb_policy instance.
  *
- * If \a name is nullptr, the default factory from \a grpc_lb_policy_registry_init
- * will be returned. */
+ * If \a name is nullptr, the default factory from \a
+ * grpc_lb_policy_registry_init will be returned. */
 grpc_lb_policy* grpc_lb_policy_create(grpc_exec_ctx* exec_ctx, const char* name,
                                       grpc_lb_policy_args* args);
 

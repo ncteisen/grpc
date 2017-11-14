@@ -227,7 +227,8 @@ struct grpc_transport_stream_op_batch_payload {
 typedef struct grpc_transport_op {
   /** Called when processing of this op is done. */
   grpc_closure* on_consumed;
-  /** connectivity monitoring - set connectivity_state to nullptr to unsubscribe */
+  /** connectivity monitoring - set connectivity_state to nullptr to unsubscribe
+   */
   grpc_closure* on_connectivity_state_change;
   grpc_connectivity_state* connectivity_state;
   /** should the transport be disconnected

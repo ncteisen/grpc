@@ -220,8 +220,8 @@ void grpc_channel_stack_destroy(grpc_exec_ctx* exec_ctx,
                                 grpc_channel_stack* stack);
 
 /* Initialize a call stack given a channel stack. transport_server_data is
-   expected to be nullptr on a client, or an opaque transport owned pointer on the
-   server. */
+   expected to be nullptr on a client, or an opaque transport owned pointer on
+   the server. */
 grpc_error* grpc_call_stack_init(grpc_exec_ctx* exec_ctx,
                                  grpc_channel_stack* channel_stack,
                                  int initial_refs, grpc_iomgr_cb_func destroy,

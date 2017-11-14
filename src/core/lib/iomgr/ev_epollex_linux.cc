@@ -382,8 +382,8 @@ static void fd_orphan(grpc_exec_ctx* exec_ctx, grpc_fd* fd,
 
   fd->on_done_closure = on_done;
 
-  /* If release_fd is not nullptr, we should be relinquishing control of the file
-     descriptor fd->fd (but we still own the grpc_fd structure). */
+  /* If release_fd is not nullptr, we should be relinquishing control of the
+     file descriptor fd->fd (but we still own the grpc_fd structure). */
   if (release_fd != nullptr) {
     *release_fd = fd->fd;
   } else if (!is_fd_closed) {

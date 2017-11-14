@@ -48,9 +48,9 @@ grpc_tracer_flag grpc_lb_round_robin_trace =
 typedef struct pending_pick {
   struct pending_pick* next;
 
-  /* output argument where to store the pick()ed user_data. It'll be nullptr if no
-   * such data is present or there's an error (the definite test for errors is
-   * \a target being nullptr). */
+  /* output argument where to store the pick()ed user_data. It'll be nullptr if
+   * no such data is present or there's an error (the definite test for errors
+   * is \a target being nullptr). */
   void** user_data;
 
   /* bitmask passed to pick() and used for selective cancelling. See

@@ -214,8 +214,8 @@ typedef struct {
    - config is the SSL config to be used for the SSL channel establishment.
    - is_client should be 0 for a server or a non-0 value for a client.
    - secure_peer_name is the secure peer name that should be checked in
-     grpc_channel_security_connector_check_peer. This parameter may be nullptr in
-     which case the peer name will not be checked. Note that if this parameter
+     grpc_channel_security_connector_check_peer. This parameter may be nullptr
+  in which case the peer name will not be checked. Note that if this parameter
      is not nullptr, then, pem_root_certs should not be nullptr either.
    - sc is a pointer on the connector to be created.
   This function returns GRPC_SECURITY_OK in case of success or a

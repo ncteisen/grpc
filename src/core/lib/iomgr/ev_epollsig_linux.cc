@@ -191,8 +191,8 @@ typedef struct polling_island {
    * use gpr_atm type here so that we can do atomic access on this and reduce
    * lock contention on 'mu' mutex.
    *
-   * Note that if this field is not nullptr (i.e not 0), all the remaining fields
-   * (except mu and ref_count) are invalid and must be ignored. */
+   * Note that if this field is not nullptr (i.e not 0), all the remaining
+   * fields (except mu and ref_count) are invalid and must be ignored. */
   gpr_atm merged_to;
 
   /* Number of threads currently polling on this island */
@@ -890,8 +890,8 @@ static void fd_orphan(grpc_exec_ctx* exec_ctx, grpc_fd* fd,
     fd->po.pi = nullptr;
   }
 
-  /* If release_fd is not nullptr, we should be relinquishing control of the file
-     descriptor fd->fd (but we still own the grpc_fd structure). */
+  /* If release_fd is not nullptr, we should be relinquishing control of the
+     file descriptor fd->fd (but we still own the grpc_fd structure). */
   if (release_fd != nullptr) {
     *release_fd = fd->fd;
   } else {
@@ -1421,13 +1421,12 @@ static void add_poll_object(grpc_exec_ctx* exec_ctx, poll_obj* bag,
 retry:
   /*
    * 1) If item->pi and bag->pi are both non-NULL and equal, do nothing
-   * 2) If item->pi and bag->pi are both nullptr, create a new polling island (with
-   *    a refcount of 2) and point item->pi and bag->pi to the new island
-   * 3) If exactly one of item->pi or bag->pi is nullptr, update it to point to
-   *    the other's non-NULL pi
-   * 4) Finally if item->pi and bag-pi are non-NULL and not-equal, merge the
-   *    polling islands and update item->pi and bag->pi to point to the new
-   *    island
+   * 2) If item->pi and bag->pi are both nullptr, create a new polling island
+   * (with a refcount of 2) and point item->pi and bag->pi to the new island 3)
+   * If exactly one of item->pi or bag->pi is nullptr, update it to point to the
+   * other's non-NULL pi 4) Finally if item->pi and bag-pi are non-NULL and
+   * not-equal, merge the polling islands and update item->pi and bag->pi to
+   * point to the new island
    */
 
   /* Early out if we are trying to add an 'fd' to a 'bag' but the fd is already

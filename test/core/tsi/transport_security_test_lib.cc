@@ -518,15 +518,17 @@ tsi_test_frame_protector_config* tsi_test_frame_protector_config_create(
           ? generate_random_message(TSI_TEST_BIG_MESSAGE_SIZE)
           : generate_random_message(TSI_TEST_SMALL_MESSAGE_SIZE);
   /* Set the value for client max_output_protected_frame_size.
-     If it is 0, we pass nullptr to tsi_handshaker_result_create_frame_protector(),
-     which then uses default protected frame size for it. */
+     If it is 0, we pass nullptr to
+     tsi_handshaker_result_create_frame_protector(), which then uses default
+     protected frame size for it. */
   config->client_max_output_protected_frame_size =
       use_default_client_max_output_protected_frame_size
           ? 0
           : TSI_TEST_SMALL_CLIENT_MAX_OUTPUT_PROTECTED_FRAME_SIZE;
   /* Set the value for server max_output_protected_frame_size.
-     If it is 0, we pass nullptr to tsi_handshaker_result_create_frame_protector(),
-     which then uses default protected frame size for it. */
+     If it is 0, we pass nullptr to
+     tsi_handshaker_result_create_frame_protector(), which then uses default
+     protected frame size for it. */
   config->server_max_output_protected_frame_size =
       use_default_server_max_output_protected_frame_size
           ? 0

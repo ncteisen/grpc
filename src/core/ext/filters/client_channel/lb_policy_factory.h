@@ -41,10 +41,10 @@ struct grpc_lb_policy_factory {
 };
 
 /** A resolved address alongside any LB related information associated with it.
- * \a user_data, if not nullptr, contains opaque data meant to be consumed by the
- * gRPC LB policy. Note that no all LB policies support \a user_data as input.
- * Those who don't will simply ignore it and will correspondingly return nullptr in
- * their namesake pick() output argument. */
+ * \a user_data, if not nullptr, contains opaque data meant to be consumed by
+ * the gRPC LB policy. Note that no all LB policies support \a user_data as
+ * input. Those who don't will simply ignore it and will correspondingly return
+ * nullptr in their namesake pick() output argument. */
 typedef struct grpc_lb_address {
   grpc_resolved_address address;
   bool is_balancer;

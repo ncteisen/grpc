@@ -783,8 +783,8 @@ grpc_error* grpc_wsa_error(const char* file, int line, int err,
       grpc_error_set_str(
           grpc_error_set_int(
               grpc_error_create(file, line,
-                                grpc_slice_from_static_string("OS Error"), nullptr,
-                                0),
+                                grpc_slice_from_static_string("OS Error"),
+                                nullptr, 0),
               GRPC_ERROR_INT_WSA_ERROR, err),
           GRPC_ERROR_STR_OS_ERROR, grpc_slice_from_copied_string(utf8_message)),
       GRPC_ERROR_STR_SYSCALL, grpc_slice_from_static_string(call_name));

@@ -22,7 +22,8 @@
 #include "src/core/lib/security/credentials/credentials.h"
 
 /* Fetch oauth2 access token with a credentials object. Does not take ownership.
-   Returns nullptr on a failure. The caller should call gpr_free on the token. */
+   Returns nullptr on a failure. The caller should call gpr_free on the token.
+ */
 char* grpc_test_fetch_oauth2_token_with_credentials(
     grpc_call_credentials* creds);
 

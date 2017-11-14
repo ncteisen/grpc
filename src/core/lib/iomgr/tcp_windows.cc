@@ -223,8 +223,8 @@ static void win_read(grpc_exec_ctx* exec_ctx, grpc_endpoint* ep,
   TCP_REF(tcp, "read");
 
   /* First let's try a synchronous, non-blocking read. */
-  status =
-      WSARecv(tcp->socket->socket, &buffer, 1, &bytes_read, &flags, nullptr, nullptr);
+  status = WSARecv(tcp->socket->socket, &buffer, 1, &bytes_read, &flags,
+                   nullptr, nullptr);
   info->wsa_error = status == 0 ? 0 : WSAGetLastError();
 
   /* Did we get data immediately ? Yay. */

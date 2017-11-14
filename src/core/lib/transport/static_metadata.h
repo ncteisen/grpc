@@ -245,7 +245,7 @@ extern const grpc_slice_refcount_vtable grpc_static_metadata_vtable;
 extern grpc_slice_refcount
     grpc_static_metadata_refcounts[GRPC_STATIC_MDSTR_COUNT];
 #define GRPC_IS_STATIC_METADATA_STRING(slice) \
-  ((slice).refcount != nullptr &&                \
+  ((slice).refcount != nullptr &&             \
    (slice).refcount->vtable == &grpc_static_metadata_vtable)
 
 #define GRPC_STATIC_METADATA_INDEX(static_slice) \
