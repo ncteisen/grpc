@@ -101,6 +101,7 @@ cdef class Operation:
   cdef grpc_status_code _received_status_code
   cdef grpc_slice _status_details
   cdef int _received_cancelled
+  cdef const char* _debug_error_string
   cdef readonly bint is_valid
   cdef object references
 

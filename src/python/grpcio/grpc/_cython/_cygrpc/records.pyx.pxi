@@ -414,6 +414,7 @@ cdef class Operation:
     self.references = []
     self._c_metadata_needs_release = False
     self._c_metadata_array_needs_destruction = False
+    self._debug_error_string = NULL
     self._status_details = grpc_empty_slice()
     self.is_valid = False
 
@@ -461,6 +462,24 @@ cdef class Operation:
     return self._received_status_code
 
   @property
+  def received_debug_error_string(self):
+    if self.c_op.type != GRPC_OP_RECV_STATUS_ON_CLIENT:
+      raise TypeError("self must be an operation receiving a debug error string")
+    if self._debug_error_string != NULL:
+      return <bytes>self._debug_error_string
+    else:
+      return ""
+
+  @property
+  def received_debug_error_string_or_none(self):
+    if self.c_op.type != GRPC_OP_RECV_STATUS_ON_CLIENT:
+      return None
+    if self._debug_error_string != NULL:
+      return <bytes>self._debug_error_string
+    else:
+      return ""
+
+  @property
   def received_status_details(self):
     if self.c_op.type != GRPC_OP_RECV_STATUS_ON_CLIENT:
       raise TypeError("self must be an operation receiving status details")
@@ -491,6 +510,8 @@ cdef class Operation:
     if self._c_metadata_array_needs_destruction:
       grpc_metadata_array_destroy(&self._c_metadata_array)
     grpc_slice_unref(self._status_details)
+    if self._debug_error_string != NULL:
+      gpr_free(<void*>self._debug_error_string)
     grpc_shutdown()
 
 def operation_send_initial_metadata(metadata, int flags):
@@ -574,6 +595,8 @@ def operation_receive_status_on_client(int flags):
       &op._received_status_code)
   op.c_op.data.receive_status_on_client.status_details = (
       &op._status_details)
+  op.c_op.data.receive_status_on_client.error_string = (
+      &op._debug_error_string)
   op.is_valid = True
   return op
 
