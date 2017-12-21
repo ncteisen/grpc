@@ -699,10 +699,10 @@ class RPCTest(unittest.TestCase):
         # sanity checks on to make sure returned string contains default members
         # of the error
         debug_error_string = exception_context.exception.debug_error_string()
-        self.assertTrue("created" in debug_error_string)
-        self.assertTrue("description" in debug_error_string)
-        self.assertTrue("file" in debug_error_string)
-        self.assertTrue("file_line" in debug_error_string)
+        self.assertIn("created", debug_error_string)
+        self.assertIn("description", debug_error_string)
+        self.assertIn("file", debug_error_string)
+        self.assertIn("file_line", debug_error_string)
 
     def testFailedUnaryRequestFutureUnaryResponse(self):
         request = b'\x37\x17'
