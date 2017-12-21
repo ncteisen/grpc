@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2015 gRPC authors.
+# Copyright 2017 gRPC authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,23 +15,5 @@
 
 set -ex
 
-CONFIG=${CONFIG:-opt}
-
-# change to grpc repo root
-cd "$(dirname "$0")/../../.."
-
-root=$(pwd)
-export GRPC_LIB_SUBDIR=libs/$CONFIG
-export CFLAGS="-Wno-parentheses-equality"
-
-# build php
-cd src/php
-
-cd ext/grpc
-phpize
-if [ "$CONFIG" != "gcov" ] ; then
-  ./configure --enable-grpc="$root"
-else
-  ./configure --enable-grpc="$root" --enable-coverage
-fi
-make
+GENERATED_FILES_PATH="$TEST_SRCDIR/../../../../../genfiles/src/proto/grpc/testing/"
+test/cpp/codegen/golden_file_test --generated_file_path="$GENERATED_FILES_PATH"

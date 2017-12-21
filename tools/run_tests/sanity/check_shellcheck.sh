@@ -1,5 +1,5 @@
-#!/bin/bash
-# Copyright 2015 gRPC authors.
+#!/usr/bin/env bash
+# Copyright 2017 gRPC authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,25 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -ex
 
-CONFIG=${CONFIG:-opt}
+set -e
 
-# change to grpc repo root
-cd "$(dirname "$0")/../../.."
+ROOT="$(dirname "$0")/../../.."
 
-root=$(pwd)
-export GRPC_LIB_SUBDIR=libs/$CONFIG
-export CFLAGS="-Wno-parentheses-equality"
+DIRS=(
+    'tools/run_tests/helper_scripts'
+    'tools/run_tests/sanity'
+)
 
-# build php
-cd src/php
-
-cd ext/grpc
-phpize
-if [ "$CONFIG" != "gcov" ] ; then
-  ./configure --enable-grpc="$root"
-else
-  ./configure --enable-grpc="$root" --enable-coverage
-fi
-make
+for dir in "${DIRS[@]}"; do
+  find "$ROOT/$dir/" -name "*.sh" -type f -print0 | xargs -n1 -0 shellcheck
+done
