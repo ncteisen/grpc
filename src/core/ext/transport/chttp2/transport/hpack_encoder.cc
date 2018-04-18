@@ -461,7 +461,7 @@ static void hpack_enc(grpc_chttp2_hpack_compressor* c, grpc_mdelem elem,
         "Reserved header (colon-prefixed) happening after regular ones.");
   }
 
-  if (grpc_http_trace.enabled()) {
+  if (grpc_http_trace.enabled() && (false)) {
     char* k = grpc_slice_to_c_string(GRPC_MDKEY(elem));
     char* v = nullptr;
     if (grpc_is_binary_header(GRPC_MDKEY(elem))) {
@@ -653,7 +653,7 @@ void grpc_chttp2_hpack_compressor_set_max_table_size(
     }
   }
   c->advertise_table_size_change = 1;
-  if (grpc_http_trace.enabled()) {
+  if (grpc_http_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "set max table size from encoder to %d", max_table_size);
   }
 }

@@ -56,9 +56,9 @@
 
 #define GRPC_POLLSET_KICK_BROADCAST ((grpc_pollset_worker*)1)
 
-#define GRPC_POLLING_TRACE(...)       \
-  if (grpc_polling_trace.enabled()) { \
-    gpr_log(GPR_INFO, __VA_ARGS__);   \
+#define GRPC_POLLING_TRACE(...)                  \
+  if (grpc_polling_trace.enabled() && (false)) { \
+    gpr_log(GPR_INFO, __VA_ARGS__);              \
   }
 
 static int grpc_wakeup_signal = -1;
@@ -290,7 +290,7 @@ static void pi_unref(polling_island* pi);
 #ifndef NDEBUG
 static void pi_add_ref_dbg(polling_island* pi, const char* reason,
                            const char* file, int line) {
-  if (grpc_polling_trace.enabled()) {
+  if (grpc_polling_trace.enabled() && (false)) {
     gpr_atm old_cnt = gpr_atm_acq_load(&pi->ref_count);
     gpr_log(GPR_DEBUG,
             "Add ref pi: %p, old:%" PRIdPTR " -> new:%" PRIdPTR
@@ -302,7 +302,7 @@ static void pi_add_ref_dbg(polling_island* pi, const char* reason,
 
 static void pi_unref_dbg(polling_island* pi, const char* reason,
                          const char* file, int line) {
-  if (grpc_polling_trace.enabled()) {
+  if (grpc_polling_trace.enabled() && (false)) {
     gpr_atm old_cnt = gpr_atm_acq_load(&pi->ref_count);
     gpr_log(GPR_DEBUG,
             "Unref pi: %p, old:%" PRIdPTR " -> new:%" PRIdPTR
@@ -733,7 +733,7 @@ static gpr_mu fd_freelist_mu;
 #define UNREF_BY(fd, n, reason) unref_by(fd, n, reason, __FILE__, __LINE__)
 static void ref_by(grpc_fd* fd, int n, const char* reason, const char* file,
                    int line) {
-  if (grpc_trace_fd_refcount.enabled()) {
+  if (grpc_trace_fd_refcount.enabled() && (false)) {
     gpr_log(GPR_DEBUG,
             "FD %d %p   ref %d %" PRIdPTR " -> %" PRIdPTR " [%s; %s:%d]",
             fd->fd, fd, n, gpr_atm_no_barrier_load(&fd->refst),
@@ -750,7 +750,7 @@ static void ref_by(grpc_fd* fd, int n) {
 #ifndef NDEBUG
 static void unref_by(grpc_fd* fd, int n, const char* reason, const char* file,
                      int line) {
-  if (grpc_trace_fd_refcount.enabled()) {
+  if (grpc_trace_fd_refcount.enabled() && (false)) {
     gpr_log(GPR_DEBUG,
             "FD %d %p unref %d %" PRIdPTR " -> %" PRIdPTR " [%s; %s:%d]",
             fd->fd, fd, n, gpr_atm_no_barrier_load(&fd->refst),

@@ -136,7 +136,7 @@ grpc_auth_context* grpc_auth_context_ref(grpc_auth_context* ctx,
                                          const char* file, int line,
                                          const char* reason) {
   if (ctx == nullptr) return nullptr;
-  if (grpc_trace_auth_context_refcount.enabled()) {
+  if (grpc_trace_auth_context_refcount.enabled() && (false)) {
     gpr_atm val = gpr_atm_no_barrier_load(&ctx->refcount.count);
     gpr_log(file, line, GPR_LOG_SEVERITY_DEBUG,
             "AUTH_CONTEXT:%p   ref %" PRIdPTR " -> %" PRIdPTR " %s", ctx, val,
@@ -154,7 +154,7 @@ grpc_auth_context* grpc_auth_context_ref(grpc_auth_context* ctx) {
 void grpc_auth_context_unref(grpc_auth_context* ctx, const char* file, int line,
                              const char* reason) {
   if (ctx == nullptr) return;
-  if (grpc_trace_auth_context_refcount.enabled()) {
+  if (grpc_trace_auth_context_refcount.enabled() && (false)) {
     gpr_atm val = gpr_atm_no_barrier_load(&ctx->refcount.count);
     gpr_log(file, line, GPR_LOG_SEVERITY_DEBUG,
             "AUTH_CONTEXT:%p unref %" PRIdPTR " -> %" PRIdPTR " %s", ctx, val,

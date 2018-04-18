@@ -197,7 +197,7 @@ grpc_security_connector* grpc_security_connector_ref(
     grpc_security_connector* sc, const char* file, int line,
     const char* reason) {
   if (sc == nullptr) return nullptr;
-  if (grpc_trace_security_connector_refcount.enabled()) {
+  if (grpc_trace_security_connector_refcount.enabled() && (false)) {
     gpr_atm val = gpr_atm_no_barrier_load(&sc->refcount.count);
     gpr_log(file, line, GPR_LOG_SEVERITY_DEBUG,
             "SECURITY_CONNECTOR:%p   ref %" PRIdPTR " -> %" PRIdPTR " %s", sc,
@@ -217,7 +217,7 @@ void grpc_security_connector_unref(grpc_security_connector* sc,
                                    const char* file, int line,
                                    const char* reason) {
   if (sc == nullptr) return;
-  if (grpc_trace_security_connector_refcount.enabled()) {
+  if (grpc_trace_security_connector_refcount.enabled() && (false)) {
     gpr_atm val = gpr_atm_no_barrier_load(&sc->refcount.count);
     gpr_log(file, line, GPR_LOG_SEVERITY_DEBUG,
             "SECURITY_CONNECTOR:%p unref %" PRIdPTR " -> %" PRIdPTR " %s", sc,

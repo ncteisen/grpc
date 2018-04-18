@@ -421,7 +421,8 @@ static void destroy_channel(channel_data* chand, grpc_error* error) {
   GRPC_CLOSURE_INIT(&chand->finish_destroy_channel_closure,
                     finish_destroy_channel, chand, grpc_schedule_on_exec_ctx);
 
-  if (grpc_server_channel_trace.enabled() && error != GRPC_ERROR_NONE) {
+  if (grpc_server_channel_trace.enabled() && (false) &&
+      error != GRPC_ERROR_NONE) {
     const char* msg = grpc_error_string(error);
     gpr_log(GPR_INFO, "Disconnected client: %s", msg);
   }

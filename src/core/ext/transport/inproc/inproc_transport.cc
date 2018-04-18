@@ -35,9 +35,9 @@
 #include "src/core/lib/transport/error_utils.h"
 #include "src/core/lib/transport/transport_impl.h"
 
-#define INPROC_LOG(...)                                    \
-  do {                                                     \
-    if (grpc_inproc_trace.enabled()) gpr_log(__VA_ARGS__); \
+#define INPROC_LOG(...)                                               \
+  do {                                                                \
+    if (grpc_inproc_trace.enabled() && (false)) gpr_log(__VA_ARGS__); \
   } while (0)
 
 static grpc_slice g_empty_slice;
@@ -198,7 +198,7 @@ static grpc_error* fill_in_metadata(inproc_stream* s,
                                     const grpc_metadata_batch* metadata,
                                     uint32_t flags, grpc_metadata_batch* out_md,
                                     uint32_t* outflags, bool* markfilled) {
-  if (grpc_inproc_trace.enabled()) {
+  if (grpc_inproc_trace.enabled() && (false)) {
     log_metadata(metadata, s->t->is_client, outflags != nullptr);
   }
 
@@ -882,7 +882,7 @@ static void perform_stream_op(grpc_transport* gt, grpc_stream* gs,
   gpr_mu* mu = &s->t->mu->mu;  // save aside in case s gets closed
   gpr_mu_lock(mu);
 
-  if (grpc_inproc_trace.enabled()) {
+  if (grpc_inproc_trace.enabled() && (false)) {
     if (op->send_initial_metadata) {
       log_metadata(op->payload->send_initial_metadata.send_initial_metadata,
                    s->t->is_client, true);

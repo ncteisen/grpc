@@ -565,7 +565,7 @@ void GrpcLb::BalancerCallState::Orphan() {
 
 void GrpcLb::BalancerCallState::StartQuery() {
   GPR_ASSERT(lb_call_ != nullptr);
-  if (grpc_lb_glb_trace.enabled()) {
+  if (grpc_lb_glb_trace.enabled() && (false)) {
     gpr_log(GPR_INFO,
             "[grpclb %p] Starting LB call (lb_calld: %p, lb_call: %p)",
             grpclb_policy_.get(), this, lb_call_);
@@ -771,13 +771,13 @@ void GrpcLb::BalancerCallState::OnBalancerMessageReceivedLocked(
       lb_calld->client_stats_report_interval_ = GPR_MAX(
           GPR_MS_PER_SEC, grpc_grpclb_duration_to_millis(
                               &initial_response->client_stats_report_interval));
-      if (grpc_lb_glb_trace.enabled()) {
+      if (grpc_lb_glb_trace.enabled() && (false)) {
         gpr_log(GPR_INFO,
                 "[grpclb %p] Received initial LB response message; "
                 "client load reporting interval = %" PRIdPTR " milliseconds",
                 grpclb_policy, lb_calld->client_stats_report_interval_);
       }
-    } else if (grpc_lb_glb_trace.enabled()) {
+    } else if (grpc_lb_glb_trace.enabled() && (false)) {
       gpr_log(GPR_INFO,
               "[grpclb %p] Received initial LB response message; client load "
               "reporting NOT enabled",
@@ -789,7 +789,7 @@ void GrpcLb::BalancerCallState::OnBalancerMessageReceivedLocked(
                   response_slice)) != nullptr) {
     // Have seen initial response, look for serverlist.
     GPR_ASSERT(lb_calld->lb_call_ != nullptr);
-    if (grpc_lb_glb_trace.enabled()) {
+    if (grpc_lb_glb_trace.enabled() && (false)) {
       gpr_log(GPR_INFO,
               "[grpclb %p] Serverlist with %" PRIuPTR " servers received",
               grpclb_policy, serverlist->num_servers);
@@ -819,7 +819,7 @@ void GrpcLb::BalancerCallState::OnBalancerMessageReceivedLocked(
       }
       if (grpc_grpclb_serverlist_equals(grpclb_policy->serverlist_,
                                         serverlist)) {
-        if (grpc_lb_glb_trace.enabled()) {
+        if (grpc_lb_glb_trace.enabled() && (false)) {
           gpr_log(GPR_INFO,
                   "[grpclb %p] Incoming server list identical to current, "
                   "ignoring.",
@@ -846,7 +846,7 @@ void GrpcLb::BalancerCallState::OnBalancerMessageReceivedLocked(
         grpclb_policy->CreateOrUpdateRoundRobinPolicyLocked();
       }
     } else {
-      if (grpc_lb_glb_trace.enabled()) {
+      if (grpc_lb_glb_trace.enabled() && (false)) {
         gpr_log(GPR_INFO, "[grpclb %p] Received empty server list, ignoring.",
                 grpclb_policy);
       }
@@ -883,7 +883,7 @@ void GrpcLb::BalancerCallState::OnBalancerStatusReceivedLocked(
   BalancerCallState* lb_calld = static_cast<BalancerCallState*>(arg);
   GrpcLb* grpclb_policy = lb_calld->grpclb_policy();
   GPR_ASSERT(lb_calld->lb_call_ != nullptr);
-  if (grpc_lb_glb_trace.enabled()) {
+  if (grpc_lb_glb_trace.enabled() && (false)) {
     char* status_details =
         grpc_slice_to_c_string(lb_calld->lb_call_status_details_);
     gpr_log(GPR_INFO,
@@ -1046,7 +1046,7 @@ GrpcLb::GrpcLb(const grpc_lb_addresses* addresses,
   grpc_uri* uri = grpc_uri_parse(server_uri, true);
   GPR_ASSERT(uri->path[0] != '\0');
   server_name_ = gpr_strdup(uri->path[0] == '/' ? uri->path + 1 : uri->path);
-  if (grpc_lb_glb_trace.enabled()) {
+  if (grpc_lb_glb_trace.enabled() && (false)) {
     gpr_log(GPR_INFO,
             "[grpclb %p] Will use '%s' as the server name for LB request.",
             this, server_name_);
@@ -1226,7 +1226,7 @@ bool GrpcLb::PickLocked(PickState* pick) {
     // have been invoked yet. We need to make sure we aren't trying to pick
     // from an RR policy instance that's in shutdown.
     if (rr_connectivity_state == GRPC_CHANNEL_SHUTDOWN) {
-      if (grpc_lb_glb_trace.enabled()) {
+      if (grpc_lb_glb_trace.enabled() && (false)) {
         gpr_log(GPR_INFO,
                 "[grpclb %p] NOT picking from from RR %p: RR conn state=%s",
                 this, rr_policy_.get(),
@@ -1235,14 +1235,14 @@ bool GrpcLb::PickLocked(PickState* pick) {
       AddPendingPick(pp);
       pick_done = false;
     } else {  // RR not in shutdown
-      if (grpc_lb_glb_trace.enabled()) {
+      if (grpc_lb_glb_trace.enabled() && (false)) {
         gpr_log(GPR_INFO, "[grpclb %p] about to PICK from RR %p", this,
                 rr_policy_.get());
       }
       pick_done = PickFromRoundRobinPolicyLocked(false /* force_async */, pp);
     }
   } else {  // rr_policy_ == NULL
-    if (grpc_lb_glb_trace.enabled()) {
+    if (grpc_lb_glb_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG,
               "[grpclb %p] No RR policy. Adding to grpclb's pending picks",
               this);
@@ -1380,7 +1380,7 @@ void GrpcLb::StartBalancerCallLocked() {
   // Init the LB call data.
   GPR_ASSERT(lb_calld_ == nullptr);
   lb_calld_ = MakeOrphanable<BalancerCallState>(Ref());
-  if (grpc_lb_glb_trace.enabled()) {
+  if (grpc_lb_glb_trace.enabled() && (false)) {
     gpr_log(GPR_INFO,
             "[grpclb %p] Query for backends (lb_channel: %p, lb_calld: %p)",
             this, lb_channel_, lb_calld_.get());
@@ -1395,7 +1395,7 @@ void GrpcLb::OnFallbackTimerLocked(void* arg, grpc_error* error) {
   // actually runs, don't fall back.
   if (grpclb_policy->serverlist_ == nullptr && !grpclb_policy->shutting_down_ &&
       error == GRPC_ERROR_NONE) {
-    if (grpc_lb_glb_trace.enabled()) {
+    if (grpc_lb_glb_trace.enabled() && (false)) {
       gpr_log(GPR_INFO,
               "[grpclb %p] Falling back to use backends from resolver",
               grpclb_policy);
@@ -1408,7 +1408,7 @@ void GrpcLb::OnFallbackTimerLocked(void* arg, grpc_error* error) {
 
 void GrpcLb::StartBalancerCallRetryTimerLocked() {
   grpc_millis next_try = lb_call_backoff_.NextAttemptTime();
-  if (grpc_lb_glb_trace.enabled()) {
+  if (grpc_lb_glb_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "[grpclb %p] Connection to LB server lost...", this);
     grpc_millis timeout = next_try - ExecCtx::Get()->Now();
     if (timeout > 0) {
@@ -1436,7 +1436,7 @@ void GrpcLb::OnBalancerCallRetryTimerLocked(void* arg, grpc_error* error) {
   grpclb_policy->retry_timer_callback_pending_ = false;
   if (!grpclb_policy->shutting_down_ && error == GRPC_ERROR_NONE &&
       grpclb_policy->lb_calld_ == nullptr) {
-    if (grpc_lb_glb_trace.enabled()) {
+    if (grpc_lb_glb_trace.enabled() && (false)) {
       gpr_log(GPR_INFO, "[grpclb %p] Restarting call to LB server",
               grpclb_policy);
     }
@@ -1673,7 +1673,7 @@ void GrpcLb::CreateRoundRobinPolicyLocked(const Args& args) {
   PendingPick* pp;
   while ((pp = pending_picks_)) {
     pending_picks_ = pp->next;
-    if (grpc_lb_glb_trace.enabled()) {
+    if (grpc_lb_glb_trace.enabled() && (false)) {
       gpr_log(GPR_INFO,
               "[grpclb %p] Pending pick about to (async) PICK from RR %p", this,
               rr_policy_.get());
@@ -1684,7 +1684,7 @@ void GrpcLb::CreateRoundRobinPolicyLocked(const Args& args) {
   PendingPing* pping;
   while ((pping = pending_pings_)) {
     pending_pings_ = pping->next;
-    if (grpc_lb_glb_trace.enabled()) {
+    if (grpc_lb_glb_trace.enabled() && (false)) {
       gpr_log(GPR_INFO, "[grpclb %p] Pending ping about to PING from RR %p",
               this, rr_policy_.get());
     }
@@ -1723,7 +1723,7 @@ void GrpcLb::CreateOrUpdateRoundRobinPolicyLocked() {
   grpc_channel_args* args = CreateRoundRobinPolicyArgsLocked();
   GPR_ASSERT(args != nullptr);
   if (rr_policy_ != nullptr) {
-    if (grpc_lb_glb_trace.enabled()) {
+    if (grpc_lb_glb_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG, "[grpclb %p] Updating RR policy %p", this,
               rr_policy_.get());
     }
@@ -1734,7 +1734,7 @@ void GrpcLb::CreateOrUpdateRoundRobinPolicyLocked() {
     lb_policy_args.client_channel_factory = client_channel_factory();
     lb_policy_args.args = args;
     CreateRoundRobinPolicyLocked(lb_policy_args);
-    if (grpc_lb_glb_trace.enabled()) {
+    if (grpc_lb_glb_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG, "[grpclb %p] Created new RR policy %p", this,
               rr_policy_.get());
     }
@@ -1749,7 +1749,7 @@ void GrpcLb::OnRoundRobinRequestReresolutionLocked(void* arg,
     grpclb_policy->Unref(DEBUG_LOCATION, "on_rr_reresolution_requested");
     return;
   }
-  if (grpc_lb_glb_trace.enabled()) {
+  if (grpc_lb_glb_trace.enabled() && (false)) {
     gpr_log(
         GPR_DEBUG,
         "[grpclb %p] Re-resolution requested from the internal RR policy (%p).",
@@ -1811,7 +1811,7 @@ void GrpcLb::UpdateConnectivityStateFromRoundRobinPolicyLocked(
     case GRPC_CHANNEL_READY:
       GPR_ASSERT(rr_state_error == GRPC_ERROR_NONE);
   }
-  if (grpc_lb_glb_trace.enabled()) {
+  if (grpc_lb_glb_trace.enabled() && (false)) {
     gpr_log(
         GPR_INFO,
         "[grpclb %p] Setting grpclb's state to %s from new RR policy %p state.",

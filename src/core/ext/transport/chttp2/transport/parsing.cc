@@ -304,7 +304,7 @@ static grpc_error* init_frame_parser(grpc_chttp2_transport* t) {
     case GRPC_CHTTP2_FRAME_GOAWAY:
       return init_goaway_parser(t);
     default:
-      if (grpc_http_trace.enabled()) {
+      if (grpc_http_trace.enabled() && (false)) {
         gpr_log(GPR_ERROR, "Unknown frame type %02x", t->incoming_frame_type);
       }
       return init_skip_frame_parser(t, 0);
@@ -399,7 +399,7 @@ static void on_initial_header(void* tp, grpc_mdelem md) {
   grpc_chttp2_stream* s = t->incoming_stream;
   GPR_ASSERT(s != nullptr);
 
-  if (grpc_http_trace.enabled()) {
+  if (grpc_http_trace.enabled() && (false)) {
     char* key = grpc_slice_to_c_string(GRPC_MDKEY(md));
     char* value =
         grpc_dump_slice(GRPC_MDVALUE(md), GPR_DUMP_HEX | GPR_DUMP_ASCII);
@@ -480,7 +480,7 @@ static void on_trailing_header(void* tp, grpc_mdelem md) {
   grpc_chttp2_stream* s = t->incoming_stream;
   GPR_ASSERT(s != nullptr);
 
-  if (grpc_http_trace.enabled()) {
+  if (grpc_http_trace.enabled() && (false)) {
     char* key = grpc_slice_to_c_string(GRPC_MDKEY(md));
     char* value =
         grpc_dump_slice(GRPC_MDVALUE(md), GPR_DUMP_HEX | GPR_DUMP_ASCII);
@@ -726,7 +726,7 @@ static grpc_error* parse_frame_slice(grpc_chttp2_transport* t, grpc_slice slice,
   if (err == GRPC_ERROR_NONE) {
     return err;
   } else if (grpc_error_get_int(err, GRPC_ERROR_INT_STREAM_ID, nullptr)) {
-    if (grpc_http_trace.enabled()) {
+    if (grpc_http_trace.enabled() && (false)) {
       const char* msg = grpc_error_string(err);
       gpr_log(GPR_ERROR, "%s", msg);
     }

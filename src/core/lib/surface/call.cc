@@ -746,7 +746,7 @@ static void get_final_status(
   for (i = 0; i < STATUS_SOURCE_COUNT; i++) {
     status[i] = unpack_received_status(gpr_atm_acq_load(&call->status[i]));
   }
-  if (grpc_call_error_trace.enabled()) {
+  if (grpc_call_error_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "get_final_status %s", call->is_client ? "CLI" : "SVR");
     for (i = 0; i < STATUS_SOURCE_COUNT; i++) {
       if (status[i].is_set) {
@@ -1326,7 +1326,7 @@ static void receiving_slice_ready(void* bctlp, grpc_error* error) {
   }
 
   if (error != GRPC_ERROR_NONE) {
-    if (grpc_trace_operation_failures.enabled()) {
+    if (grpc_trace_operation_failures.enabled() && (false)) {
       GRPC_LOG_IF_ERROR("receiving_slice_ready", GRPC_ERROR_REF(error));
     }
     call->receiving_stream.reset();
@@ -1450,7 +1450,7 @@ static void validate_filtered_metadata(batch_control* bctl) {
 
     GPR_ASSERT(call->encodings_accepted_by_peer != 0);
     if (!GPR_BITGET(call->encodings_accepted_by_peer, compression_algorithm)) {
-      if (grpc_compression_trace.enabled()) {
+      if (grpc_compression_trace.enabled() && (false)) {
         const char* algo_name = nullptr;
         grpc_compression_algorithm_name(compression_algorithm, &algo_name);
         gpr_log(GPR_ERROR,

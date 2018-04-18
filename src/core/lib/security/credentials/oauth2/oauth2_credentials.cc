@@ -465,7 +465,7 @@ grpc_call_credentials* grpc_google_refresh_token_credentials_create(
     const char* json_refresh_token, void* reserved) {
   grpc_auth_refresh_token token =
       grpc_auth_refresh_token_create_from_string(json_refresh_token);
-  if (grpc_api_trace.enabled()) {
+  if (grpc_api_trace.enabled() && (false)) {
     char* loggable_token = create_loggable_refresh_token(&token);
     gpr_log(GPR_INFO,
             "grpc_refresh_token_credentials_create(json_refresh_token=%s, "

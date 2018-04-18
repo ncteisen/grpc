@@ -299,7 +299,7 @@ static grpc_fd* fd_create(int fd, const char* name) {
   gpr_asprintf(&fd_name, "%s fd=%d", name, fd);
   grpc_iomgr_register_object(&new_fd->iomgr_object, fd_name);
 #ifndef NDEBUG
-  if (grpc_trace_fd_refcount.enabled()) {
+  if (grpc_trace_fd_refcount.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "FD %d %p create %s", fd, new_fd, fd_name);
   }
 #endif
@@ -657,7 +657,7 @@ static grpc_error* do_epoll_wait(grpc_pollset* ps, grpc_millis deadline) {
 
   GRPC_STATS_INC_POLL_EVENTS_RETURNED(r);
 
-  if (grpc_polling_trace.enabled()) {
+  if (grpc_polling_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "ps: %p poll got %d events", ps, r);
   }
 
@@ -677,7 +677,7 @@ static bool begin_worker(grpc_pollset* pollset, grpc_pollset_worker* worker,
   worker->schedule_on_end_work = (grpc_closure_list)GRPC_CLOSURE_LIST_INIT;
   pollset->begin_refs++;
 
-  if (grpc_polling_trace.enabled()) {
+  if (grpc_polling_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "PS:%p BEGIN_STARTS:%p", pollset, worker);
   }
 
@@ -696,7 +696,7 @@ static bool begin_worker(grpc_pollset* pollset, grpc_pollset_worker* worker,
   retry_lock_neighborhood:
     gpr_mu_lock(&neighborhood->mu);
     gpr_mu_lock(&pollset->mu);
-    if (grpc_polling_trace.enabled()) {
+    if (grpc_polling_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG, "PS:%p BEGIN_REORG:%p kick_state=%s is_reassigning=%d",
               pollset, worker, kick_state_string(worker->state),
               is_reassigning);
@@ -748,7 +748,7 @@ static bool begin_worker(grpc_pollset* pollset, grpc_pollset_worker* worker,
     worker->initialized_cv = true;
     gpr_cv_init(&worker->cv);
     while (worker->state == UNKICKED && !pollset->shutting_down) {
-      if (grpc_polling_trace.enabled()) {
+      if (grpc_polling_trace.enabled() && (false)) {
         gpr_log(GPR_DEBUG, "PS:%p BEGIN_WAIT:%p kick_state=%s shutdown=%d",
                 pollset, worker, kick_state_string(worker->state),
                 pollset->shutting_down);
@@ -765,7 +765,7 @@ static bool begin_worker(grpc_pollset* pollset, grpc_pollset_worker* worker,
     grpc_core::ExecCtx::Get()->InvalidateNow();
   }
 
-  if (grpc_polling_trace.enabled()) {
+  if (grpc_polling_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG,
             "PS:%p BEGIN_DONE:%p kick_state=%s shutdown=%d "
             "kicked_without_poller: %d",
@@ -808,7 +808,7 @@ static bool check_neighborhood_for_available_poller(
           case UNKICKED:
             if (gpr_atm_no_barrier_cas(&g_active_poller, 0,
                                        (gpr_atm)inspect_worker)) {
-              if (grpc_polling_trace.enabled()) {
+              if (grpc_polling_trace.enabled() && (false)) {
                 gpr_log(GPR_DEBUG, " .. choose next poller to be %p",
                         inspect_worker);
               }
@@ -819,7 +819,7 @@ static bool check_neighborhood_for_available_poller(
                 gpr_cv_signal(&inspect_worker->cv);
               }
             } else {
-              if (grpc_polling_trace.enabled()) {
+              if (grpc_polling_trace.enabled() && (false)) {
                 gpr_log(GPR_DEBUG, " .. beaten to choose next poller");
               }
             }
@@ -837,7 +837,7 @@ static bool check_neighborhood_for_available_poller(
       } while (!found_worker && inspect_worker != inspect->root_worker);
     }
     if (!found_worker) {
-      if (grpc_polling_trace.enabled()) {
+      if (grpc_polling_trace.enabled() && (false)) {
         gpr_log(GPR_DEBUG, " .. mark pollset %p inactive", inspect);
       }
       inspect->seen_inactive = true;
@@ -857,7 +857,7 @@ static bool check_neighborhood_for_available_poller(
 static void end_worker(grpc_pollset* pollset, grpc_pollset_worker* worker,
                        grpc_pollset_worker** worker_hdl) {
   GPR_TIMER_SCOPE("end_worker", 0);
-  if (grpc_polling_trace.enabled()) {
+  if (grpc_polling_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "PS:%p END_WORKER:%p", pollset, worker);
   }
   if (worker_hdl != nullptr) *worker_hdl = nullptr;
@@ -867,7 +867,7 @@ static void end_worker(grpc_pollset* pollset, grpc_pollset_worker* worker,
                          grpc_core::ExecCtx::Get()->closure_list());
   if (gpr_atm_no_barrier_load(&g_active_poller) == (gpr_atm)worker) {
     if (worker->next != worker && worker->next->state == UNKICKED) {
-      if (grpc_polling_trace.enabled()) {
+      if (grpc_polling_trace.enabled() && (false)) {
         gpr_log(GPR_DEBUG, " .. choose next poller to be peer %p", worker);
       }
       GPR_ASSERT(worker->next->initialized_cv);
@@ -919,7 +919,7 @@ static void end_worker(grpc_pollset* pollset, grpc_pollset_worker* worker,
   if (worker->initialized_cv) {
     gpr_cv_destroy(&worker->cv);
   }
-  if (grpc_polling_trace.enabled()) {
+  if (grpc_polling_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG, " .. remove worker");
   }
   if (EMPTIED == worker_remove(pollset, worker)) {
@@ -988,7 +988,7 @@ static grpc_error* pollset_kick(grpc_pollset* pollset,
   GPR_TIMER_SCOPE("pollset_kick", 0);
   GRPC_STATS_INC_POLLSET_KICK();
   grpc_error* ret_err = GRPC_ERROR_NONE;
-  if (grpc_polling_trace.enabled()) {
+  if (grpc_polling_trace.enabled() && (false)) {
     gpr_strvec log;
     gpr_strvec_init(&log);
     char* tmp;
@@ -1021,7 +1021,7 @@ static grpc_error* pollset_kick(grpc_pollset* pollset,
       if (root_worker == nullptr) {
         GRPC_STATS_INC_POLLSET_KICKED_WITHOUT_POLLER();
         pollset->kicked_without_poller = true;
-        if (grpc_polling_trace.enabled()) {
+        if (grpc_polling_trace.enabled() && (false)) {
           gpr_log(GPR_DEBUG, " .. kicked_without_poller");
         }
         goto done;
@@ -1029,14 +1029,14 @@ static grpc_error* pollset_kick(grpc_pollset* pollset,
       grpc_pollset_worker* next_worker = root_worker->next;
       if (root_worker->state == KICKED) {
         GRPC_STATS_INC_POLLSET_KICKED_AGAIN();
-        if (grpc_polling_trace.enabled()) {
+        if (grpc_polling_trace.enabled() && (false)) {
           gpr_log(GPR_DEBUG, " .. already kicked %p", root_worker);
         }
         SET_KICK_STATE(root_worker, KICKED);
         goto done;
       } else if (next_worker->state == KICKED) {
         GRPC_STATS_INC_POLLSET_KICKED_AGAIN();
-        if (grpc_polling_trace.enabled()) {
+        if (grpc_polling_trace.enabled() && (false)) {
           gpr_log(GPR_DEBUG, " .. already kicked %p", next_worker);
         }
         SET_KICK_STATE(next_worker, KICKED);
@@ -1047,7 +1047,7 @@ static grpc_error* pollset_kick(grpc_pollset* pollset,
                  root_worker == (grpc_pollset_worker*)gpr_atm_no_barrier_load(
                                     &g_active_poller)) {
         GRPC_STATS_INC_POLLSET_KICK_WAKEUP_FD();
-        if (grpc_polling_trace.enabled()) {
+        if (grpc_polling_trace.enabled() && (false)) {
           gpr_log(GPR_DEBUG, " .. kicked %p", root_worker);
         }
         SET_KICK_STATE(root_worker, KICKED);
@@ -1055,7 +1055,7 @@ static grpc_error* pollset_kick(grpc_pollset* pollset,
         goto done;
       } else if (next_worker->state == UNKICKED) {
         GRPC_STATS_INC_POLLSET_KICK_WAKEUP_CV();
-        if (grpc_polling_trace.enabled()) {
+        if (grpc_polling_trace.enabled() && (false)) {
           gpr_log(GPR_DEBUG, " .. kicked %p", next_worker);
         }
         GPR_ASSERT(next_worker->initialized_cv);
@@ -1064,7 +1064,7 @@ static grpc_error* pollset_kick(grpc_pollset* pollset,
         goto done;
       } else if (next_worker->state == DESIGNATED_POLLER) {
         if (root_worker->state != DESIGNATED_POLLER) {
-          if (grpc_polling_trace.enabled()) {
+          if (grpc_polling_trace.enabled() && (false)) {
             gpr_log(
                 GPR_DEBUG,
                 " .. kicked root non-poller %p (initialized_cv=%d) (poller=%p)",
@@ -1078,7 +1078,7 @@ static grpc_error* pollset_kick(grpc_pollset* pollset,
           goto done;
         } else {
           GRPC_STATS_INC_POLLSET_KICK_WAKEUP_FD();
-          if (grpc_polling_trace.enabled()) {
+          if (grpc_polling_trace.enabled() && (false)) {
             gpr_log(GPR_DEBUG, " .. non-root poller %p (root=%p)", next_worker,
                     root_worker);
           }
@@ -1094,7 +1094,7 @@ static grpc_error* pollset_kick(grpc_pollset* pollset,
       }
     } else {
       GRPC_STATS_INC_POLLSET_KICK_OWN_THREAD();
-      if (grpc_polling_trace.enabled()) {
+      if (grpc_polling_trace.enabled() && (false)) {
         gpr_log(GPR_DEBUG, " .. kicked while waking up");
       }
       goto done;
@@ -1104,14 +1104,14 @@ static grpc_error* pollset_kick(grpc_pollset* pollset,
   }
 
   if (specific_worker->state == KICKED) {
-    if (grpc_polling_trace.enabled()) {
+    if (grpc_polling_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG, " .. specific worker already kicked");
     }
     goto done;
   } else if (gpr_tls_get(&g_current_thread_worker) ==
              (intptr_t)specific_worker) {
     GRPC_STATS_INC_POLLSET_KICK_OWN_THREAD();
-    if (grpc_polling_trace.enabled()) {
+    if (grpc_polling_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG, " .. mark %p kicked", specific_worker);
     }
     SET_KICK_STATE(specific_worker, KICKED);
@@ -1119,7 +1119,7 @@ static grpc_error* pollset_kick(grpc_pollset* pollset,
   } else if (specific_worker ==
              (grpc_pollset_worker*)gpr_atm_no_barrier_load(&g_active_poller)) {
     GRPC_STATS_INC_POLLSET_KICK_WAKEUP_FD();
-    if (grpc_polling_trace.enabled()) {
+    if (grpc_polling_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG, " .. kick active poller");
     }
     SET_KICK_STATE(specific_worker, KICKED);
@@ -1127,7 +1127,7 @@ static grpc_error* pollset_kick(grpc_pollset* pollset,
     goto done;
   } else if (specific_worker->initialized_cv) {
     GRPC_STATS_INC_POLLSET_KICK_WAKEUP_CV();
-    if (grpc_polling_trace.enabled()) {
+    if (grpc_polling_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG, " .. kick waiting worker");
     }
     SET_KICK_STATE(specific_worker, KICKED);
@@ -1135,7 +1135,7 @@ static grpc_error* pollset_kick(grpc_pollset* pollset,
     goto done;
   } else {
     GRPC_STATS_INC_POLLSET_KICKED_AGAIN();
-    if (grpc_polling_trace.enabled()) {
+    if (grpc_polling_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG, " .. kick non-waiting worker");
     }
     SET_KICK_STATE(specific_worker, KICKED);

@@ -102,7 +102,7 @@ done:
 static void tc_on_alarm(void* acp, grpc_error* error) {
   int done;
   async_connect* ac = static_cast<async_connect*>(acp);
-  if (grpc_tcp_trace.enabled()) {
+  if (grpc_tcp_trace.enabled() && (false)) {
     const char* str = grpc_error_string(error);
     gpr_log(GPR_DEBUG, "CLIENT_CONNECT: %s: on_alarm: error=%s", ac->addr_str,
             str);
@@ -139,7 +139,7 @@ static void on_writable(void* acp, grpc_error* error) {
 
   GRPC_ERROR_REF(error);
 
-  if (grpc_tcp_trace.enabled()) {
+  if (grpc_tcp_trace.enabled() && (false)) {
     const char* str = grpc_error_string(error);
     gpr_log(GPR_DEBUG, "CLIENT_CONNECT: %s: on_writable: error=%s",
             ac->addr_str, str);
@@ -324,7 +324,7 @@ void grpc_tcp_client_create_from_prepared_fd(
                     grpc_schedule_on_exec_ctx);
   ac->channel_args = grpc_channel_args_copy(channel_args);
 
-  if (grpc_tcp_trace.enabled()) {
+  if (grpc_tcp_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "CLIENT_CONNECT: %s: asynchronously connecting fd %p",
             ac->addr_str, fdobj);
   }

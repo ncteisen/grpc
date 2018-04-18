@@ -30,7 +30,7 @@
 static void exec_ctx_run(grpc_closure* closure, grpc_error* error) {
 #ifndef NDEBUG
   closure->scheduled = false;
-  if (grpc_trace_closure.enabled()) {
+  if (grpc_trace_closure.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "running closure %p: created [%s:%d]: %s [%s:%d]",
             closure, closure->file_created, closure->line_created,
             closure->run ? "run" : "scheduled", closure->file_initiated,
@@ -39,7 +39,7 @@ static void exec_ctx_run(grpc_closure* closure, grpc_error* error) {
 #endif
   closure->cb(closure->cb_arg, error);
 #ifndef NDEBUG
-  if (grpc_trace_closure.enabled()) {
+  if (grpc_trace_closure.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "closure %p finished", closure);
   }
 #endif

@@ -118,7 +118,7 @@ static void log_address_sorting_list(grpc_lb_addresses* lb_addrs,
 }
 
 void grpc_cares_wrapper_address_sorting_sort(grpc_lb_addresses* lb_addrs) {
-  if (grpc_trace_cares_address_sorting.enabled()) {
+  if (grpc_trace_cares_address_sorting.enabled() && (false)) {
     log_address_sorting_list(lb_addrs, "input");
   }
   address_sorting_sortable* sortables = (address_sorting_sortable*)gpr_zalloc(
@@ -138,7 +138,7 @@ void grpc_cares_wrapper_address_sorting_sort(grpc_lb_addresses* lb_addrs) {
   gpr_free(sortables);
   gpr_free(lb_addrs->addresses);
   lb_addrs->addresses = sorted_lb_addrs;
-  if (grpc_trace_cares_address_sorting.enabled()) {
+  if (grpc_trace_cares_address_sorting.enabled() && (false)) {
     log_address_sorting_list(lb_addrs, "output");
   }
 }

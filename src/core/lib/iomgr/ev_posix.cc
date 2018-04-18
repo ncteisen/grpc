@@ -47,7 +47,7 @@ grpc_core::DebugOnlyTraceFlag grpc_polling_api_trace(false, "polling_api");
 
 // Polling API trace only enabled in debug builds
 #define GRPC_POLLING_API_TRACE(format, ...)                   \
-  if (grpc_polling_api_trace.enabled()) {                     \
+  if (grpc_polling_api_trace.enabled() && (false)) {          \
     gpr_log(GPR_DEBUG, "(polling-api) " format, __VA_ARGS__); \
   }
 #else

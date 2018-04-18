@@ -188,7 +188,7 @@ static gpr_atm ref_mutate(grpc_subchannel* c, gpr_atm delta,
   gpr_atm old_val = barrier ? gpr_atm_full_fetch_add(&c->ref_pair, delta)
                             : gpr_atm_no_barrier_fetch_add(&c->ref_pair, delta);
 #ifndef NDEBUG
-  if (grpc_trace_stream_refcount.enabled()) {
+  if (grpc_trace_stream_refcount.enabled() && (false)) {
     gpr_log(file, line, GPR_LOG_SEVERITY_DEBUG,
             "SUBCHANNEL: %p %12s 0x%" PRIxPTR " -> 0x%" PRIxPTR " [%s]", c,
             purpose, old_val, old_val + delta, reason);
@@ -524,7 +524,7 @@ static void on_connected_subchannel_connectivity_changed(void* p,
     case GRPC_CHANNEL_TRANSIENT_FAILURE:
     case GRPC_CHANNEL_SHUTDOWN: {
       if (!c->disconnected && c->connected_subchannel != nullptr) {
-        if (grpc_trace_stream_refcount.enabled()) {
+        if (grpc_trace_stream_refcount.enabled() && (false)) {
           gpr_log(GPR_INFO,
                   "Connected subchannel %p of subchannel %p has gone into %s. "
                   "Attempting to reconnect.",

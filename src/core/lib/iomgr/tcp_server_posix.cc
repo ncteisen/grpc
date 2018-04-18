@@ -227,7 +227,7 @@ static void on_read(void* arg, grpc_error* err) {
     addr_str = grpc_sockaddr_to_uri(&addr);
     gpr_asprintf(&name, "tcp-server-connection:%s", addr_str);
 
-    if (grpc_tcp_trace.enabled()) {
+    if (grpc_tcp_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG, "SERVER_CONNECT: incoming connection: %s", addr_str);
     }
 

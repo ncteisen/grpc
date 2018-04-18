@@ -151,7 +151,7 @@ static int is_mdelem_static(grpc_mdelem e) {
 static void ref_md_locked(mdtab_shard* shard,
                           interned_metadata* md DEBUG_ARGS) {
 #ifndef NDEBUG
-  if (grpc_trace_metadata.enabled()) {
+  if (grpc_trace_metadata.enabled() && (false)) {
     char* key_str = grpc_slice_to_c_string(md->key);
     char* value_str = grpc_slice_to_c_string(md->value);
     gpr_log(file, line, GPR_LOG_SEVERITY_DEBUG,
@@ -251,7 +251,7 @@ grpc_mdelem grpc_mdelem_create(
     allocated->value = grpc_slice_ref_internal(value);
     gpr_atm_rel_store(&allocated->refcnt, 1);
 #ifndef NDEBUG
-    if (grpc_trace_metadata.enabled()) {
+    if (grpc_trace_metadata.enabled() && (false)) {
       char* key_str = grpc_slice_to_c_string(allocated->key);
       char* value_str = grpc_slice_to_c_string(allocated->value);
       gpr_log(GPR_DEBUG, "ELM ALLOC:%p:%" PRIdPTR ": '%s' = '%s'",
@@ -304,7 +304,7 @@ grpc_mdelem grpc_mdelem_create(
   shard->elems[idx] = md;
   gpr_mu_init(&md->mu_user_data);
 #ifndef NDEBUG
-  if (grpc_trace_metadata.enabled()) {
+  if (grpc_trace_metadata.enabled() && (false)) {
     char* key_str = grpc_slice_to_c_string(md->key);
     char* value_str = grpc_slice_to_c_string(md->value);
     gpr_log(GPR_DEBUG, "ELM   NEW:%p:%" PRIdPTR ": '%s' = '%s'", (void*)md,
@@ -369,7 +369,7 @@ grpc_mdelem grpc_mdelem_ref(grpc_mdelem gmd DEBUG_ARGS) {
       interned_metadata* md =
           reinterpret_cast<interned_metadata*> GRPC_MDELEM_DATA(gmd);
 #ifndef NDEBUG
-      if (grpc_trace_metadata.enabled()) {
+      if (grpc_trace_metadata.enabled() && (false)) {
         char* key_str = grpc_slice_to_c_string(md->key);
         char* value_str = grpc_slice_to_c_string(md->value);
         gpr_log(file, line, GPR_LOG_SEVERITY_DEBUG,
@@ -392,7 +392,7 @@ grpc_mdelem grpc_mdelem_ref(grpc_mdelem gmd DEBUG_ARGS) {
       allocated_metadata* md =
           reinterpret_cast<allocated_metadata*> GRPC_MDELEM_DATA(gmd);
 #ifndef NDEBUG
-      if (grpc_trace_metadata.enabled()) {
+      if (grpc_trace_metadata.enabled() && (false)) {
         char* key_str = grpc_slice_to_c_string(md->key);
         char* value_str = grpc_slice_to_c_string(md->value);
         gpr_log(file, line, GPR_LOG_SEVERITY_DEBUG,
@@ -423,7 +423,7 @@ void grpc_mdelem_unref(grpc_mdelem gmd DEBUG_ARGS) {
       interned_metadata* md =
           reinterpret_cast<interned_metadata*> GRPC_MDELEM_DATA(gmd);
 #ifndef NDEBUG
-      if (grpc_trace_metadata.enabled()) {
+      if (grpc_trace_metadata.enabled() && (false)) {
         char* key_str = grpc_slice_to_c_string(md->key);
         char* value_str = grpc_slice_to_c_string(md->value);
         gpr_log(file, line, GPR_LOG_SEVERITY_DEBUG,
@@ -450,7 +450,7 @@ void grpc_mdelem_unref(grpc_mdelem gmd DEBUG_ARGS) {
       allocated_metadata* md =
           reinterpret_cast<allocated_metadata*> GRPC_MDELEM_DATA(gmd);
 #ifndef NDEBUG
-      if (grpc_trace_metadata.enabled()) {
+      if (grpc_trace_metadata.enabled() && (false)) {
         char* key_str = grpc_slice_to_c_string(md->key);
         char* value_str = grpc_slice_to_c_string(md->value);
         gpr_log(file, line, GPR_LOG_SEVERITY_DEBUG,

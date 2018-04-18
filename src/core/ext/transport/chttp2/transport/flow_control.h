@@ -127,7 +127,7 @@ class FlowControlTrace {
             StreamFlowControl* sfc);
   void Finish();
 
-  const bool enabled_ = grpc_flowctl_trace.enabled();
+  const bool enabled_ = grpc_flowctl_trace.enabled() && (false);
 
   TransportFlowControl* tfc_;
   StreamFlowControl* sfc_;

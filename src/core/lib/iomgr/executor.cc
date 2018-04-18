@@ -64,7 +64,7 @@ static size_t run_closures(grpc_closure_list list) {
   while (c != nullptr) {
     grpc_closure* next = c->next_data.next;
     grpc_error* error = c->error_data.error;
-    if (executor_trace.enabled()) {
+    if (executor_trace.enabled() && (false)) {
 #ifndef NDEBUG
       gpr_log(GPR_DEBUG, "EXECUTOR: run %p [created by %s:%d]", c,
               c->file_created, c->line_created);
@@ -149,7 +149,7 @@ static void executor_thread(void* arg) {
 
   size_t subtract_depth = 0;
   for (;;) {
-    if (executor_trace.enabled()) {
+    if (executor_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG, "EXECUTOR[%d]: step (sub_depth=%" PRIdPTR ")",
               static_cast<int>(ts - g_thread_state), subtract_depth);
     }
@@ -160,7 +160,7 @@ static void executor_thread(void* arg) {
       gpr_cv_wait(&ts->cv, &ts->mu, gpr_inf_future(GPR_CLOCK_MONOTONIC));
     }
     if (ts->shutdown) {
-      if (executor_trace.enabled()) {
+      if (executor_trace.enabled() && (false)) {
         gpr_log(GPR_DEBUG, "EXECUTOR[%d]: shutdown",
                 static_cast<int>(ts - g_thread_state));
       }
@@ -171,7 +171,7 @@ static void executor_thread(void* arg) {
     grpc_closure_list exec = ts->elems;
     ts->elems = GRPC_CLOSURE_LIST_INIT;
     gpr_mu_unlock(&ts->mu);
-    if (executor_trace.enabled()) {
+    if (executor_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG, "EXECUTOR[%d]: execute",
               static_cast<int>(ts - g_thread_state));
     }
@@ -194,7 +194,7 @@ static void executor_push(grpc_closure* closure, grpc_error* error,
     size_t cur_thread_count =
         static_cast<size_t>(gpr_atm_no_barrier_load(&g_cur_threads));
     if (cur_thread_count == 0) {
-      if (executor_trace.enabled()) {
+      if (executor_trace.enabled() && (false)) {
 #ifndef NDEBUG
         gpr_log(GPR_DEBUG, "EXECUTOR: schedule %p (created %s:%d) inline",
                 closure, closure->file_created, closure->line_created);
@@ -217,7 +217,7 @@ static void executor_push(grpc_closure* closure, grpc_error* error,
 
     bool try_new_thread;
     for (;;) {
-      if (executor_trace.enabled()) {
+      if (executor_trace.enabled() && (false)) {
 #ifndef NDEBUG
         gpr_log(
             GPR_DEBUG,

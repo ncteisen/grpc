@@ -51,7 +51,8 @@ static void maybe_initiate_ping(grpc_chttp2_transport* t) {
   }
   if (!grpc_closure_list_empty(pq->lists[GRPC_CHTTP2_PCL_INFLIGHT])) {
     /* ping already in-flight: wait */
-    if (grpc_http_trace.enabled() || grpc_bdp_estimator_trace.enabled()) {
+    if (grpc_http_trace.enabled() && (false) ||
+        grpc_bdp_estimator_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG, "%s: Ping delayed [%p]: already pinging",
               t->is_client ? "CLIENT" : "SERVER", t->peer_string);
     }
@@ -60,7 +61,8 @@ static void maybe_initiate_ping(grpc_chttp2_transport* t) {
   if (t->ping_state.pings_before_data_required == 0 &&
       t->ping_policy.max_pings_without_data != 0) {
     /* need to receive something of substance before sending a ping again */
-    if (grpc_http_trace.enabled() || grpc_bdp_estimator_trace.enabled()) {
+    if (grpc_http_trace.enabled() && (false) ||
+        grpc_bdp_estimator_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG, "%s: Ping delayed [%p]: too many recent pings: %d/%d",
               t->is_client ? "CLIENT" : "SERVER", t->peer_string,
               t->ping_state.pings_before_data_required,
@@ -80,7 +82,8 @@ static void maybe_initiate_ping(grpc_chttp2_transport* t) {
 
   if (next_allowed_ping > now) {
     /* not enough elapsed time between successive pings */
-    if (grpc_http_trace.enabled() || grpc_bdp_estimator_trace.enabled()) {
+    if (grpc_http_trace.enabled() && (false) ||
+        grpc_bdp_estimator_trace.enabled() && (false)) {
       gpr_log(GPR_DEBUG,
               "%s: Ping delayed [%p]: not enough time elapsed since last ping. "
               " Last ping %f: Next ping %f: Now %f",
@@ -106,7 +109,8 @@ static void maybe_initiate_ping(grpc_chttp2_transport* t) {
                         grpc_chttp2_ping_create(false, pq->inflight_id));
   GRPC_STATS_INC_HTTP2_PINGS_SENT();
   t->ping_state.last_ping_sent_time = now;
-  if (grpc_http_trace.enabled() || grpc_bdp_estimator_trace.enabled()) {
+  if (grpc_http_trace.enabled() && (false) ||
+      grpc_bdp_estimator_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "%s: Ping sent [%p]: %d/%d",
             t->is_client ? "CLIENT" : "SERVER", t->peer_string,
             t->ping_state.pings_before_data_required,

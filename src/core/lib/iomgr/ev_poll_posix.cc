@@ -293,7 +293,7 @@ grpc_cv_fd_table g_cvfds;
 #define UNREF_BY(fd, n, reason) unref_by(fd, n, reason, __FILE__, __LINE__)
 static void ref_by(grpc_fd* fd, int n, const char* reason, const char* file,
                    int line) {
-  if (grpc_trace_fd_refcount.enabled()) {
+  if (grpc_trace_fd_refcount.enabled() && (false)) {
     gpr_log(GPR_DEBUG,
             "FD %d %p   ref %d %" PRIdPTR " -> %" PRIdPTR " [%s; %s:%d]",
             fd->fd, fd, n, gpr_atm_no_barrier_load(&fd->refst),
@@ -310,7 +310,7 @@ static void ref_by(grpc_fd* fd, int n) {
 #ifndef NDEBUG
 static void unref_by(grpc_fd* fd, int n, const char* reason, const char* file,
                      int line) {
-  if (grpc_trace_fd_refcount.enabled()) {
+  if (grpc_trace_fd_refcount.enabled() && (false)) {
     gpr_log(GPR_DEBUG,
             "FD %d %p unref %d %" PRIdPTR " -> %" PRIdPTR " [%s; %s:%d]",
             fd->fd, fd, n, gpr_atm_no_barrier_load(&fd->refst),
@@ -982,7 +982,7 @@ static grpc_error* pollset_work(grpc_pollset* pollset,
       r = grpc_poll_function(pfds, pfd_count, timeout);
       GRPC_SCHEDULING_END_BLOCKING_REGION;
 
-      if (grpc_polling_trace.enabled()) {
+      if (grpc_polling_trace.enabled() && (false)) {
         gpr_log(GPR_DEBUG, "%p poll=%d", pollset, r);
       }
 
@@ -1006,7 +1006,7 @@ static grpc_error* pollset_work(grpc_pollset* pollset,
         }
       } else {
         if (pfds[0].revents & POLLIN_CHECK) {
-          if (grpc_polling_trace.enabled()) {
+          if (grpc_polling_trace.enabled() && (false)) {
             gpr_log(GPR_DEBUG, "%p: got_wakeup", pollset);
           }
           work_combine_error(
@@ -1016,7 +1016,7 @@ static grpc_error* pollset_work(grpc_pollset* pollset,
           if (watchers[i].fd == nullptr) {
             fd_end_poll(&watchers[i], 0, 0, nullptr);
           } else {
-            if (grpc_polling_trace.enabled()) {
+            if (grpc_polling_trace.enabled() && (false)) {
               gpr_log(GPR_DEBUG, "%p got_event: %d r:%d w:%d [%d]", pollset,
                       pfds[i].fd, (pfds[i].revents & POLLIN_CHECK) != 0,
                       (pfds[i].revents & POLLOUT_CHECK) != 0, pfds[i].revents);

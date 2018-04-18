@@ -94,7 +94,7 @@ PickFirst::PickFirst(const Args& args) : LoadBalancingPolicy(args) {
   GPR_ASSERT(args.client_channel_factory != nullptr);
   grpc_connectivity_state_init(&state_tracker_, GRPC_CHANNEL_IDLE,
                                "pick_first");
-  if (grpc_lb_pick_first_trace.enabled()) {
+  if (grpc_lb_pick_first_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "Pick First %p created.", this);
   }
   UpdateLocked(*args.args);
@@ -102,7 +102,7 @@ PickFirst::PickFirst(const Args& args) : LoadBalancingPolicy(args) {
 }
 
 PickFirst::~PickFirst() {
-  if (grpc_lb_pick_first_trace.enabled()) {
+  if (grpc_lb_pick_first_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "Destroying Pick First %p", this);
   }
   GPR_ASSERT(subchannel_list_ == nullptr);
@@ -125,7 +125,7 @@ void PickFirst::HandOffPendingPicksLocked(LoadBalancingPolicy* new_policy) {
 
 void PickFirst::ShutdownLocked() {
   grpc_error* error = GRPC_ERROR_CREATE_FROM_STATIC_STRING("Channel shutdown");
-  if (grpc_lb_pick_first_trace.enabled()) {
+  if (grpc_lb_pick_first_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG, "Pick First %p Shutting down", this);
   }
   shutdown_ = true;
@@ -296,7 +296,7 @@ void PickFirst::UpdateLocked(const grpc_channel_args& args) {
   }
   const grpc_lb_addresses* addresses =
       (const grpc_lb_addresses*)arg->value.pointer.p;
-  if (grpc_lb_pick_first_trace.enabled()) {
+  if (grpc_lb_pick_first_trace.enabled() && (false)) {
     gpr_log(GPR_INFO,
             "Pick First %p received update with %" PRIuPTR " addresses", this,
             addresses->num_addresses);
@@ -334,7 +334,7 @@ void PickFirst::UpdateLocked(const grpc_channel_args& args) {
       grpc_lb_subchannel_data* sd = &subchannel_list->subchannels[i];
       if (sd->subchannel == selected_->subchannel) {
         // The currently selected subchannel is in the update: we are done.
-        if (grpc_lb_pick_first_trace.enabled()) {
+        if (grpc_lb_pick_first_trace.enabled() && (false)) {
           gpr_log(GPR_INFO,
                   "Pick First %p found already selected subchannel %p "
                   "at update index %" PRIuPTR " of %" PRIuPTR "; update done",
@@ -371,7 +371,7 @@ void PickFirst::UpdateLocked(const grpc_channel_args& args) {
     // for it to report READY before swapping it into the current
     // subchannel list.
     if (latest_pending_subchannel_list_ != nullptr) {
-      if (grpc_lb_pick_first_trace.enabled()) {
+      if (grpc_lb_pick_first_trace.enabled() && (false)) {
         gpr_log(GPR_DEBUG,
                 "Pick First %p Shutting down latest pending subchannel list "
                 "%p, about to be replaced by newer latest %p",
@@ -395,7 +395,7 @@ void PickFirst::UpdateLocked(const grpc_channel_args& args) {
 void PickFirst::OnConnectivityChangedLocked(void* arg, grpc_error* error) {
   grpc_lb_subchannel_data* sd = static_cast<grpc_lb_subchannel_data*>(arg);
   PickFirst* p = static_cast<PickFirst*>(sd->subchannel_list->policy);
-  if (grpc_lb_pick_first_trace.enabled()) {
+  if (grpc_lb_pick_first_trace.enabled() && (false)) {
     gpr_log(GPR_DEBUG,
             "Pick First %p connectivity changed for subchannel %p (%" PRIuPTR
             " of %" PRIuPTR
@@ -503,7 +503,7 @@ void PickFirst::OnConnectivityChangedLocked(void* arg, grpc_error* error) {
       grpc_connectivity_state_set(&p->state_tracker_, GRPC_CHANNEL_READY,
                                   GRPC_ERROR_NONE, "connecting_ready");
       p->selected_ = sd;
-      if (grpc_lb_pick_first_trace.enabled()) {
+      if (grpc_lb_pick_first_trace.enabled() && (false)) {
         gpr_log(GPR_INFO, "Pick First %p selected subchannel %p", p,
                 sd->subchannel);
       }
@@ -514,7 +514,7 @@ void PickFirst::OnConnectivityChangedLocked(void* arg, grpc_error* error) {
       while ((pick = p->pending_picks_)) {
         p->pending_picks_ = pick->next;
         pick->connected_subchannel = p->selected_->connected_subchannel;
-        if (grpc_lb_pick_first_trace.enabled()) {
+        if (grpc_lb_pick_first_trace.enabled() && (false)) {
           gpr_log(GPR_INFO,
                   "Servicing pending pick with selected subchannel %p",
                   p->selected_);
