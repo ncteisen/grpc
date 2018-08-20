@@ -179,7 +179,7 @@ class Proxy : public ::grpc::testing::EchoTestService::Service {
   }
 
  private:
-  std::unique_ptr< ::grpc::testing::EchoTestService::Stub> stub_;
+  std::unique_ptr<::grpc::testing::EchoTestService::Stub> stub_;
 };
 
 class TestServiceImplDupPkg
@@ -690,6 +690,36 @@ TEST_P(End2endTest, MultipleRpcsWithVariedBinaryMetadataValue) {
   for (int i = 0; i < 10; ++i) {
     threads[i].join();
   }
+}
+
+TEST_P(End2endTest, SerializedMetadata) {
+  ResetStub();
+  EchoRequest request;
+  EchoResponse response;
+  request.set_message("Hello hello hello hello");
+  ClientContext context;
+  context.AddMetadata("client_init", "noah");
+  StringMetadataValue value("eisen");
+  std::unique_ptr<SerializableModel<StringMetadataValue>> model(
+      new SerializableModel<StringMetadataValue>(&value));
+  context.AddMetadata("typed_client_init", model.get());
+  ProtoMetadataValue<EchoRequest> proto(&request);
+  std::unique_ptr<SerializableModel<ProtoMetadataValue<EchoRequest>>> model2(
+      new SerializableModel<ProtoMetadataValue<EchoRequest>>(&proto));
+  context.AddMetadata("proto_client_init-bin", model2.get());
+  Status s = stub_->Echo(&context, request, &response);
+  for (auto md : context.GetServerInitialMetadata()) {
+    string k = ToString(md.first);
+    string v = ToString(md.second);
+    gpr_log(GPR_INFO, "svr init - %s : %s", k.c_str(), v.c_str());
+  }
+  for (auto md : context.GetServerTrailingMetadata()) {
+    string k = ToString(md.first);
+    string v = ToString(md.second);
+    gpr_log(GPR_INFO, "svr trai - %s : %s", k.c_str(), v.c_str());
+  }
+  EXPECT_EQ(response.message(), request.message());
+  EXPECT_TRUE(s.ok());
 }
 
 TEST_P(End2endTest, MultipleRpcs) {

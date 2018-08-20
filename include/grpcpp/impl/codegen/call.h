@@ -39,12 +39,42 @@
 #include <grpc/impl/codegen/atm.h>
 #include <grpc/impl/codegen/compression_types.h>
 #include <grpc/impl/codegen/grpc_types.h>
+#include <grpc/impl/codegen/log.h>
 
 namespace grpc {
 
 class ByteBuffer;
 class CompletionQueue;
 extern CoreCodegenInterface* g_core_codegen_interface;
+
+class SerializableConcept {
+ public:
+  virtual Status Serialize(Slice* slice) = 0;
+};
+
+template <typename T>
+class SerializableModel : public SerializableConcept {
+ public:
+  SerializableModel(const T* object) : object_(object) {}
+
+  Status Serialize(Slice* slice) override { return object_->Serialize(slice); }
+
+ private:
+  const T* object_;
+};
+
+class StringMetadataValue {
+ public:
+  StringMetadataValue(grpc::string str) : str_(str) {}
+  Status Serialize(Slice* slice) const {
+    Slice s(str_);
+    slice->Swap(&s);
+    return Status::OK;
+  }
+
+ private:
+  grpc::string str_;
+};
 
 namespace internal {
 class Call;
@@ -56,8 +86,13 @@ const char kBinaryErrorDetailsKey[] = "grpc-status-details-bin";
 // mess. Make sure it does not happen.
 inline grpc_metadata* FillMetadataArray(
     const std::multimap<grpc::string, grpc::string>& metadata,
-    size_t* metadata_count, const grpc::string& optional_error_details) {
+    size_t* metadata_count, const grpc::string& optional_error_details,
+    const std::multimap<grpc::string, SerializableConcept*>* typed_metadata =
+        nullptr) {
   *metadata_count = metadata.size() + (optional_error_details.empty() ? 0 : 1);
+  if (typed_metadata != nullptr) {
+    *metadata_count += typed_metadata->size();
+  }
   if (*metadata_count == 0) {
     return nullptr;
   }
@@ -68,6 +103,15 @@ inline grpc_metadata* FillMetadataArray(
   for (auto iter = metadata.cbegin(); iter != metadata.cend(); ++iter, ++i) {
     metadata_array[i].key = SliceReferencingString(iter->first);
     metadata_array[i].value = SliceReferencingString(iter->second);
+  }
+  if (typed_metadata != nullptr) {
+    for (auto iter = typed_metadata->cbegin(); iter != typed_metadata->cend();
+         ++iter, ++i) {
+      metadata_array[i].key = SliceReferencingString(iter->first);
+      Slice s;
+      iter->second->Serialize(&s);
+      metadata_array[i].value = s.c_slice();
+    }
   }
   if (!optional_error_details.empty()) {
     metadata_array[i].key =
@@ -219,13 +263,14 @@ class CallOpSendInitialMetadata {
   }
 
   void SendInitialMetadata(
-      const std::multimap<grpc::string, grpc::string>& metadata,
-      uint32_t flags) {
+      const std::multimap<grpc::string, grpc::string>& metadata, uint32_t flags,
+      const std::multimap<grpc::string, SerializableConcept*>* typed_metadata =
+          nullptr) {
     maybe_compression_level_.is_set = false;
     send_ = true;
     flags_ = flags;
-    initial_metadata_ =
-        FillMetadataArray(metadata, &initial_metadata_count_, "");
+    initial_metadata_ = FillMetadataArray(metadata, &initial_metadata_count_,
+                                          "", typed_metadata);
   }
 
   void set_compression_level(grpc_compression_level level) {

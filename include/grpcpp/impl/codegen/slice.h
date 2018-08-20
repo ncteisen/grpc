@@ -111,6 +111,13 @@ class Slice final {
     return g_core_codegen_interface->grpc_slice_ref(slice_);
   }
 
+  /// Swap the state of *this and *other.
+  void Swap(Slice* other) {
+    grpc_slice tmp = other->slice_;
+    other->slice_ = slice_;
+    slice_ = tmp;
+  }
+
  private:
   friend class ByteBuffer;
 

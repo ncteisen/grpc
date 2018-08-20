@@ -73,6 +73,13 @@ void CheckServerAuthContext(
 
 Status TestServiceImpl::Echo(ServerContext* context, const EchoRequest* request,
                              EchoResponse* response) {
+  for (auto md : context->client_metadata()) {
+    string k = ToString(md.first);
+    string v = ToString(md.second);
+    gpr_log(GPR_INFO, "cli md  - %s : %s", k.c_str(), v.c_str());
+  }
+  context->AddInitialMetadata("server_initial", "matt");
+  context->AddTrailingMetadata("server_trailing", "nolan");
   // A bit of sleep to make sure that short deadline tests fail
   if (request->has_param() && request->param().server_sleep_us() > 0) {
     gpr_sleep_until(

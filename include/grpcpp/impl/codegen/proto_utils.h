@@ -116,6 +116,33 @@ class SerializationTraits<T, typename std::enable_if<std::is_base_of<
 };
 #endif
 
+template <typename T>
+class ProtoMetadataValue {
+ public:
+  ProtoMetadataValue(T* msg) : msg_(msg) {}
+  Status Serialize(Slice* slice) const {
+    bool own_buf;
+    ByteBuffer bytes;
+    SerializationTraits<T>::Serialize(*msg_, &bytes, &own_buf);
+    if (!own_buf) {
+      bytes.Duplicate();
+    }
+    std::vector<Slice> slices;
+    bytes.Dump(&slices);
+    GPR_CODEGEN_ASSERT(bytes.Length() > 0);
+    if (slices.size() > 1) {
+      // collapse
+      GPR_CODEGEN_ASSERT(0);
+    } else {
+      slice->Swap(&slices[0]);
+    }
+    return Status::OK;
+  }
+
+ private:
+  T* msg_;
+};
+
 }  // namespace grpc
 
 #endif  // GRPCPP_IMPL_CODEGEN_PROTO_UTILS_H
