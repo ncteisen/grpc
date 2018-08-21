@@ -3678,16 +3678,6 @@ targets:
   - grpc
   - gpr_test_util
   - gpr
-- name: transport_metadata_test
-  build: test
-  language: c
-  src:
-  - test/core/transport/metadata_test.cc
-  deps:
-  - grpc_test_util
-  - grpc
-  - gpr_test_util
-  - gpr
 - name: transport_security_test
   build: test
   language: c
@@ -4998,12 +4988,28 @@ targets:
   - test/core/gprpp/memory_test.cc
   deps:
   - grpc_test_util
-  - grpc++
   - grpc
   - gpr_test_util
   - gpr
   uses:
   - grpc++_test
+  uses_polling: false
+- name: metadata_test
+  gtest: true
+  build: test
+  language: c++
+  src:
+  - test/cpp/codegen/metadata_test.cc
+  deps:
+  - grpc++_test_util
+  - grpc++
+  - grpc
+  - grpc_test_util
+  - gpr_test_util
+  - gpr
+  filegroups:
+  - grpc++_codegen_base
+  - grpc++_codegen_proto
   uses_polling: false
 - name: metrics_client
   build: test
@@ -5550,6 +5556,17 @@ targets:
   - grpc_test_util_unsecure
   - grpc++_unsecure
   - grpc_unsecure
+  - gpr_test_util
+  - gpr
+- name: transport_metadata_test
+  build: test
+  language: c++
+  src:
+  - test/core/transport/metadata_test.cc
+  deps:
+  - grpc_test_util
+  - grpc
+  - grpc++
   - gpr_test_util
   - gpr
 - name: transport_pid_controller_test

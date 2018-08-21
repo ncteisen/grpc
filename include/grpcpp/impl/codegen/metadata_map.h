@@ -19,16 +19,42 @@
 #ifndef GRPCPP_IMPL_CODEGEN_METADATA_MAP_H
 #define GRPCPP_IMPL_CODEGEN_METADATA_MAP_H
 
+#include <map>
+
 #include <grpcpp/impl/codegen/slice.h>
 
 namespace grpc {
 
+// TODO, split this up into MetadataSender and MetadataReciever?
+//
+// general purpose metadata container for both send and recv side. It acts a
+// bit differently on both sides. On send the md is placed in as object, and is
+// accessible as object until we convert it to the core representation of md.
+// 
 class MetadataContainer {
  public:
   template <typename T>
   void AddMetadata(const grpc::string& key, T value) {
     metadata_.insert(std::make_pair(key, std::shared_ptr<SerializableConcept>(
                                              new SerializableModel<T>(value))));
+  }
+  template <typename T>
+  bool GetMetadata(const grpc::string& key, const T* dst) {
+    auto gotten = metadata_.find(key);
+    if (gotten == metadata_.end()) {
+      return false;
+    }
+    dst = gotten;
+    return true;
+  }
+  template <typename T>
+  bool GetMutableMetadata(const grpc::string& key, T* dst) {
+    auto gotten = metadata_.find(key);
+    if (gotten == metadata_.end()) {
+      return false;
+    }
+    dst = gotten;
+    return true;
   }
 
  private:
@@ -47,6 +73,7 @@ class MetadataContainer {
     Status Serialize(Slice* slice) override { return object_.Serialize(slice); }
 
    private:
+    // TODO, change back to shared ptr?
     T object_;
   };
 
