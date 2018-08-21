@@ -23,6 +23,50 @@
 
 namespace grpc {
 
+class MetadataContainer {
+ public:
+  template <typename T>
+  void AddMetadata(const grpc::string& key, T value) {
+    metadata_.insert(std::make_pair(key, std::shared_ptr<SerializableConcept>(
+                                             new SerializableModel<T>(value))));
+  }
+
+ private:
+  // Concept of something that is serializable.
+  class SerializableConcept {
+   public:
+    virtual Status Serialize(Slice* slice) = 0;
+  };
+
+  // Model to hold the actual medata value.
+  template <typename T>
+  class SerializableModel : public SerializableConcept {
+   public:
+    SerializableModel(T object) : object_(object) {}
+
+    Status Serialize(Slice* slice) override { return object_.Serialize(slice); }
+
+   private:
+    T object_;
+  };
+
+ public:
+  std::multimap<grpc::string, std::shared_ptr<SerializableConcept>> metadata_;
+};
+
+class StringMetadataValue {
+ public:
+  StringMetadataValue(grpc::string str) : str_(str) {}
+  Status Serialize(Slice* slice) const {
+    Slice s(str_);
+    slice->Swap(&s);
+    return Status::OK;
+  }
+
+ private:
+  grpc::string str_;
+};
+
 namespace internal {
 class MetadataMap {
  public:

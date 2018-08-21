@@ -61,7 +61,6 @@ class ChannelInterface;
 class CompletionQueue;
 class CallCredentials;
 class ClientContext;
-class SerializableConcept;
 
 namespace internal {
 class RpcMethod;
@@ -189,11 +188,21 @@ class ClientContext {
   /// end in "-bin".
   /// \param meta_value The metadata value. If its value is binary, the key name
   /// must end in "-bin".
-  void AddMetadata(const grpc::string& meta_key,
-                   const grpc::string& meta_value);
+  void AddMetadata(const grpc::string& meta_key, const char* meta_value) {
+    send_initial_metadata_.AddMetadata<StringMetadataValue>(
+        meta_key, StringMetadataValue(meta_value));
+  }
 
   void AddMetadata(const grpc::string& meta_key,
-                   SerializableConcept* meta_value);
+                   const grpc::string& meta_value) {
+    send_initial_metadata_.AddMetadata<StringMetadataValue>(
+        meta_key, StringMetadataValue(meta_value));
+  }
+
+  template <typename T>
+  void AddMetadata(const grpc::string& meta_key, T meta_value) {
+    send_initial_metadata_.AddMetadata(meta_key, meta_value);
+  }
 
   /// Return a collection of initial metadata key-value pairs. Note that keys
   /// may happen more than once (ie, a \a std::multimap is returned).
@@ -428,9 +437,7 @@ class ClientContext {
   std::shared_ptr<CallCredentials> creds_;
   mutable std::shared_ptr<const AuthContext> auth_context_;
   struct census_context* census_context_;
-  std::multimap<grpc::string, grpc::string> send_initial_metadata_;
-  std::multimap<grpc::string, SerializableConcept*>
-      send_typed_initial_metadata_;
+  MetadataContainer send_initial_metadata_;
   internal::MetadataMap recv_initial_metadata_;
   internal::MetadataMap trailing_metadata_;
 

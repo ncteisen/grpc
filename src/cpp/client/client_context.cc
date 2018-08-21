@@ -74,16 +74,6 @@ std::unique_ptr<ClientContext> ClientContext::FromServerContext(
   return ctx;
 }
 
-void ClientContext::AddMetadata(const grpc::string& meta_key,
-                                const grpc::string& meta_value) {
-  send_initial_metadata_.insert(std::make_pair(meta_key, meta_value));
-}
-
-void ClientContext::AddMetadata(const grpc::string& meta_key,
-                                SerializableConcept* meta_value) {
-  send_typed_initial_metadata_.insert(std::make_pair(meta_key, meta_value));
-}
-
 void ClientContext::set_call(grpc_call* call,
                              const std::shared_ptr<Channel>& channel) {
   std::unique_lock<std::mutex> lock(mu_);

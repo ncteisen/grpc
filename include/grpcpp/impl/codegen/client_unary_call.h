@@ -62,8 +62,7 @@ class BlockingUnaryCallImpl {
       return;
     }
     ops.SendInitialMetadata(context->send_initial_metadata_,
-                            context->initial_metadata_flags(),
-                            &context->send_typed_initial_metadata_);
+                            context->initial_metadata_flags());
     ops.RecvInitialMetadata(context);
     ops.RecvMessage(result);
     ops.AllowNoMessage();

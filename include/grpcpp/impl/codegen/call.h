@@ -31,6 +31,7 @@
 #include <grpcpp/impl/codegen/completion_queue_tag.h>
 #include <grpcpp/impl/codegen/config.h>
 #include <grpcpp/impl/codegen/core_codegen_interface.h>
+#include <grpcpp/impl/codegen/metadata_map.h>
 #include <grpcpp/impl/codegen/serialization_traits.h>
 #include <grpcpp/impl/codegen/slice.h>
 #include <grpcpp/impl/codegen/status.h>
@@ -47,35 +48,6 @@ class ByteBuffer;
 class CompletionQueue;
 extern CoreCodegenInterface* g_core_codegen_interface;
 
-class SerializableConcept {
- public:
-  virtual Status Serialize(Slice* slice) = 0;
-};
-
-template <typename T>
-class SerializableModel : public SerializableConcept {
- public:
-  SerializableModel(const T* object) : object_(object) {}
-
-  Status Serialize(Slice* slice) override { return object_->Serialize(slice); }
-
- private:
-  const T* object_;
-};
-
-class StringMetadataValue {
- public:
-  StringMetadataValue(grpc::string str) : str_(str) {}
-  Status Serialize(Slice* slice) const {
-    Slice s(str_);
-    slice->Swap(&s);
-    return Status::OK;
-  }
-
- private:
-  grpc::string str_;
-};
-
 namespace internal {
 class Call;
 class CallHook;
@@ -85,14 +57,10 @@ const char kBinaryErrorDetailsKey[] = "grpc-status-details-bin";
 // TODO(yangg) if the map is changed before we send, the pointers will be a
 // mess. Make sure it does not happen.
 inline grpc_metadata* FillMetadataArray(
-    const std::multimap<grpc::string, grpc::string>& metadata,
-    size_t* metadata_count, const grpc::string& optional_error_details,
-    const std::multimap<grpc::string, SerializableConcept*>* typed_metadata =
-        nullptr) {
-  *metadata_count = metadata.size() + (optional_error_details.empty() ? 0 : 1);
-  if (typed_metadata != nullptr) {
-    *metadata_count += typed_metadata->size();
-  }
+    const MetadataContainer& metadata, size_t* metadata_count,
+    const grpc::string& optional_error_details) {
+  *metadata_count =
+      metadata.metadata_.size() + (optional_error_details.empty() ? 0 : 1);
   if (*metadata_count == 0) {
     return nullptr;
   }
@@ -100,18 +68,12 @@ inline grpc_metadata* FillMetadataArray(
       (grpc_metadata*)(g_core_codegen_interface->gpr_malloc(
           (*metadata_count) * sizeof(grpc_metadata)));
   size_t i = 0;
-  for (auto iter = metadata.cbegin(); iter != metadata.cend(); ++iter, ++i) {
+  for (auto iter = metadata.metadata_.cbegin();
+       iter != metadata.metadata_.cend(); ++iter, ++i) {
     metadata_array[i].key = SliceReferencingString(iter->first);
-    metadata_array[i].value = SliceReferencingString(iter->second);
-  }
-  if (typed_metadata != nullptr) {
-    for (auto iter = typed_metadata->cbegin(); iter != typed_metadata->cend();
-         ++iter, ++i) {
-      metadata_array[i].key = SliceReferencingString(iter->first);
-      Slice s;
-      iter->second->Serialize(&s);
-      metadata_array[i].value = s.c_slice();
-    }
+    Slice s;
+    iter->second->Serialize(&s);
+    metadata_array[i].value = s.c_slice();
   }
   if (!optional_error_details.empty()) {
     metadata_array[i].key =
@@ -262,15 +224,12 @@ class CallOpSendInitialMetadata {
     maybe_compression_level_.is_set = false;
   }
 
-  void SendInitialMetadata(
-      const std::multimap<grpc::string, grpc::string>& metadata, uint32_t flags,
-      const std::multimap<grpc::string, SerializableConcept*>* typed_metadata =
-          nullptr) {
+  void SendInitialMetadata(const MetadataContainer& metadata, uint32_t flags) {
     maybe_compression_level_.is_set = false;
     send_ = true;
     flags_ = flags;
-    initial_metadata_ = FillMetadataArray(metadata, &initial_metadata_count_,
-                                          "", typed_metadata);
+    initial_metadata_ =
+        FillMetadataArray(metadata, &initial_metadata_count_, "");
   }
 
   void set_compression_level(grpc_compression_level level) {
@@ -512,9 +471,8 @@ class CallOpServerSendStatus {
  public:
   CallOpServerSendStatus() : send_status_available_(false) {}
 
-  void ServerSendStatus(
-      const std::multimap<grpc::string, grpc::string>& trailing_metadata,
-      const Status& status) {
+  void ServerSendStatus(const MetadataContainer& trailing_metadata,
+                        const Status& status) {
     send_error_details_ = status.error_details();
     trailing_metadata_ = FillMetadataArray(
         trailing_metadata, &trailing_metadata_count_, send_error_details_);

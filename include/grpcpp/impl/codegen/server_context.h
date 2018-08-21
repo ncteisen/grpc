@@ -119,7 +119,11 @@ class ServerContext {
   /// end in "-bin".
   /// \param meta_value The metadata value. If its value is binary, the key name
   /// must end in "-bin".
-  void AddInitialMetadata(const grpc::string& key, const grpc::string& value);
+  void AddInitialMetadata(const grpc::string& meta_key,
+                          const grpc::string& meta_value) {
+    initial_metadata_.AddMetadata<StringMetadataValue>(
+        meta_key, StringMetadataValue(meta_value));
+  }
 
   /// Add the (\a meta_key, \a meta_value) pair to the initial metadata
   /// associated with a server call. These are made available at the client
@@ -133,7 +137,11 @@ class ServerContext {
   /// it must end in "-bin".
   /// \param meta_value The metadata value. If its value is binary, the key name
   /// must end in "-bin".
-  void AddTrailingMetadata(const grpc::string& key, const grpc::string& value);
+  void AddTrailingMetadata(const grpc::string& meta_key,
+                           const grpc::string& meta_value) {
+    trailing_metadata_.AddMetadata<StringMetadataValue>(
+        meta_key, StringMetadataValue(meta_value));
+  }
 
   /// IsCancelled is always safe to call when using sync API.
   /// When using async API, it is only safe to call IsCancelled after
@@ -295,8 +303,8 @@ class ServerContext {
   bool sent_initial_metadata_;
   mutable std::shared_ptr<const AuthContext> auth_context_;
   internal::MetadataMap client_metadata_;
-  std::multimap<grpc::string, grpc::string> initial_metadata_;
-  std::multimap<grpc::string, grpc::string> trailing_metadata_;
+  MetadataContainer initial_metadata_;
+  MetadataContainer trailing_metadata_;
 
   bool compression_level_set_;
   grpc_compression_level compression_level_;

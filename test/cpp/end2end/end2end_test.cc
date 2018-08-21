@@ -699,14 +699,8 @@ TEST_P(End2endTest, SerializedMetadata) {
   request.set_message("Hello hello hello hello");
   ClientContext context;
   context.AddMetadata("client_init", "noah");
-  StringMetadataValue value("eisen");
-  std::unique_ptr<SerializableModel<StringMetadataValue>> model(
-      new SerializableModel<StringMetadataValue>(&value));
-  context.AddMetadata("typed_client_init", model.get());
-  ProtoMetadataValue<EchoRequest> proto(&request);
-  std::unique_ptr<SerializableModel<ProtoMetadataValue<EchoRequest>>> model2(
-      new SerializableModel<ProtoMetadataValue<EchoRequest>>(&proto));
-  context.AddMetadata("proto_client_init-bin", model2.get());
+  context.AddMetadata<ProtoMetadataValue<EchoRequest>>(
+      "proto_client_init-bin", ProtoMetadataValue<EchoRequest>(&request));
   Status s = stub_->Echo(&context, request, &response);
   for (auto md : context.GetServerInitialMetadata()) {
     string k = ToString(md.first);
