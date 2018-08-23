@@ -138,8 +138,6 @@ class ProtoMetadataValue {
     }
     return Status::OK;
   }
-
- private:
   T* msg_;
 };
 

@@ -24,20 +24,107 @@
 #include <grpcpp/impl/grpc_library.h>
 #include <gtest/gtest.h>
 
+#include "src/proto/grpc/testing/echo.grpc.pb.h"
+
 namespace grpc {
-
-namespace internal {
-
-class MetadataTest : public ::testing::Test {};
 
 namespace {
 
+class MetadataTest : public ::testing::Test {};
+
+TEST_F(MetadataTest, TestAddStringValue) {
+  MetadataContainer container;
+  container.AddMetadata("foo", StringMetadataValue("bar"));
+}
+
+TEST_F(MetadataTest, TestAddProtoValue) {
+  MetadataContainer container;
+  testing::EchoRequest request;
+  request.set_message("bar");
+  container.AddMetadata("foo",
+                        ProtoMetadataValue<testing::EchoRequest>(&request));
+}
+
+TEST_F(MetadataTest, TestGetAfterAddString) {
+  MetadataContainer container;
+  container.AddMetadata("foo", StringMetadataValue("bar"));
+  const StringMetadataValue* gotten = nullptr;
+  EXPECT_TRUE(container.GetMetadata<StringMetadataValue>("foo", &gotten));
+  ASSERT_NE(gotten, nullptr);
+  EXPECT_EQ(gotten->str_, "bar");
+}
+
+TEST_F(MetadataTest, TestGetMutableAfterAddString) {
+  MetadataContainer container;
+  container.AddMetadata("foo", StringMetadataValue("bar"));
+  StringMetadataValue* gotten = nullptr;
+  EXPECT_TRUE(
+      container.GetMutableMetadata<StringMetadataValue>("foo", &gotten));
+  ASSERT_NE(gotten, nullptr);
+  EXPECT_EQ(gotten->str_, "bar");
+  gotten->str_ = "quaz";
+  const StringMetadataValue* gotten_again = nullptr;
+  EXPECT_TRUE(container.GetMetadata<StringMetadataValue>("foo", &gotten_again));
+  ASSERT_NE(gotten_again, nullptr);
+  EXPECT_EQ(gotten_again->str_, "quaz");
+}
+
+TEST_F(MetadataTest, TestGetNotThereString) {
+  MetadataContainer container;
+  container.AddMetadata("foo", StringMetadataValue("bar"));
+  const StringMetadataValue* gotten = nullptr;
+  EXPECT_FALSE(
+      container.GetMetadata<StringMetadataValue>("not_there", &gotten));
+}
+
+TEST_F(MetadataTest, TestGetAfterAddProto) {
+  MetadataContainer container;
+  testing::EchoRequest request;
+  request.set_message("bar");
+  container.AddMetadata("foo",
+                        ProtoMetadataValue<testing::EchoRequest>(&request));
+  const ProtoMetadataValue<testing::EchoRequest>* gotten = nullptr;
+  EXPECT_TRUE(container.GetMetadata<ProtoMetadataValue<testing::EchoRequest>>(
+      "foo", &gotten));
+  ASSERT_NE(gotten, nullptr);
+  EXPECT_EQ(gotten->msg_->message(), "bar");
+}
+
+TEST_F(MetadataTest, TestGetMutableAfterAddProto) {
+  MetadataContainer container;
+  testing::EchoRequest request;
+  request.set_message("bar");
+  container.AddMetadata("foo",
+                        ProtoMetadataValue<testing::EchoRequest>(&request));
+  ProtoMetadataValue<testing::EchoRequest>* gotten = nullptr;
+  EXPECT_TRUE(
+      container.GetMutableMetadata<ProtoMetadataValue<testing::EchoRequest>>(
+          "foo", &gotten));
+  ASSERT_NE(gotten, nullptr);
+  EXPECT_EQ(gotten->msg_->message(), "bar");
+  gotten->msg_->set_message("reset");
+  const ProtoMetadataValue<testing::EchoRequest>* gotten_again = nullptr;
+  EXPECT_TRUE(container.GetMetadata<ProtoMetadataValue<testing::EchoRequest>>(
+      "foo", &gotten_again));
+  ASSERT_NE(gotten_again, nullptr);
+  EXPECT_EQ(gotten_again->msg_->message(), "reset");
+}
+
+TEST_F(MetadataTest, TestGetNotThereProto) {
+  MetadataContainer container;
+  testing::EchoRequest request;
+  request.set_message("bar");
+  container.AddMetadata("foo",
+                        ProtoMetadataValue<testing::EchoRequest>(&request));
+  const ProtoMetadataValue<testing::EchoRequest>* gotten = nullptr;
+  EXPECT_FALSE(container.GetMetadata<ProtoMetadataValue<testing::EchoRequest>>(
+      "not_there", &gotten));
+}
+
 }  // namespace
-}  // namespace internal
 }  // namespace grpc
 
 int main(int argc, char** argv) {
-  // Ensure the ProtoBufferWriter internals are initialized.
   grpc::internal::GrpcLibraryInitializer init;
   init.summon();
   grpc::GrpcLibraryCodegen lib;

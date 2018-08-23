@@ -54,35 +54,6 @@ class CallHook;
 
 const char kBinaryErrorDetailsKey[] = "grpc-status-details-bin";
 
-// TODO(yangg) if the map is changed before we send, the pointers will be a
-// mess. Make sure it does not happen.
-inline grpc_metadata* FillMetadataArray(
-    const MetadataContainer& metadata, size_t* metadata_count,
-    const grpc::string& optional_error_details) {
-  *metadata_count =
-      metadata.metadata_.size() + (optional_error_details.empty() ? 0 : 1);
-  if (*metadata_count == 0) {
-    return nullptr;
-  }
-  grpc_metadata* metadata_array =
-      (grpc_metadata*)(g_core_codegen_interface->gpr_malloc(
-          (*metadata_count) * sizeof(grpc_metadata)));
-  size_t i = 0;
-  for (auto iter = metadata.metadata_.cbegin();
-       iter != metadata.metadata_.cend(); ++iter, ++i) {
-    metadata_array[i].key = SliceReferencingString(iter->first);
-    Slice s;
-    iter->second->Serialize(&s);
-    metadata_array[i].value = s.c_slice();
-  }
-  if (!optional_error_details.empty()) {
-    metadata_array[i].key =
-        g_core_codegen_interface->grpc_slice_from_static_buffer(
-            kBinaryErrorDetailsKey, sizeof(kBinaryErrorDetailsKey) - 1);
-    metadata_array[i].value = SliceReferencingString(optional_error_details);
-  }
-  return metadata_array;
-}
 }  // namespace internal
 
 /// Per-message write options.
@@ -229,7 +200,7 @@ class CallOpSendInitialMetadata {
     send_ = true;
     flags_ = flags;
     initial_metadata_ =
-        FillMetadataArray(metadata, &initial_metadata_count_, "");
+        metadata.CreateCoreMetadataArray(&initial_metadata_count_, "");
   }
 
   void set_compression_level(grpc_compression_level level) {
@@ -474,8 +445,8 @@ class CallOpServerSendStatus {
   void ServerSendStatus(const MetadataContainer& trailing_metadata,
                         const Status& status) {
     send_error_details_ = status.error_details();
-    trailing_metadata_ = FillMetadataArray(
-        trailing_metadata, &trailing_metadata_count_, send_error_details_);
+    trailing_metadata_ = trailing_metadata.CreateCoreMetadataArray(
+        &trailing_metadata_count_, send_error_details_);
     send_status_available_ = true;
     send_status_code_ = static_cast<grpc_status_code>(status.error_code());
     send_error_message_ = status.error_message();
@@ -571,6 +542,7 @@ class CallOpClientRecvStatus {
     if (recv_status_ == nullptr) return;
     metadata_map_->FillMap();
     grpc::string binary_error_details;
+    // move this into the container.
     auto iter = metadata_map_->map()->find(kBinaryErrorDetailsKey);
     if (iter != metadata_map_->map()->end()) {
       binary_error_details =
