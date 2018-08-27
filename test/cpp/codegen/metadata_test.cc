@@ -18,6 +18,7 @@
 
 #include <grpc/impl/codegen/byte_buffer.h>
 #include <grpc/slice.h>
+#include <grpc/support/alloc.h>
 #include <grpcpp/impl/codegen/grpc_library.h>
 #include <grpcpp/impl/codegen/metadata_map.h>
 #include <grpcpp/impl/codegen/proto_utils.h>
@@ -29,6 +30,18 @@
 namespace grpc {
 
 namespace {
+
+void AssertKeyAndValue(size_t count, const grpc_metadata* md, const char* key,
+                       const char* expected_value) {
+  for (size_t i = 0; i < count; ++i) {
+    if (grpc_slice_str_cmp(md[i].key, key) == 0) {
+      EXPECT_EQ(grpc_slice_str_cmp(md[i].value, expected_value), 0)
+          << "expected_value=" << expected_value << " was not correct";
+      return;
+    }
+  }
+  EXPECT_TRUE(false) << "key=" << key << " was not found";
+}
 
 class MetadataTest : public ::testing::Test {};
 
@@ -120,6 +133,36 @@ TEST_F(MetadataTest, TestGetNotThereProto) {
   EXPECT_FALSE(container.GetMetadata<ProtoMetadataValue<testing::EchoRequest>>(
       "not_there", &gotten));
 }
+
+TEST_F(MetadataTest, TestCreateCoreMetadataArray) {
+  MetadataContainer container;
+  container.AddMetadata("string", StringMetadataValue("bar"));
+  testing::EchoRequest request;
+  request.set_message("bar");
+  container.AddMetadata("proto",
+                        ProtoMetadataValue<testing::EchoRequest>(&request));
+  size_t count = 0;
+  grpc_metadata* md = container.CreateCoreMetadataArray(&count, "");
+  ASSERT_EQ(count, static_cast<size_t>(2));
+  AssertKeyAndValue(count, md, "string", "bar");
+  size_t sz = request.ByteSizeLong();
+  char* serialized_proto_str = static_cast<char*>(gpr_malloc(sz));
+  request.SerializeToArray(serialized_proto_str, sz);
+  AssertKeyAndValue(count, md, "proto", serialized_proto_str);
+  g_core_codegen_interface->gpr_free(md);
+}
+
+// TEST_F(MetadataTest, TestGetTypeMismatch) {
+//   MetadataContainer container;
+//   testing::EchoRequest request;
+//   request.set_message("bar");
+//   container.AddMetadata("foo",
+//                         ProtoMetadataValue<testing::EchoRequest>(&request));
+//   const StringMetadataValue* gotten = nullptr;
+//   EXPECT_TRUE(container.GetMetadata<StringMetadataValue>(
+//       "foo", &gotten));
+//   EXPECT_EQ(gotten->str_, "bar");
+// }
 
 }  // namespace
 }  // namespace grpc

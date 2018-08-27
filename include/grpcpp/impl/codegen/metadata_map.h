@@ -29,6 +29,13 @@ namespace {
 const char kBinaryErrorDetailsKey[] = "grpc-status-details-bin";
 }
 
+class GenericMetadataValue {
+ public:
+  GenericMetadataValue(grpc::string_ref bytes) : bytes_(bytes) {}
+  Status Serialize(Slice* unused) { return Status::OK; }
+  grpc::string_ref bytes_;
+};
+
 // TODO, split this up into MetadataSender and MetadataReciever?
 //
 // general purpose metadata container for both send and recv side. It acts a
@@ -45,6 +52,7 @@ class MetadataContainer {
     metadata_.insert(std::make_pair(key, std::shared_ptr<SerializableConcept>(
                                              new SerializableModel<T>(value))));
   }
+
   template <typename T>
   bool GetMetadata(const grpc::string& key, const T** dst) {
     auto gotten = metadata_.find(key);
@@ -54,6 +62,7 @@ class MetadataContainer {
     *dst = static_cast<T*>(gotten->second->object_);
     return true;
   }
+
   template <typename T>
   bool GetMutableMetadata(const grpc::string& key, T** dst) {
     auto gotten = metadata_.find(key);
@@ -80,7 +89,7 @@ class MetadataContainer {
     size_t i = 0;
     for (auto iter = metadata_.cbegin(); iter != metadata_.cend();
          ++iter, ++i) {
-      metadata_array[i].key = SliceReferencingString(iter->first);
+      metadata_array[i].key = SliceReferencingStringRef(iter->first);
       Slice s;
       iter->second->Serialize(&s);
       metadata_array[i].value = s.c_slice();
@@ -92,6 +101,18 @@ class MetadataContainer {
       metadata_array[i].value = SliceReferencingString(optional_error_details);
     }
     return metadata_array;
+  }
+
+  void FillMap() {
+    for (size_t i = 0; i < arr_.count; i++) {
+      metadata_.insert(std::make_pair(
+          string(reinterpret_cast<const char*>(
+                     GRPC_SLICE_START_PTR(arr_.metadata[i].key)),
+                 GRPC_SLICE_LENGTH(arr_.metadata[i].key)),
+          std::shared_ptr<SerializableConcept>(
+              new SerializableModel<GenericMetadataValue>(GenericMetadataValue(
+                  StringRefFromSlice(&arr_.metadata[i].value))))));
+    }
   }
 
  private:
@@ -122,7 +143,9 @@ class MetadataContainer {
   };
 
  public:
+  // TODO, string ref?
   std::multimap<grpc::string, std::shared_ptr<SerializableConcept>> metadata_;
+  grpc_metadata_array arr_;
 };
 
 class StringMetadataValue {

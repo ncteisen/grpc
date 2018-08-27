@@ -140,6 +140,11 @@ inline grpc_slice SliceReferencingString(const grpc::string& str) {
                                                                  str.length());
 }
 
+inline grpc_slice SliceReferencingStringRef(const grpc::string_ref& str) {
+  return g_core_codegen_interface->grpc_slice_from_static_buffer(str.data(),
+                                                                 str.length());
+}
+
 inline grpc_slice SliceFromCopiedString(const grpc::string& str) {
   return g_core_codegen_interface->grpc_slice_from_copied_buffer(str.data(),
                                                                  str.length());
